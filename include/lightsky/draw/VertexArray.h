@@ -8,7 +8,7 @@
 #ifndef __LS_DRAW_VERTEX_ARRAY_H__
 #define	__LS_DRAW_VERTEX_ARRAY_H__
 
-#include "lightsky/draw/setup.h"
+#include "lightsky/draw/Setup.h"
 
 namespace ls {
 namespace draw {

@@ -7,7 +7,7 @@
 
 #include <utility>
 
-#include "lightsky/draw/matrixStack.h"
+#include "lightsky/draw/MatrixStack.h"
 
 namespace ls {
 namespace draw {

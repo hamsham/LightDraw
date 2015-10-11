@@ -1,7 +1,7 @@
 
 #include <cassert>
 
-#include "lightsky/draw/color.h"
+#include "lightsky/draw/Color.h"
 
 namespace ls {
 namespace draw {

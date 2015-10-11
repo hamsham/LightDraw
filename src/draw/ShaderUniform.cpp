@@ -7,7 +7,7 @@
 
 #include <utility>
 
-#include "lightsky/draw/shaderProgram.h"
+#include "lightsky/draw/ShaderProgram.h"
 #include "lightsky/draw/ShaderUniform.h"
 
 namespace ls {

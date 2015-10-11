@@ -5,9 +5,9 @@
  * Created on Jult 30, 2014, 10:02 PM
  */
 
-#include "lightsky/draw/setup.h"
-#include "lightsky/draw/renderbuffer.h"
-#include "lightsky/draw/framebuffer.h"
+#include "lightsky/draw/Setup.h"
+#include "lightsky/draw/RenderBuffer.h"
+#include "lightsky/draw/FrameBuffer.h"
 
 namespace ls {
 namespace draw {

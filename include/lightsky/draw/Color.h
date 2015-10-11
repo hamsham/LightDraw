@@ -8,7 +8,7 @@
 #ifndef __LS_DRAW_COLOR_H__
 #define	__LS_DRAW_COLOR_H__
 
-#include "lightsky/draw/setup.h"
+#include "lightsky/draw/Setup.h"
 
 namespace ls {
 namespace draw {

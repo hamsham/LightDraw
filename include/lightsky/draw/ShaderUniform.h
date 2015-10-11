@@ -10,9 +10,9 @@
 
 #include <vector>
 
-#include "lightsky/draw/setup.h"
+#include "lightsky/draw/Setup.h"
 #include "lightsky/draw/VertexAttrib.h"
-#include "shaderProgram.h"
+#include "lightsky/draw/ShaderProgram.h"
 
 namespace ls {
 namespace draw {

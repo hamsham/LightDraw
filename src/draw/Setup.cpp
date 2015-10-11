@@ -5,7 +5,7 @@
  * Created on November 15, 2013, 8:28 PM
  */
 
-#include "lightsky/draw/setup.h"
+#include "lightsky/draw/Setup.h"
 
 namespace ls {
 namespace draw {

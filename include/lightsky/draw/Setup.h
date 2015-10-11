@@ -34,7 +34,8 @@
 
 #elif defined (LS_OS_LINUX)
     #include <GLES3/gl3.h>
-    #include <GLES3/gl2ext.h>
+    /*#include <GLES3/gl2ext.h>*/
+    #include <GLES3/gl3ext.h>
 #else
     #undef GL_GLEXT_PROTOTYPES
     #include "lightsky/draw/lsgl.h"

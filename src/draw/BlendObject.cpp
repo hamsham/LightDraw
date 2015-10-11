@@ -1,11 +1,11 @@
-/* 
+/*
  * File:   blendObject.cpp
  * Author: Miles Lacey
- * 
+ *
  * Created on August 3, 2014, 6:53 PM
  */
 
-#include "lightsky/draw/blendObject.h"
+#include "lightsky/draw/BlendObject.h"
 
 namespace ls {
 namespace draw {
@@ -18,13 +18,13 @@ void blendObject::bind() const {
         glDisable(BLEND_STATE);
         return;
     }
-    
+
     glEnable(BLEND_STATE);
-    
+
     glBlendColor(blendCol[0], blendCol[1], blendCol[2], blendCol[3]);
-    
+
     glBlendEquationSeparate(rgbBlendEq, alphaBlendEq);
-    
+
     glBlendFuncSeparate(srcRgbBlendFunc, dstRgbBlendFunc, srcAlphaBlendFunc, dstAlphaBlendFunc);
 }
 

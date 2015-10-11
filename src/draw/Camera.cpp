@@ -1,5 +1,5 @@
 
-#include "lightsky/draw/camera.h"
+#include "lightsky/draw/Camera.h"
 
 namespace {
 

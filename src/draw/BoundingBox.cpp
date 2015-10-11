@@ -7,7 +7,7 @@
 
 #include <utility>
 
-#include "lightsky/draw/boundingBox.h"
+#include "lightsky/draw/BoundingBox.h"
 
 namespace ls {
 namespace draw {

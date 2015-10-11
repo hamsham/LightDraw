@@ -13,7 +13,7 @@
 #define	__LS_DRAW_VERTEX_H__
 
 #include <cstddef> // std::offsetof
-#include "lightsky/draw/setup.h"
+#include "lightsky/draw/Setup.h"
 
 namespace ls {
 namespace draw {

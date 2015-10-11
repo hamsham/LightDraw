@@ -2,7 +2,7 @@
 #ifndef __LS_DRAW_RENDERBUFFER_H__
 #define __LS_DRAW_RENDERBUFFER_H__
 
-#include "lightsky/draw/setup.h"
+#include "lightsky/draw/Setup.h"
 
 namespace ls {
 namespace draw {
@@ -178,9 +178,28 @@ class renderbuffer {
         void terminate();
 };
 
+/*-------------------------------------
+ * Get the GPU-Assigned ID that this object references.
+-------------------------------------*/
+inline unsigned renderbuffer::getId() const {
+    return rboId;
+}
+
+/*-------------------------------------
+ * Bind the current renderbuffer to OpenGL
+-------------------------------------*/
+inline void renderbuffer::bind() const {
+    glBindFramebuffer(GL_RENDERBUFFER, rboId);
+}
+
+/*-------------------------------------
+ * Unbind the current renderbuffer to OpenGL
+-------------------------------------*/
+inline void renderbuffer::unbind() const {
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+}
+
 } // end draw namespace
 } // end ls namespace
-
-#include "lightsky/draw/generic/renderbuffer_impl.h"
 
 #endif // __LS_DRAW_RENDERBUFFER_H__

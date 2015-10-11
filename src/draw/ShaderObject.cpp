@@ -5,7 +5,7 @@
  * Created on January 21, 2014, 6:54 PM
  */
 
-#include "lightsky/draw/shaderObject.h"
+#include "lightsky/draw/ShaderObject.h"
 
 namespace ls {
 namespace draw {

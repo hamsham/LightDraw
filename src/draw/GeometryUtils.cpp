@@ -5,7 +5,7 @@
  * Created on April 6, 2014, 5:08 PM
  */
 
-#include "lightsky/draw/geometry_utils.h"
+#include "lightsky/draw/GeometryUtils.h"
 
 namespace ls {
 

@@ -5,7 +5,7 @@
  * Created on February 7, 2014, 8:01 PM
  */
 
-#include "lightsky/draw/vertexArray.h"
+#include "lightsky/draw/VertexArray.h"
 
 namespace ls {
 namespace draw {

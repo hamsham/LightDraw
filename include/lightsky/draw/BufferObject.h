@@ -23,7 +23,7 @@ namespace draw {
 /*-----------------------------------------------------------------------------
  * Forward Declarations
 -----------------------------------------------------------------------------*/
-class BufferObject;
+struct BufferObject;
 enum common_vertex_t : unsigned;
 enum index_element_t : int;
 

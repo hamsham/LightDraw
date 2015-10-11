@@ -5,7 +5,7 @@
  * Created on January 27, 2014, 8:35 PM
  */
 
-#include "lightsky/draw/texture.h"
+#include "lightsky/draw/Texture.h"
 
 namespace ls {
 namespace draw {

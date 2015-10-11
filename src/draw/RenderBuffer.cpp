@@ -1,5 +1,5 @@
 
-#include "lightsky/draw/renderbuffer.h"
+#include "lightsky/draw/RenderBuffer.h"
 
 namespace ls {
 namespace draw {

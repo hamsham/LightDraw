@@ -5,7 +5,7 @@
  * Created on June 10, 2015, 8:52 PM
  */
 
-#include "lightsky/draw/shaderProgram.h"
+#include "lightsky/draw/ShaderProgram.h"
 #include "lightsky/draw/VertexAttrib.h"
 
 namespace ls {
