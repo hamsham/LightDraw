@@ -35,7 +35,7 @@ enum matrix_use_t : unsigned {
  * within OpenGL. Usage was designed to be fairly close to the original OpenGL
  * 1.0 spec.
 -----------------------------------------------------------------------------*/
-class matrixStack {
+class MatrixStack {
     private:
         std::stack<math::mat4> stacks[3]; // model, view, & projection
         math::mat4 mvpMatrix = {1.f};
@@ -45,12 +45,12 @@ class matrixStack {
         /**
          * @brief Constructor
          */
-        matrixStack();
+        MatrixStack();
         
         /**
          * @brief Copy Constructor -- DELETED
          */
-        matrixStack(const matrixStack&) = delete;
+        MatrixStack(const MatrixStack&) = delete;
         
         /**
          * @brief Move Constructor
@@ -60,18 +60,18 @@ class matrixStack {
          * @param ms
          * A reference to a temporary matrix stack object.
          */
-        matrixStack(matrixStack&& ms);
+        MatrixStack(MatrixStack&& ms);
         
         /**
          * @brief Destructor
          * Frees all memory/resources used by *this.
          */
-        ~matrixStack();
+        ~MatrixStack();
         
         /**
          * @brief Copy Operator -- DELETED
          */
-        matrixStack& operator= (const matrixStack&) = delete;
+        MatrixStack& operator= (const MatrixStack&) = delete;
         
         /**
          * @brief Move Operator
@@ -83,7 +83,7 @@ class matrixStack {
          * 
          * @return A reference to *this
          */
-        matrixStack& operator= (matrixStack&& ms);
+        MatrixStack& operator= (MatrixStack&& ms);
         
         /**
          * Push a matrix onto the stack. The current matrix will be copied into
@@ -96,7 +96,7 @@ class matrixStack {
          * @param m
          * A constant reference to a 4x4 matrix.
          */
-        void pushMatrix(matrix_use_t matrixType, const math::mat4& m);
+        void push_matrix(matrix_use_t matrixType, const math::mat4& m);
         
         /**
          * Push an identity matrix onto the stack. The current matrix will be
@@ -105,7 +105,7 @@ class matrixStack {
          * @param matrixType
          * The type of matrix to be used on the stack.
          */
-        void pushIdentity(matrix_use_t matrixType);
+        void push_identity(matrix_use_t matrixType);
         
         /**
          * Push a matrix onto the stack. This function pushes a pre-constructed
@@ -118,7 +118,7 @@ class matrixStack {
          * @param m
          * A constant reference to a 4x4 matrix.
          */
-        void emplaceMatrix(matrix_use_t matrixType, const math::mat4& m);
+        void emplace_matrix(matrix_use_t matrixType, const math::mat4& m);
         
         /**
          * Remove a matrix from a specified stack.
@@ -126,7 +126,7 @@ class matrixStack {
          * @param matrixType
          * The type of matrix to be used on the stack.
          */
-        void popMatrix(matrix_use_t matrixType);
+        void pop_matrix(matrix_use_t matrixType);
         
         /**
          * Set the matrix on top of the stack to the one passed into the
@@ -138,7 +138,7 @@ class matrixStack {
          * @param 
          * The matrix to be used on top of the stack
          */
-        void loadMatrix(matrix_use_t matrixType, const math::mat4& m);
+        void load_matrix(matrix_use_t matrixType, const math::mat4& m);
         
         /**
          * Set the selected matrix to an identity matrix
@@ -146,7 +146,7 @@ class matrixStack {
          * @param matrixType
          * The type of matrix to be used on the stack.
          */
-        void loadIdentity(matrix_use_t);
+        void load_identity(matrix_use_t);
         
         /**
          * Multiply the selected matrix by the one passed into the function.
@@ -158,7 +158,7 @@ class matrixStack {
          * A constant reference to the matrix to multiply against the on on the
          * stack.
          */
-        void multMatrix(matrix_use_t matrixType, const math::mat4& m);
+        void mult_matrix(matrix_use_t matrixType, const math::mat4& m);
         
         /**
          * @brief Get the current model matrix
@@ -166,27 +166,27 @@ class matrixStack {
          * @param matrixType
          * The type of matrix to be used on the stack.
          */
-        const math::mat4& getMatrix(matrix_use_t matrixType) const;
+        const math::mat4& get_matrix(matrix_use_t matrixType) const;
         
         /**
          * Multiply the model, view, and projection stacks together
          */
-        void constructMvp();
+        void construct_mvp();
         
         /**
          * Multiply only the view and projection stacks together
          */
-        void constructVp();
+        void construct_vp();
         
         /**
          * @brief Get the MVP Matrix
          */
-        const math::mat4& getMvpMatrix() const;
+        const math::mat4& get_mvp_matrix() const;
         
         /**
          * @brief Get the VP Matrix
          */
-        const math::mat4& getVpMatrix() const;
+        const math::mat4& get_vp_matrix() const;
         
         /**
          * @brief Clear a specific Stack
@@ -200,50 +200,50 @@ class matrixStack {
 /*-------------------------------------
  * Multiply the selected matrix with the one passed into the function.
 -------------------------------------*/
-inline void matrixStack::multMatrix(matrix_use_t mt, const math::mat4& m) {
+inline void MatrixStack::mult_matrix(matrix_use_t mt, const math::mat4& m) {
     stacks[mt].top() = m * stacks[mt].top();
 }
 
 /*-------------------------------------
  * Multiply the matrix stack
 -------------------------------------*/
-inline void matrixStack::constructMvp() {
-    this->constructVp();
+inline void MatrixStack::construct_mvp() {
+    this->construct_vp();
     mvpMatrix = vpMatrix * stacks[MATRIX_USE_MODEL].top();
 }
 
 /*-------------------------------------
  * Multiply the view and projection stacks
 -------------------------------------*/
-inline void matrixStack::constructVp() {
+inline void MatrixStack::construct_vp() {
     vpMatrix = stacks[MATRIX_USE_PROJECTION].top() * stacks[MATRIX_USE_VIEW].top();
 }
 
 /*-------------------------------------
  * Get the current model matrix
 -------------------------------------*/
-inline const math::mat4& matrixStack::getMatrix(matrix_use_t mt) const {
+inline const math::mat4& MatrixStack::get_matrix(matrix_use_t mt) const {
     return stacks[mt].top();
 }
 
 /*-------------------------------------
  * Get the MVP Matrix
 -------------------------------------*/
-inline const math::mat4& matrixStack::getMvpMatrix() const {
+inline const math::mat4& MatrixStack::get_mvp_matrix() const {
     return mvpMatrix;
 }
 
 /*-------------------------------------
  * Get the VP Matrix
 -------------------------------------*/
-inline const math::mat4& matrixStack::getVpMatrix() const {
+inline const math::mat4& MatrixStack::get_vp_matrix() const {
     return vpMatrix;
 }
 
 /*-------------------------------------
  * Clear a specific Stack
 -------------------------------------*/
-inline unsigned matrixStack::size(matrix_use_t mt) {
+inline unsigned MatrixStack::size(matrix_use_t mt) {
     return stacks[mt].size();
 }
 

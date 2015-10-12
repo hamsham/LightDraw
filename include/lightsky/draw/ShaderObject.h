@@ -30,14 +30,14 @@ enum shader_stage_t : unsigned {
  * the GPU
 -----------------------------------------------------------------------------*/
 template <shader_stage_t shaderType>
-class shaderObject {
-    friend class shaderProgram;
+class ShaderObject {
+    friend class ShaderProgram;
     
     private:
         /**
          * Handle to the GPU-side shader object.
          */
-        GLuint objectId = 0;
+        GLuint gpuId = 0;
         
     public:
         /**
@@ -45,12 +45,12 @@ class shaderObject {
          * 
          * Initializes all members within *this.
          */
-        shaderObject();
+        ShaderObject();
         
         /**
          * @brief Copy Constructor -- Deleted
          */
-        shaderObject(const shaderObject&) = delete;
+        ShaderObject(const ShaderObject&) = delete;
         
         /**
          * @brief Move Constructor
@@ -58,12 +58,12 @@ class shaderObject {
          * Copy the handle to the shader object owned by the input argument,
          * reset the moved object's shader handle to 0.
          */
-        shaderObject(shaderObject&& so);
+        ShaderObject(ShaderObject&& so);
         
         /**
          * @brief Copy Operator -- Deleted
          */
-        shaderObject& operator=(const shaderObject&) = delete;
+        ShaderObject& operator=(const ShaderObject&) = delete;
         
         /**
          * @brief Move Operator
@@ -76,12 +76,12 @@ class shaderObject {
          * 
          * @return A reference to *this
          */
-        shaderObject& operator=(shaderObject&& so);
+        ShaderObject& operator=(ShaderObject&& so);
         
         /**
          * Destroy this object and free any GPU memory it uses.
          */
-        ~shaderObject();
+        ~ShaderObject();
         
         /**
          * Free all memory used by this shader object.
@@ -127,37 +127,37 @@ class shaderObject {
         /**
          * Get a shader's GPU-assigned ID
          */
-        GLuint getId() const;
+        GLuint gpu_id() const;
 };
 
 /*-----------------------------------------------------------------------------
     Typedefs and external templates
 -----------------------------------------------------------------------------*/
-LS_DECLARE_CLASS_TYPE(vertexShader, shaderObject, SHADER_STAGE_VERTEX);
-LS_DECLARE_CLASS_TYPE(fragmentShader, shaderObject, SHADER_STAGE_FRAGMENT);
+LS_DECLARE_CLASS_TYPE(vertexShader, ShaderObject, SHADER_STAGE_VERTEX);
+LS_DECLARE_CLASS_TYPE(fragmentShader, ShaderObject, SHADER_STAGE_FRAGMENT);
 
 /*-------------------------------------
     Constructor
 -------------------------------------*/
 template <shader_stage_t shaderType>
-shaderObject<shaderType>::shaderObject() {
+ShaderObject<shaderType>::ShaderObject() {
 }
 
 /*-------------------------------------
     Move Constructor
 -------------------------------------*/
 template <shader_stage_t shaderType>
-shaderObject<shaderType>::shaderObject(shaderObject&& tempShader) :
-    objectId{tempShader.objectId}
+ShaderObject<shaderType>::ShaderObject(ShaderObject&& tempShader) :
+    gpuId{tempShader.gpuId}
 {
-    tempShader.objectId = 0;
+    tempShader.gpuId = 0;
 }
     
 /*-------------------------------------
     Destructor
 -------------------------------------*/
 template <shader_stage_t shaderType>
-shaderObject<shaderType>::~shaderObject() {
+ShaderObject<shaderType>::~ShaderObject() {
     terminate();
 }
         
@@ -166,11 +166,11 @@ shaderObject<shaderType>::~shaderObject() {
     to 0.
 -------------------------------------*/
 template <shader_stage_t shaderType>
-shaderObject<shaderType>& shaderObject<shaderType>::operator=(
-    shaderObject&& tempShader
+ShaderObject<shaderType>& ShaderObject<shaderType>::operator=(
+    ShaderObject&& tempShader
 ) {
-    objectId = tempShader.objectId;
-    tempShader.objectId = 0;
+    gpuId = tempShader.gpuId;
+    tempShader.gpuId = 0;
     return *this;
 }
 
@@ -178,16 +178,16 @@ shaderObject<shaderType>& shaderObject<shaderType>::operator=(
     Free all memory used by this shader object.
 -------------------------------------*/
 template <shader_stage_t shaderType>
-inline void shaderObject<shaderType>::terminate() {
-    glDeleteShader(objectId);
-    objectId = 0;
+inline void ShaderObject<shaderType>::terminate() {
+    glDeleteShader(gpuId);
+    gpuId = 0;
 }
 
 /*-------------------------------------
     Shader Loading (single shader).
 -------------------------------------*/
 template <shader_stage_t shaderType>
-inline bool shaderObject<shaderType>::init(const char* data, int size) {
+inline bool ShaderObject<shaderType>::init(const char* data, int size) {
     // If the size is zero, opengl will just look for null-termination in the data
     const int* pSize = (size == 0) ? nullptr : &size;
     return init(1, &data, pSize);
@@ -197,7 +197,7 @@ inline bool shaderObject<shaderType>::init(const char* data, int size) {
     Shader Loading (multiple shaders).
 -------------------------------------*/
 template <shader_stage_t shaderType>
-bool shaderObject<shaderType>::init(
+bool ShaderObject<shaderType>::init(
     const unsigned numStrings,
     const char* const* data,
     const int* sizes
@@ -235,7 +235,7 @@ bool shaderObject<shaderType>::init(
         return false;
     }
 
-    objectId = shaderId;
+    gpuId = shaderId;
 
     LS_LOG_MSG("\tSuccessfully loaded a shader object.\n");
     return true;
@@ -245,8 +245,8 @@ bool shaderObject<shaderType>::init(
     Get a shader's GPU-assigned ID
 -------------------------------------*/
 template <shader_stage_t shaderType>
-inline GLuint shaderObject<shaderType>::getId() const {
-    return objectId;
+inline GLuint ShaderObject<shaderType>::gpu_id() const {
+    return gpuId;
 }
 
 } // end draw namespace

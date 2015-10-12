@@ -19,7 +19,7 @@ namespace draw {
  * Represents a single VAO within OpenGL. VAO object store the state of
  * multiple vertex buffer object attributes into one container.
  */
-class vertexArray {
+class VertexArray {
     private:
         /**
          * A handle to the vertex array object residing on the GPU.
@@ -30,12 +30,12 @@ class vertexArray {
         /**
          * @brief Constructor
          */
-        vertexArray();
+        VertexArray();
         
         /**
          * @brief Copy Constructor - DELETED
          */
-        vertexArray(const vertexArray&) = delete;
+        VertexArray(const VertexArray&) = delete;
         
         /**
          * @brief Move Constructor
@@ -46,19 +46,19 @@ class vertexArray {
          * @param va
          * A vertexArray object whose data will be moved into *this.
          */
-        vertexArray(vertexArray&&);
+        VertexArray(VertexArray&&);
         
         /**
          * @brief Destructor
          * 
          * Releases all resources used by *this.
          */
-        ~vertexArray();
+        ~VertexArray();
         
         /**
          * @brief Copy Operator - DELETED
          */
-        vertexArray& operator=(const vertexArray&) = delete;
+        VertexArray& operator=(const VertexArray&) = delete;
         
         /**
          * @brief Move Operator
@@ -71,7 +71,7 @@ class vertexArray {
          * 
          * @return A reference to *this.
          */
-        vertexArray& operator=(vertexArray&&);
+        VertexArray& operator=(VertexArray&&);
         
         /**
          * @brief Array initialization.
@@ -95,14 +95,14 @@ class vertexArray {
          * @returns true if this object has data residing on GPU memory, false
          * if not.
          */
-        bool isValid() const;
+        bool is_valid() const;
         
         /**
          * Get the GPU-assigned ID for this VAO
          * 
          * @return an unsigned integral type representing this VAO.
          */
-        unsigned getId() const;
+        unsigned gpu_id() const;
         
         /**
          * Enable an attribute contained within the vertex array.
@@ -110,7 +110,7 @@ class vertexArray {
          * @param index
          * The array-index to an attribute that is to be enabled.
          */
-        void enableAttrib(int index);
+        void enable_attrib(int index);
         
         /**
          * Disable an attribute contained in the array.
@@ -118,7 +118,7 @@ class vertexArray {
          * @param index
          * The array-index to an attribute that is to be disabled.
          */
-        void disableAttrib(int index);
+        void disable_attrib(int index);
         
         /**
          * Set the memory layout/offset of an attribute in the vertex array.
@@ -141,7 +141,7 @@ class vertexArray {
          * A byte-offset from the start of each vertex.
          * 
          */
-        void setAttribOffset(
+        void set_attrib_offset(
             unsigned index,
             unsigned elementsPerVert,
             int type,
@@ -158,7 +158,7 @@ class vertexArray {
          * 
          * @return a byte-offset to the attribute requested.
          */
-        void* getAttribOffset(int index) const;
+        void* get_attrib_offset(int index) const;
         
         /**
          * Set the rate at which an attribute should repeat during instanced
@@ -171,7 +171,7 @@ class vertexArray {
          * The number of instances that should be drawn before repeating
          * another render of the array attribute.
          */
-        void setAttribInstanceRate(int index, int instancesPerAttrib);
+        void set_attrib_instance_rate(int index, int instancesPerAttrib);
         
         /**
          * Bind this vertex array to the current global rendering context.
@@ -194,7 +194,7 @@ namespace draw {
     Terminate the vertex array and release all of its resources back to
     the GPU.
 -------------------------------------*/
-inline void vertexArray::terminate() {
+inline void VertexArray::terminate() {
     glDeleteVertexArrays(1, &vaoId);
     vaoId = 0;
 }
@@ -202,35 +202,35 @@ inline void vertexArray::terminate() {
 /*-------------------------------------
     Determine if there is data used by this object
 -------------------------------------*/
-inline bool vertexArray::isValid() const {
+inline bool VertexArray::is_valid() const {
     return vaoId != 0;
 }
 
 /*-------------------------------------
     Get the GPU-assigned ID for this VAO
 -------------------------------------*/
-inline unsigned vertexArray::getId() const {
+inline unsigned VertexArray::gpu_id() const {
     return vaoId;
 }
 
 /*-------------------------------------
     Enable an attribute contained within the vertex array.
 -------------------------------------*/
-inline void vertexArray::enableAttrib(int index) {
+inline void VertexArray::enable_attrib(int index) {
     glEnableVertexAttribArray(index);
 }
 
 /*-------------------------------------
     Disable an attribute contained in the array.
 -------------------------------------*/
-inline void vertexArray::disableAttrib(int index) {
+inline void VertexArray::disable_attrib(int index) {
     glDisableVertexAttribArray(index);
 }
 
 /*-------------------------------------
     Set the memory layout/offset of an attribute in the vertex array.
 -------------------------------------*/
-inline void vertexArray::setAttribOffset(
+inline void VertexArray::set_attrib_offset(
     unsigned index,
     unsigned elementsPerVert,
     int type,
@@ -244,7 +244,7 @@ inline void vertexArray::setAttribOffset(
 /*-------------------------------------
     Get the byte-offset to an element in the array.
 -------------------------------------*/
-inline void* vertexArray::getAttribOffset(int index) const {
+inline void* VertexArray::get_attrib_offset(int index) const {
     void* offset;
     glGetVertexAttribPointerv(index, GL_VERTEX_ATTRIB_ARRAY_POINTER, &offset);
     return offset;
@@ -254,21 +254,21 @@ inline void* vertexArray::getAttribOffset(int index) const {
     Set the rate at which an attribute should repeat during instanced
     draw calls on the GPU.
 -------------------------------------*/
-inline void vertexArray::setAttribInstanceRate(int index, int instancesPerAttrib) {
+inline void VertexArray::set_attrib_instance_rate(int index, int instancesPerAttrib) {
     glVertexAttribDivisor(index, instancesPerAttrib);
 }
 
 /*-------------------------------------
     Bind this vertex array to the current global rendering context.
 -------------------------------------*/
-inline void vertexArray::bind() const {
+inline void VertexArray::bind() const {
     glBindVertexArray(vaoId);
 }
 
 /*-------------------------------------
     Unbind this vertex array object from the current render context.
 -------------------------------------*/
-inline void vertexArray::unbind() const {
+inline void VertexArray::unbind() const {
     glBindVertexArray(0);
 }
 

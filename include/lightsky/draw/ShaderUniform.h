@@ -21,7 +21,7 @@ namespace draw {
  * Forward Declarations
 -----------------------------------------------------------------------------*/
 enum vertex_data_t : GLenum;
-class shaderProgram;
+class ShaderProgram;
 
 /*-----------------------------------------------------------------------------
  * Typedefs and Aliases
@@ -51,7 +51,7 @@ typedef VertexAttrib ShaderUniform;
  * 
 -------------------------------------*/
 std::string get_shader_uniform_name(
-    const shaderProgram& prog,
+    const ShaderProgram& prog,
     const GLint index,
     GLint* const outVarSize,
     GLenum* const outVarType
@@ -66,7 +66,7 @@ std::string get_shader_uniform_name(
  * @return A std::vector of std::string objects, containing the names of all
  * shader uniforms within the input program object.
 -------------------------------------*/
-std::vector<ShaderUniform> get_shader_uniforms(const shaderProgram& prog);
+std::vector<ShaderUniform> get_shader_uniforms(const ShaderProgram& prog);
 
 /**------------------------------------
  * @brief Get the location of a uniform variable.
@@ -75,8 +75,8 @@ std::vector<ShaderUniform> get_shader_uniforms(const shaderProgram& prog);
  * A positive value to indicate the uniform's location in OpenGL or
  * -1 for an invalid uniform index.
 -------------------------------------*/
-inline GLint get_shader_uniform_location(const shaderProgram& sp, const GLchar* const name) {
-    return glGetUniformLocation(sp.getId(), name);
+inline GLint get_shader_uniform_location(const ShaderProgram& sp, const GLchar* const name) {
+    return glGetUniformLocation(sp.gpu_id(), name);
 }
 
 /**------------------------------------
@@ -86,8 +86,8 @@ inline GLint get_shader_uniform_location(const shaderProgram& sp, const GLchar* 
  * A positive value to indicate the uniform's location in OpenGL or
  * -1 for an invalid uniform index.
 -------------------------------------*/
-inline GLint get_shader_uniform_location(const shaderProgram& sp, const std::string& name) {
-    return glGetUniformLocation(sp.getId(), name.c_str());
+inline GLint get_shader_uniform_location(const ShaderProgram& sp, const std::string& name) {
+    return glGetUniformLocation(sp.gpu_id(), name.c_str());
 }
 
 /**------------------------------------

@@ -115,7 +115,7 @@ struct BufferObject {
      * @brief pAttribs contains a CPU-side representation of the per-vertex
      * attributes used by each element in *this object's GPU memory.
      */
-    utils::pointer<VertexAttrib[]> pAttribs;
+    utils::Pointer<VertexAttrib[]> pAttribs;
     
     /**
      * @brief Destructor

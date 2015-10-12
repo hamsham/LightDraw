@@ -9,7 +9,7 @@ namespace draw {
 /*-------------------------------------
  * Convert an InternalFormat to a standard format
 -------------------------------------*/
-pixel_layout_t getColorLayout(pixel_format_t internalFormat) {
+pixel_layout_t get_color_layout(pixel_format_t internalFormat) {
     switch(internalFormat) {
         case COLOR_FMT_GRAY_8:
         case COLOR_FMT_GRAY_16I:

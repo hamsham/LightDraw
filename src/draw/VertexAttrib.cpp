@@ -15,12 +15,12 @@ namespace draw {
  * Get active attribute info from a shader.
 -------------------------------------*/
 std::string get_attrib_shader_name(
-    const shaderProgram& prog,
+    const ShaderProgram& prog,
     const GLint index,
     GLint* const outVarSize,
     GLenum* const outVarType
 ) {
-    return prog.getAttribName(
+    return prog.get_attrib_name(
         vertex_attrib_t::VERTEX_ATTRIB,
         index,
         outVarSize,

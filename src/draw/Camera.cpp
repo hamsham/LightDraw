@@ -39,7 +39,7 @@ namespace draw {
 /*-------------------------------------
  * Default Camera Perspective
 -------------------------------------*/
-const math::mat4 camera::DEFAULT_PERSPECTIVE{
+const math::mat4 Camera::DEFAULT_PERSPECTIVE{
     math::perspective(
         DEFAULT_VIEW_ANGLE,
         DEFAULT_ASPECT_WIDTH / DEFAULT_ASPECT_HEIGHT,
@@ -51,15 +51,15 @@ const math::mat4 camera::DEFAULT_PERSPECTIVE{
 /*-------------------------------------
  * Destructor
 -------------------------------------*/
-camera::~camera() {
+Camera::~Camera() {
 }
 
 /*-------------------------------------
  * Constructor
 -------------------------------------*/
-camera::camera() :
+Camera::Camera() :
     viewMode{camera_mode_t::FIRST_PERSON},
-    rotateFunction{&camera::rotateLockedY},
+    rotateFunction{&Camera::rotate_locked_y},
     fov{DEFAULT_VIEW_ANGLE},
     aspectW{DEFAULT_ASPECT_WIDTH},
     aspectH{DEFAULT_ASPECT_HEIGHT},
@@ -78,23 +78,23 @@ camera::camera() :
 /*-------------------------------------
  * Copy Constructor
 -------------------------------------*/
-camera::camera(const camera& c) {
+Camera::Camera(const Camera& c) {
     *this = c;
 }
 
 /*-------------------------------------
  * Move Constructor
 -------------------------------------*/
-camera::camera(camera&& c) {
+Camera::Camera(Camera&& c) {
     *this = c;
 }
 
 /*-------------------------------------
  * Copy Operator
 -------------------------------------*/
-camera& camera::operator = (const camera& c) {
+Camera& Camera::operator = (const Camera& c) {
     viewMode = c.viewMode;
-    rotateFunction = &camera::rotateLockedY;
+    rotateFunction = &Camera::rotate_locked_y;
     fov = c.fov;
     aspectW = c.aspectW;
     aspectH = c.aspectH;
@@ -110,7 +110,7 @@ camera& camera::operator = (const camera& c) {
 /*-------------------------------------
  * Move Operator
 -------------------------------------*/
-camera& camera::operator =(camera&& c) {
+Camera& Camera::operator =(Camera&& c) {
     this->operator=(c);
     return *this;
 }
@@ -118,40 +118,40 @@ camera& camera::operator =(camera&& c) {
 /*-------------------------------------
  * Get the absolute view position
 -------------------------------------*/
-math::vec3 camera::getAbsolutePosition() const {
-    return extractMVVector(viewTransform.getTransform(), view_axis_t::MV_POSITION);
+math::vec3 Camera::get_abs_position() const {
+    return extractMVVector(viewTransform.get_transform(), view_axis_t::MV_POSITION);
 }
 
 /*-------------------------------------
  * Set the camera view mode
 -------------------------------------*/
-void camera::setViewMode(camera_mode_t mode) {
+void Camera::set_view_mode(camera_mode_t mode) {
     if (mode == viewMode) {
         return;
     }
     
     viewMode = mode;
-    lookAt(getAbsolutePosition(), target, getUpDirection());
+    look_at(get_abs_position(), target, get_up_direction());
 }
 
 /*-------------------------------------
  * Get the forward direction
 -------------------------------------*/
-math::vec3 camera::getDirection() const {
-    return extractMVVector(viewTransform.getTransform(), view_axis_t::MV_Z_AXIS);
+math::vec3 Camera::get_direction() const {
+    return extractMVVector(viewTransform.get_transform(), view_axis_t::MV_Z_AXIS);
 }
 
 /*-------------------------------------
  * Retrieve the camera's up vector
 -------------------------------------*/
-math::vec3 camera::getUpDirection() const {
-    return extractMVVector(viewTransform.getTransform(), view_axis_t::MV_Y_AXIS);
+math::vec3 Camera::get_up_direction() const {
+    return extractMVVector(viewTransform.get_transform(), view_axis_t::MV_Y_AXIS);
 }
 
 /*-------------------------------------
  * Set the camera's projection parameters
 -------------------------------------*/
-void camera::setProjectionParams(
+void Camera::set_projection_params(
     float inFov,
     float aspectWidth, float aspectHeight,
     float near, float far
@@ -166,31 +166,31 @@ void camera::setProjectionParams(
 /*-------------------------------------
  * Y-Axis Locking
 -------------------------------------*/
-void camera::lockYAxis(bool isLocked) {
+void Camera::lock_y_axis(bool isLocked) {
     rotateFunction = (isLocked)
-        ? &camera::rotateLockedY
-        : &camera::rotateUnlockedY;
+        ? &Camera::rotate_locked_y
+        : &Camera::rotate_unlocked_y;
 }
 
 /*-------------------------------------
  * Looking at targets
 -------------------------------------*/
-void camera::lookAt(const math::vec3& eye, const math::vec3& point, const math::vec3& up) {
+void Camera::look_at(const math::vec3& eye, const math::vec3& point, const math::vec3& up) {
     target = point;
     
     if (viewMode == camera_mode_t::ARCBALL) {
-        viewTransform.extractTransforms(math::lookFrom(eye-target, math::vec3{0.f}, up));
+        viewTransform.extract_transforms(math::look_from(eye-target, math::vec3{0.f}, up));
     }
     else {
-        viewTransform.extractTransforms(math::lookFrom(eye, target, up));
-        viewTransform.setPosition(-eye);
+        viewTransform.extract_transforms(math::look_from(eye, target, up));
+        viewTransform.set_position(-eye);
     }
 }
 
 /*-------------------------------------
  * Basic Movement and Rotation
 -------------------------------------*/
-void camera::move(const math::vec3& amount) {
+void Camera::move(const math::vec3& amount) {
     if (viewMode == camera_mode_t::FIRST_PERSON) {
         viewTransform.move(amount, false);
     }
@@ -202,7 +202,7 @@ void camera::move(const math::vec3& amount) {
 /*-------------------------------------
  * FPS Rotation (unlocked Y axis)
 -------------------------------------*/
-void camera::rotateUnlockedY(const math::vec3& amount) {
+void Camera::rotate_unlocked_y(const math::vec3& amount) {
     const math::quat&& xAxis = math::quat{0.f, amount[0], 0.f, 1.f};
     const math::quat&& yAxis = math::quat{amount[1], 0.f, 0.f, 1.f};
     const math::quat&& zAxis = math::quat{0.f, 0.f, amount[2], 1.f};
@@ -212,25 +212,25 @@ void camera::rotateUnlockedY(const math::vec3& amount) {
 /*-------------------------------------
  * FPS rotation (locked Y axis)
 -------------------------------------*/
-void camera::rotateLockedY(const math::vec3& amount) {
-    const math::quat&  orientation  = viewTransform.getOrientation();
+void Camera::rotate_locked_y(const math::vec3& amount) {
+    const math::quat&  orientation  = viewTransform.get_orientation();
     const math::quat&& xAxis        = math::quat{0.f, amount[0], 0.f, 1.f};
     const math::quat&& yAxis        = math::quat{amount[1], 0.f, 0.f, 1.f};
     const math::quat&& zAxis        = math::quat{0.f, 0.f, amount[2], 1.f};
     const math::quat&& camRotation  = xAxis * orientation * yAxis * zAxis;
     
-    viewTransform.setOrientation(math::normalize(camRotation));
+    viewTransform.set_orientation(math::normalize(camRotation));
 }
 
 /*-------------------------------------
  * Update Implementation
 -------------------------------------*/
-void camera::update() {
+void Camera::update() {
     if (viewMode == camera_mode_t::ARCBALL) {
-        viewTransform.applyPreTransforms(math::translate(math::mat4{1.f}, -target));
+        viewTransform.apply_pre_transforms(math::translate(math::mat4{1.f}, -target));
     }
     else {
-        viewTransform.applyTransforms(false);
+        viewTransform.apply_transform(false);
     }
 }
 

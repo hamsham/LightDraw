@@ -45,7 +45,7 @@ enum class img_file_t {
  * The inherited member "pData" will be reinterpreted as a pointer to a
  * FIBITMAP structure so as to make loading and saving easier to maintain.
 -----------------------------------------------------------------------------*/
-class imageResource final : public ls::utils::resource {
+class ImageResource final : public ls::utils::Resource {
     private:
         /**
          * imgSize represents the pixel width & height of a loaded image
@@ -96,12 +96,12 @@ class imageResource final : public ls::utils::resource {
         /**
          * @brief Constructor
          */
-        imageResource();
+        ImageResource();
         
         /**
          * @brief Copy Constructor -- DELETED
          */
-        imageResource(const imageResource&) = delete;
+        ImageResource(const ImageResource&) = delete;
         
         /**
          * @brief Move Operator
@@ -112,19 +112,19 @@ class imageResource final : public ls::utils::resource {
          * @param ir
          * An r-value reference to a temporary image resource object.
          */
-        imageResource(imageResource&& ir);
+        ImageResource(ImageResource&& ir);
         
         /**
          * @brief Destructor
          * 
          * Calls "unload()" and releases all memory from *this.
          */
-        virtual ~imageResource();
+        virtual ~ImageResource();
         
         /**
          * @brief Copy Operator -- DELETED
          */
-        imageResource& operator=(const imageResource&) = delete;
+        ImageResource& operator=(const ImageResource&) = delete;
         
         /**
          * @brief Move Operator
@@ -137,7 +137,7 @@ class imageResource final : public ls::utils::resource {
          * 
          * @return a reference to *this.
          */
-        imageResource& operator=(imageResource&& ir);
+        ImageResource& operator=(ImageResource&& ir);
 
         /**
          * @brief Load an image file
@@ -148,7 +148,7 @@ class imageResource final : public ls::utils::resource {
          * 
          * @return true if the file was successfully loaded. False if not.
          */
-        virtual bool loadFile(const std::string& filename) override;
+        virtual bool load_file(const std::string& filename) override;
 
         /**
          * @brief Save an image file
@@ -159,7 +159,7 @@ class imageResource final : public ls::utils::resource {
          * 
          * @return true if the file was successfully saved. False if not.
          */
-        virtual bool saveFile(const std::string& filename) const override;
+        virtual bool save_file(const std::string& filename) const override;
 
         /**
          * @brief Save an image file in a specific format
@@ -174,7 +174,7 @@ class imageResource final : public ls::utils::resource {
          * 
          * @return true if the file was successfully saved. False if not.
          */
-        bool saveFile(const std::string& filename, img_file_t filetype) const;
+        bool save_file(const std::string& filename, img_file_t filetype) const;
 
         /**
          * @brief Save an image file in a specific format
@@ -189,7 +189,7 @@ class imageResource final : public ls::utils::resource {
          * 
          * @return true if the file was successfully saved. False if not.
          */
-        virtual bool saveFile(const std::wstring& filename) const override;
+        virtual bool save_file(const std::wstring& filename) const override;
 
         /**
          * @brief Unload
@@ -204,7 +204,7 @@ class imageResource final : public ls::utils::resource {
          * 
          * @return a void pointer to the raw image bits.
          */
-        virtual void* getData() const override;
+        virtual void* get_data() const override;
         
         /**
          * Get the pixel size of the currently loaded image
@@ -212,20 +212,20 @@ class imageResource final : public ls::utils::resource {
          * @return a 2D integer vector containing the width and height of the
          * loaded image, in pixels.
          */
-        math::vec2i getPixelSize() const;
+        math::vec2i get_pixel_size() const;
         
         /**
          * Get the format of the currently loaded image.
          * For example, LS_UNSIGNED_BYTE, LS_INT, LS_FLOAT, etc.
          */
-        color_type_t getPixelType() const;
+        color_type_t get_pixel_type() const;
         
         /**
          * Get the number of bits per pixel in the image.
          * 
          * @return 0, 1, 2, 4, 8, 16, 24, 32, 48, 64, 96, or 128
          */
-        unsigned getBpp() const;
+        unsigned get_bpp() const;
         
         /**
          * Get the OpenGL-compatible CPU-Side image format.
@@ -233,7 +233,7 @@ class imageResource final : public ls::utils::resource {
          * @return An enumeration containing image format information that can
          * be used when setting up textures in OpenGL.
          */
-        pixel_format_t getInternalFormat() const;
+        pixel_format_t get_internal_format() const;
         
         /**
          * Get the OpenGL-compatible CPU-Side/GPU-Side image format pair.
@@ -241,56 +241,56 @@ class imageResource final : public ls::utils::resource {
          * @return An enumeration containing image format information that can
          * be used when setting up textures in OpenGL.
          */
-        pixel_layout_t getExternalFormat() const;
+        pixel_layout_t get_external_format() const;
 };
 
 /*-------------------------------------
  * Saving Data
 -------------------------------------*/
-inline bool imageResource::saveFile(const std::string& filename) const {
-    return saveFile(filename, img_file_t::IMG_FILE_PNG);
+inline bool ImageResource::save_file(const std::string& filename) const {
+    return save_file(filename, img_file_t::IMG_FILE_PNG);
 }
 
 /*-------------------------------------
  * Saving Data (wide-string)
 -------------------------------------*/
-inline bool imageResource::saveFile(const std::wstring& filename) const {
-    const std::string&& file = ls::utils::convertWtoMb(filename);
-    return saveFile(file, img_file_t::IMG_FILE_PNG);
+inline bool ImageResource::save_file(const std::wstring& filename) const {
+    const std::string&& file = ls::utils::wide_to_mb_string(filename);
+    return save_file(file, img_file_t::IMG_FILE_PNG);
 }
 
 /*-------------------------------------
  * Get the pixel size of the currently loaded image
 -------------------------------------*/
-inline math::vec2i imageResource::getPixelSize() const {
+inline math::vec2i ImageResource::get_pixel_size() const {
     return imgSize;
 }
 
 /*-------------------------------------
  * Get the GPU-compatible format of the currently loaded image
 -------------------------------------*/
-inline color_type_t imageResource::getPixelType() const {
+inline color_type_t ImageResource::get_pixel_type() const {
     return pixelType;
 }
 
 /*-------------------------------------
  * Get the number of bits per pixel in the image.
 -------------------------------------*/
-inline unsigned imageResource::getBpp() const {
+inline unsigned ImageResource::get_bpp() const {
     return bitsPerPixel;
 }
 
 /*-------------------------------------
  * Get the OpenGL-compatible CPU-Side image format.
 -------------------------------------*/
-inline pixel_format_t imageResource::getInternalFormat() const {
+inline pixel_format_t ImageResource::get_internal_format() const {
     return intFormat;
 }
 
 /*-------------------------------------
  * Get the OpenGL-compatible GPU-Side image format.
 -------------------------------------*/
-inline pixel_layout_t imageResource::getExternalFormat() const {
+inline pixel_layout_t ImageResource::get_external_format() const {
     return extFormat;
 }
 

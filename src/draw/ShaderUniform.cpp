@@ -20,12 +20,12 @@ namespace draw {
  * Get active uniform info from a shader.
 -------------------------------------*/
 std::string get_shader_uniform_name(
-    const shaderProgram& prog,
+    const ShaderProgram& prog,
     const GLint index,
     GLint* const outVarSize,
     GLenum* const outVarType
 ) {
-    return prog.getAttribName(
+    return prog.get_attrib_name(
         vertex_attrib_t::UNIFORM_ATTRIB,
         index,
         outVarSize,
@@ -36,8 +36,8 @@ std::string get_shader_uniform_name(
 /*-------------------------------------
  * Get all shader uniform attributes.
 -------------------------------------*/
-std::vector<ShaderUniform> get_shader_uniforms(const shaderProgram& prog) {
-    return prog.getAttribs(vertex_attrib_t::UNIFORM_ATTRIB);
+std::vector<ShaderUniform> get_shader_uniforms(const ShaderProgram& prog) {
+    return prog.get_attribs(vertex_attrib_t::UNIFORM_ATTRIB);
 }
 
 } // end draw namespace

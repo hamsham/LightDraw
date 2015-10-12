@@ -215,42 +215,42 @@ bool setup_vertex_buffer_attribs(BufferObject& buf, const common_vertex_t attrib
     
     if (attribs & common_vertex_t::POSITION_VERTEX) {
         const vertex_data_t cmp = vertex_data_t::POSITION_VERTEX_TYPE;
-        setBufferAttrib(get_num_attrib_components(cmp), cmp, ls::draw::vertex_position);
+        setBufferAttrib(get_num_attrib_components(cmp), cmp, ls::draw::VERTEX_POSITION_NAME);
     }
     
     if (attribs & common_vertex_t::TEXTURE_VERTEX) {
         const vertex_data_t cmp = vertex_data_t::TEXTURE_VERTEX_TYPE;
-        setBufferAttrib(get_num_attrib_components(cmp), cmp, ls::draw::vertex_uv);
+        setBufferAttrib(get_num_attrib_components(cmp), cmp, ls::draw::VERTEX_UV_NAME);
     }
     
     if (attribs & common_vertex_t::NORMAL_VERTEX) {
         const vertex_data_t cmp = vertex_data_t::NORMAL_VERTEX_TYPE;
-        setBufferAttrib(get_num_attrib_components(cmp), cmp, ls::draw::vertex_normal);
+        setBufferAttrib(get_num_attrib_components(cmp), cmp, ls::draw::VERTEX_NORMAL_NAME);
     }
     
     if (attribs & common_vertex_t::TANGENT_VERTEX) {
         const vertex_data_t cmp = vertex_data_t::TANGENT_VERTEX_TYPE;
-        setBufferAttrib(get_num_attrib_components(cmp), cmp, ls::draw::vertex_tangent);
+        setBufferAttrib(get_num_attrib_components(cmp), cmp, ls::draw::VERTEX_TANGENT_NAME);
     }
     
     if (attribs & common_vertex_t::BITANGENT_VERTEX) {
         const vertex_data_t cmp = vertex_data_t::BITANGENT_VERTEX_TYPE;
-        setBufferAttrib(get_num_attrib_components(cmp), cmp, ls::draw::vertex_bitangent);
+        setBufferAttrib(get_num_attrib_components(cmp), cmp, ls::draw::VERTEX_BITANGENT_NAME);
     }
     
     if (attribs & common_vertex_t::MODEL_MAT_VERTEX) {
         const vertex_data_t cmp = vertex_data_t::MODEL_MAT_VERTEX_TYPE;
-        setBufferAttrib(get_num_attrib_components(cmp), cmp, ls::draw::vertex_model_matrix);
+        setBufferAttrib(get_num_attrib_components(cmp), cmp, ls::draw::VERTEX_MODEL_MAT_NAME);
     }
     
     if (attribs & common_vertex_t::BONE_ID_VERTEX) {
         const vertex_data_t cmp = vertex_data_t::BONE_ID_VERTEX_TYPE;
-        setBufferAttrib(get_num_attrib_components(cmp), cmp, ls::draw::vertex_boneId);
+        setBufferAttrib(get_num_attrib_components(cmp), cmp, ls::draw::VERTEX_BONE_ID_NAME);
     }
     
     if (attribs & common_vertex_t::BONE_WEIGHT_VERTEX) {
         const vertex_data_t cmp = vertex_data_t::BONE_WEIGHT_VERTEX_TYPE;
-        setBufferAttrib(get_num_attrib_components(cmp), cmp, ls::draw::vertex_bone_weight);
+        setBufferAttrib(get_num_attrib_components(cmp), cmp, ls::draw::VERTEX_BONE_WEIGHT_NAME);
     }
     
     return true;
@@ -260,7 +260,7 @@ bool setup_vertex_buffer_attribs(BufferObject& buf, const common_vertex_t attrib
  * Dynamically create the indxe attributes required for a BufferObject.
 -------------------------------------*/
 bool setup_index_buffer_attribs(BufferObject& buf, const index_element_t indexType) {
-    utils::pointer<VertexAttrib[]> pAttrib = nullptr;
+    utils::Pointer<VertexAttrib[]> pAttrib = nullptr;
     
     if (buf.numAttribs != 1) {
         pAttrib.reset(new(std::nothrow) VertexAttrib[1]);

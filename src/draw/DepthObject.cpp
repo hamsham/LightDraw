@@ -13,7 +13,7 @@ namespace draw {
 /*-------------------------------------
     Depth object binding
 -------------------------------------*/
-void depthObject::bind() const {
+void DepthObject::bind() const {
     if (enabled) {
         glEnable(GL_DEPTH_TEST);
     }
@@ -30,17 +30,17 @@ void depthObject::bind() const {
 /*-------------------------------------
     Disable OpenGL depth parameters
 -------------------------------------*/
-void depthObject::unbind() const {
+void DepthObject::unbind() const {
     // the default constructor already has default OpenGL params.
-    const depthObject depthObj{};
+    const DepthObject depthObj{};
     depthObj.bind();
 }
 
 /*-------------------------------------
     Reset all members to their default values.
 -------------------------------------*/
-void depthObject::reset() {
-    *this = depthObject{};
+void DepthObject::reset() {
+    *this = DepthObject{};
 }
 
 } // end draw namespace

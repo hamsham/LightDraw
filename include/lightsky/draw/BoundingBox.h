@@ -19,7 +19,7 @@ namespace draw {
  * The orientation for a bounding box follows OpenGL coordinates, where the
  * positive XYZ coordinates point towards the top, right, front of the viewport.
  */
-class boundingBox {
+class BoundingBox {
     private:
         math::vec3 topRearRight = {1.f, 1.f, 1.f};
         math::vec3 botFrontLeft = {-1.f, -1.f, -1.f};
@@ -28,7 +28,7 @@ class boundingBox {
         /**
          * @brief Constructor
          */
-        boundingBox();
+        BoundingBox();
         
         /**
          * @brief Copy Constructor
@@ -39,7 +39,7 @@ class boundingBox {
          * A constant reference to a fully constructed bounding box
          * object.
          */
-        boundingBox(const boundingBox& bb);
+        BoundingBox(const BoundingBox& bb);
         
         /**
          * @brief Move Constructor
@@ -48,14 +48,14 @@ class boundingBox {
          * 
          * @param An r-value reference to a fully constructed bounding box
          */
-        boundingBox(boundingBox&&);
+        BoundingBox(BoundingBox&&);
         
         /**
          * @brief Destructor
          * 
          * Defaulted
          */
-        ~boundingBox() = default;
+        ~BoundingBox() = default;
         
         /**
          * @brief Copy Operator
@@ -67,7 +67,7 @@ class boundingBox {
          * 
          * @return A reference to *this.
          */
-        boundingBox& operator=(const boundingBox&);
+        BoundingBox& operator=(const BoundingBox&);
         
         /**
          * @brief Move Operator
@@ -77,7 +77,7 @@ class boundingBox {
          * 
          * @return A reference to *this.
          */
-        boundingBox& operator=(boundingBox&&);
+        BoundingBox& operator=(BoundingBox&&);
         
         /**
          * @brief Check if a point is within this box.
@@ -86,7 +86,7 @@ class boundingBox {
          * 
          * @return TRUE if the point is within *this, or FALSE if otherwise.
          */
-        bool isInBox(const math::vec3&) const;
+        bool is_in_box(const math::vec3&) const;
         
         /**
          * Check if a portion of another bounding box is within *this.
@@ -96,7 +96,7 @@ class boundingBox {
          * @return TRUE if a portion of the bounding box is within *this, or
          * FALSE if it isn't.
          */
-        bool isInBox(const boundingBox&) const;
+        bool is_in_box(const BoundingBox&) const;
         
         /**
          * Set the top-rear-right point of this bounding box.
@@ -104,7 +104,7 @@ class boundingBox {
          * @param A constant reference to a point that will be used as the top,
          * rear, right point of this bounding box.
          */
-        void setTopRearRight(const math::vec3&);
+        void set_top_rear_right(const math::vec3&);
         
         /**
          * Get the top-rear-right point of this bounding box.
@@ -112,7 +112,7 @@ class boundingBox {
          * @return A constant reference to the top, rear, right point of this
          * bounding box.
          */
-        const math::vec3& getTopRearRight() const;
+        const math::vec3& get_top_rear_right() const;
         
         /**
          * Set the bottom, front, left point of this bounding box.
@@ -120,7 +120,7 @@ class boundingBox {
          * @param A constant reference to a point that will be used as the
          * bottom, front, left point of this bounding box.
          */
-        void setBotFrontLeft(const math::vec3&);
+        void set_bot_front_left(const math::vec3&);
         
         /**
          * Get the bottom, front, left point of this bounding box.
@@ -128,12 +128,12 @@ class boundingBox {
          * @return A constant reference to the bottom, front, left point of this
          * bounding box.
          */
-        const math::vec3& getBotFrontLeft() const;
+        const math::vec3& get_bot_front_left() const;
         
         /**
          * Reset the bounds of this bounding box to their default values.
          */
-        void resetSize();
+        void reset_size();
         
         /**
          * Compare a point to the current set of vertices.
@@ -144,41 +144,41 @@ class boundingBox {
          * A point who's individual components should be used to update the
          * size of this bounding box.
          */
-        void compareAndUpdate(const math::vec3& point);
+        void compare_and_update(const math::vec3& point);
 };
 
 /*-------------------------------------
     Check if a point is within this box.
 -------------------------------------*/
-inline bool boundingBox::isInBox(const boundingBox& bb) const {
-    return isInBox(bb.topRearRight) || isInBox(bb.botFrontLeft);
+inline bool BoundingBox::is_in_box(const BoundingBox& bb) const {
+    return is_in_box(bb.topRearRight) || is_in_box(bb.botFrontLeft);
 }
 
 /*-------------------------------------
     Set the top-rear-right point of this bounding box.
 -------------------------------------*/
-inline void boundingBox::setTopRearRight(const math::vec3& v) {
+inline void BoundingBox::set_top_rear_right(const math::vec3& v) {
     topRearRight = v;
 }
 
 /*-------------------------------------
     Get the top-rear-right point of this bounding box.
 -------------------------------------*/
-inline const math::vec3& boundingBox::getTopRearRight() const {
+inline const math::vec3& BoundingBox::get_top_rear_right() const {
     return topRearRight;
 }
 
 /*-------------------------------------
     Set the bottom, front, left point of this bounding box.
 -------------------------------------*/
-inline void boundingBox::setBotFrontLeft(const math::vec3& v) {
+inline void BoundingBox::set_bot_front_left(const math::vec3& v) {
     botFrontLeft = v;
 }
 
 /*-------------------------------------
     Get the bottom, front, left point of this bounding box.
 -------------------------------------*/
-inline const math::vec3& boundingBox::getBotFrontLeft() const {
+inline const math::vec3& BoundingBox::get_bot_front_left() const {
     return botFrontLeft;
 }
 

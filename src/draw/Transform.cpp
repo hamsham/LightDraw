@@ -12,13 +12,13 @@ namespace draw {
 /*-------------------------------------
  * Destructor
 -------------------------------------*/
-transform::~transform() {
+Transform::~Transform() {
 }
 
 /*-------------------------------------
  * Constructor
 -------------------------------------*/
-transform::transform() :
+Transform::Transform() :
     dirtyFlag{false},
     position{0.f},
     scaling{1.f},
@@ -29,14 +29,14 @@ transform::transform() :
 /*-------------------------------------
  * Matrix Constructor
 -------------------------------------*/
-transform::transform(const math::mat4& modelMat) {
-    extractTransforms(modelMat);
+Transform::Transform(const math::mat4& modelMat) {
+    extract_transforms(modelMat);
 }
 
 /*-------------------------------------
  * Copy Constructor
 -------------------------------------*/
-transform::transform(const transform& t) :
+Transform::Transform(const Transform& t) :
     dirtyFlag{t.dirtyFlag},
     position{t.position},
     scaling{t.scaling},
@@ -47,7 +47,7 @@ transform::transform(const transform& t) :
 /*-------------------------------------
  * Move Constructor
 -------------------------------------*/
-transform::transform(transform&& t) :
+Transform::Transform(Transform&& t) :
     dirtyFlag{t.dirtyFlag},
     position{std::move(t.position)},
     scaling{std::move(t.scaling)},
@@ -58,7 +58,7 @@ transform::transform(transform&& t) :
 /*-------------------------------------
  * Copy Operator
 -------------------------------------*/
-transform& transform::operator=(const transform& t) {
+Transform& Transform::operator=(const Transform& t) {
     dirtyFlag = t.dirtyFlag;
     position = t.position;
     scaling = t.scaling;
@@ -71,7 +71,7 @@ transform& transform::operator=(const transform& t) {
 /*-------------------------------------
  * Move Operator
 -------------------------------------*/
-transform& transform::operator=(transform&& t) {
+Transform& Transform::operator=(Transform&& t) {
     dirtyFlag = t.dirtyFlag;
     position = std::move(t.position);
     scaling = std::move(t.scaling);
@@ -87,12 +87,12 @@ transform& transform::operator=(transform&& t) {
 /*-------------------------------------
  * Adjust the position
 -------------------------------------*/
-void transform::move(const math::vec3& deltaPos, bool relative) {
+void Transform::move(const math::vec3& deltaPos, bool relative) {
     if (relative == false) {
         const math::vec3&& translation = {
-            math::dot(math::getAxisX(orientation), deltaPos),
-            math::dot(math::getAxisY(orientation), deltaPos),
-            math::dot(math::getAxisZ(orientation), deltaPos)
+            math::dot(math::get_x_axis(orientation), deltaPos),
+            math::dot(math::get_y_axis(orientation), deltaPos),
+            math::dot(math::get_z_axis(orientation), deltaPos)
         };
         position += translation;
     }
@@ -106,7 +106,7 @@ void transform::move(const math::vec3& deltaPos, bool relative) {
 /*-------------------------------------
  * Set the position
 -------------------------------------*/
-void transform::setPosition(const math::vec3& newPos) {
+void Transform::set_position(const math::vec3& newPos) {
     position = newPos;
     dirtyFlag = true;
 }
@@ -117,7 +117,7 @@ void transform::setPosition(const math::vec3& newPos) {
 /*-------------------------------------
  * Adjust the scaling
 -------------------------------------*/
-void transform::scale(const math::vec3& deltaScale) {
+void Transform::scale(const math::vec3& deltaScale) {
     scaling += deltaScale;
     dirtyFlag = true;
 }
@@ -125,7 +125,7 @@ void transform::scale(const math::vec3& deltaScale) {
 /*-------------------------------------
  * Set the scaling
 -------------------------------------*/
-void transform::setScale(const math::vec3& newScale) {
+void Transform::set_scale(const math::vec3& newScale) {
     scaling = newScale;
     dirtyFlag = true;
 }
@@ -136,7 +136,7 @@ void transform::setScale(const math::vec3& newScale) {
 /*-------------------------------------
  * Adjust the orientation
 -------------------------------------*/
-void transform::rotate(const math::quat& deltaRotation) {
+void Transform::rotate(const math::quat& deltaRotation) {
     orientation = math::normalize(orientation * deltaRotation);
     dirtyFlag = true;
 }
@@ -144,7 +144,7 @@ void transform::rotate(const math::quat& deltaRotation) {
 /*-------------------------------------
  * Set the orientation
 -------------------------------------*/
-void transform::setOrientation(const math::quat& newRotation) {
+void Transform::set_orientation(const math::quat& newRotation) {
     orientation = newRotation;
     dirtyFlag = true;
 }
@@ -155,31 +155,31 @@ void transform::setOrientation(const math::quat& newRotation) {
 /*-------------------------------------
  * Apply all transformations to the model matrix
 -------------------------------------*/
-void transform::applyTransforms(bool useSRT) {
-    modelMatrix = useSRT ? getSRTMatrix() : getSTRMatrix();
+void Transform::apply_transform(bool useSRT) {
+    modelMatrix = useSRT ? get_srt_matrix() : get_str_matrix();
     dirtyFlag = false;
 }
 
 /*-------------------------------------
  * Pre-transform the matrix
 -------------------------------------*/
-void transform::applyPreTransforms(const math::mat4& deltaTransform, bool useSRT) {
-    applyTransforms(useSRT);
+void Transform::apply_pre_transforms(const math::mat4& deltaTransform, bool useSRT) {
+    apply_transform(useSRT);
     modelMatrix = modelMatrix * deltaTransform;
 }
 
 /*-------------------------------------
  * Post-transform the matrix
 -------------------------------------*/
-void transform::applyPostTransforms(const math::mat4& deltaTransform, bool useSRT) {
-    applyTransforms(useSRT);
+void Transform::apply_post_transforms(const math::mat4& deltaTransform, bool useSRT) {
+    apply_transform(useSRT);
     modelMatrix = deltaTransform * modelMatrix;
 }
 
 /*-------------------------------------
  * Extract the transformation parameters
 -------------------------------------*/
-void transform::extractTransforms(const math::mat4& newTransform) {
+void Transform::extract_transforms(const math::mat4& newTransform) {
     position[0] = newTransform[3][0];
     position[1] = newTransform[3][1];
     position[2] = newTransform[3][2];
@@ -200,7 +200,7 @@ void transform::extractTransforms(const math::mat4& newTransform) {
     if (scaling[1]) {rotationMatrix[1] /= scaling[1];}
     if (scaling[2]) {rotationMatrix[2] /= scaling[2];}
     
-    orientation = math::matToQuat(rotationMatrix);
+    orientation = math::mat_to_quat(rotationMatrix);
 
     dirtyFlag = true;
 }
@@ -208,7 +208,7 @@ void transform::extractTransforms(const math::mat4& newTransform) {
 /*-------------------------------------
  * Generate a SRT matrix for use in *this
 -------------------------------------*/
-math::mat4 transform::getSRTMatrix() const {
+math::mat4 Transform::get_srt_matrix() const {
     return
         math::mat4{
         scaling[0], 0.f, 0.f, 0.f,
@@ -217,13 +217,13 @@ math::mat4 transform::getSRTMatrix() const {
         position[0],position[1],position[2], 1.f
     }
     *
-    math::quatToMat4(orientation);
+    math::quat_to_mat4(orientation);
 }
 
 /*-------------------------------------
  * Generate a TRS Matrix
 -------------------------------------*/
-math::mat4 transform::getSTRMatrix() const {
+math::mat4 Transform::get_str_matrix() const {
     return
     math::mat4{
         scaling[0], 0.f, 0.f, 0.f,
@@ -232,7 +232,7 @@ math::mat4 transform::getSTRMatrix() const {
         0.f, 0.f, 0.f, 1.f
     }
     *
-    math::quatToMat4(orientation)
+    math::quat_to_mat4(orientation)
     *
     math::mat4{
         1.f, 0.f, 0.f, 0.f,

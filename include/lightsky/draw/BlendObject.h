@@ -85,7 +85,7 @@ enum blend_func_color_t : int {
 /**----------------------------------------------------------------------------
  * The blend object manages the current blend state within OpenGL.
 -----------------------------------------------------------------------------*/
-class blendObject {
+class BlendObject {
     private:
         /**
          * Determine if blending should be enabled or disabled. If blending is
@@ -140,7 +140,7 @@ class blendObject {
          * Creates an blendObject using the default OpenGL blending
          * parameters.
          */
-        blendObject() = default;
+        BlendObject() = default;
         
         /**
          * @brief Copy Constructor
@@ -149,7 +149,7 @@ class blendObject {
          * 
          * @param A constant reference to another blendObject.
          */
-        blendObject(const blendObject&) = default;
+        BlendObject(const BlendObject&) = default;
         
         /**
          * @brief Move Constructor
@@ -158,14 +158,14 @@ class blendObject {
          * 
          * @param A constant reference to another blendObject.
          */
-        blendObject(blendObject&&) = default;
+        BlendObject(BlendObject&&) = default;
         
         /**
          * @brief Destructor
          * 
          * Does nothing.
          */
-        ~blendObject() = default;
+        ~BlendObject() = default;
         
         /**
          * @brief Copy Operator
@@ -175,7 +175,7 @@ class blendObject {
          * @param An R-Value reference to another blendObject that is about
          * to go out of scope.
          */
-        blendObject& operator=(const blendObject&) = default;
+        BlendObject& operator=(const BlendObject&) = default;
         
         /**
          * @brief Move Operator
@@ -185,7 +185,7 @@ class blendObject {
          * @param An R-Value reference to another blendObject that is about
          * to go out of scope.
          */
-        blendObject& operator=(blendObject&&) = default;
+        BlendObject& operator=(BlendObject&&) = default;
         
         /**
          * Enable blending in OpenGL and apply all stored parameters (blending
@@ -216,7 +216,7 @@ class blendObject {
          * A boolean value that will determine if OpenGL should have blending
          * enabled or disabled.
          */
-        void setState(bool = GL_FALSE);
+        void set_state(bool = GL_FALSE);
         
         /**
          * Determine whether this blending object should tell OpenGL to enable
@@ -226,7 +226,7 @@ class blendObject {
          * A boolean value that will determine if OpenGL should have blending
          * enabled or disabled.
          */
-        bool getState() const;
+        bool get_state() const;
         
         /**
          * Set the blending equation to be used within OpenGL.
@@ -234,7 +234,7 @@ class blendObject {
          * @param rgbaMode
          * The blend equation that OpenGL should use internally.
          */
-        void setBlendEquation(blend_equ_t rgbaMode = BLEND_EQU_ADD);
+        void set_blend_equation(blend_equ_t rgbaMode = BLEND_EQU_ADD);
         
         /**
          * Set the OpenGL blending equation, but with different values for RGB
@@ -246,7 +246,7 @@ class blendObject {
          * @param alphaMode
          * The blending equation for the alpha channel.
          */
-        void setBlendEquation(
+        void set_blend_equation(
             blend_equ_t rgbMode = BLEND_EQU_ADD,
             blend_equ_t alphaMode = BLEND_EQU_ADD
         );
@@ -256,14 +256,14 @@ class blendObject {
          * 
          * @return blend_eq_t
          */
-        blend_equ_t getBlendEquationRgb() const;
+        blend_equ_t get_blend_eqation_rgb() const;
         
         /**
          * Get the blending equation for the alpha channel.
          * 
          * @return blend_eq_t
          */
-        blend_equ_t getBlendEquationAlpha() const;
+        blend_equ_t get_blend_equation_alpha() const;
         
         /**
          * Set the source and destination blending function.
@@ -274,7 +274,7 @@ class blendObject {
          * @param dstFactor
          * The blending equation for the destination RGBA channels.
          */
-        void setBlendFunction(
+        void set_blend_function(
             blend_func_t srcFactor = BLEND_FNC_ONE,
             blend_func_t dstFactor = BLEND_FNC_ZERO
         );
@@ -295,7 +295,7 @@ class blendObject {
          * @param dstFactorAlpha
          * The blending function for the destination alpha channel.
          */
-        void setBlendFunction(
+        void set_blend_function(
             blend_func_t srcFactorRgb = BLEND_FNC_ONE,
             blend_func_t dstFactorRgb = BLEND_FNC_ZERO,
             blend_func_t srcFactorAlpha = BLEND_FNC_ONE,
@@ -307,28 +307,28 @@ class blendObject {
          * 
          * @return blend_equ_color_t
          */
-        blend_func_t getBlendFunctionSrcRgb() const;
+        blend_func_t get_blend_function_src_rgb() const;
         
         /**
          * Get the current blend function from the source alpha channel
          * 
          * @return blend_equ_color_t
          */
-        blend_func_t getBlendFunctionSrcAlpha() const;
+        blend_func_t get_blend_function_src_alpha() const;
         
         /**
          * Get the current blend function from the destination RGB channel
          * 
          * @return blend_equ_color_t
          */
-        blend_func_t getBlendFunctionDstRgb() const;
+        blend_func_t get_blend_function_dst_rgb() const;
         
         /**
          * Get the current blend function from the destination alpha channel
          * 
          * @return blend_equ_color_t
          */
-        blend_func_t getBlendFunctionDstAlpha() const;
+        blend_func_t get_blend_function_dst_alpha() const;
         
         /**
          * Set the color that OpenGL should use for blending
@@ -337,7 +337,7 @@ class blendObject {
          * A constant reference to an color that should be used during
          * blending operations within OpenGL.
          */
-        void setBlendColor(const color::color& rgba = color::blank);
+        void set_blend_color(const color::color& rgba = color::blank);
         
         /**
          * Get the current color that OpenGL is using for blending operations.
@@ -345,14 +345,14 @@ class blendObject {
          * @return a group of four floating-point numbers, representing the
          * RGBA colors that OpenGL is using for blending.
          */
-        color::color getBlendColor() const;
+        color::color get_blend_color() const;
 };
 
 /*-------------------------------------
     Set whether blending should be enabled or disabled in the current rendering
     state.
 -------------------------------------*/
-inline void blendObject::setState(bool state) {
+inline void BlendObject::set_state(bool state) {
     enabled = state;
 }
 
@@ -360,21 +360,21 @@ inline void blendObject::setState(bool state) {
     Determine whether this blending object should tell OpenGL to enable or
     disable the use of blending.
 -------------------------------------*/
-inline bool blendObject::getState() const {
+inline bool BlendObject::get_state() const {
     return enabled;
 }
 
 /*-------------------------------------
     Set the blend Equation
 -------------------------------------*/
-inline void blendObject::setBlendEquation(blend_equ_t rgbaMode) {
-    setBlendEquation(rgbaMode, rgbaMode);
+inline void BlendObject::set_blend_equation(blend_equ_t rgbaMode) {
+    set_blend_equation(rgbaMode, rgbaMode);
 }
 
 /*-------------------------------------
     Set the blend Equation but with different values for RGB and Alpha
 -------------------------------------*/
-inline void blendObject::setBlendEquation(blend_equ_t rgbMode, blend_equ_t alphaMode) {
+inline void BlendObject::set_blend_equation(blend_equ_t rgbMode, blend_equ_t alphaMode) {
     rgbBlendEq = rgbMode;
     alphaBlendEq = alphaMode;
 }
@@ -382,31 +382,31 @@ inline void blendObject::setBlendEquation(blend_equ_t rgbMode, blend_equ_t alpha
 /*-------------------------------------
     Get the blending equation for the RGB channels.
 -------------------------------------*/
-inline blend_equ_t blendObject::getBlendEquationRgb() const {
+inline blend_equ_t BlendObject::get_blend_eqation_rgb() const {
     return rgbBlendEq;
 }
 
 /*-------------------------------------
     Get the blending equation for the alpha channel.
 -------------------------------------*/
-inline blend_equ_t blendObject::getBlendEquationAlpha() const {
+inline blend_equ_t BlendObject::get_blend_equation_alpha() const {
     return alphaBlendEq;
 }
 
 /*-------------------------------------
     Set the source and destination blending function/
 -------------------------------------*/
-inline void blendObject::setBlendFunction(
+inline void BlendObject::set_blend_function(
     blend_func_t srcFactor, blend_func_t dstFactor
 ) {
-    setBlendFunction(srcFactor, dstFactor, srcFactor, dstFactor);
+    set_blend_function(srcFactor, dstFactor, srcFactor, dstFactor);
 }
 
 /*-------------------------------------
     Set the source and destination blending function, with separate RGB
     and alpha functions.
 -------------------------------------*/
-inline void blendObject::setBlendFunction(
+inline void BlendObject::set_blend_function(
     blend_func_t srcRgb,     blend_func_t dstRgb,
     blend_func_t srcAlpha,   blend_func_t dstAlpha
 ) {
@@ -419,42 +419,42 @@ inline void blendObject::setBlendFunction(
 /*-------------------------------------
     Get the current blend function from the source RGB channel
 -------------------------------------*/
-inline blend_func_t blendObject::getBlendFunctionSrcRgb() const {
+inline blend_func_t BlendObject::get_blend_function_src_rgb() const {
     return srcRgbBlendFunc;
 }
 
 /*-------------------------------------
     Get the current blend function from the source alpha channel
 -------------------------------------*/
-inline blend_func_t blendObject::getBlendFunctionSrcAlpha() const {
+inline blend_func_t BlendObject::get_blend_function_src_alpha() const {
     return srcAlphaBlendFunc;
 }
 
 /*-------------------------------------
     Get the current blend function from the destination RGB channel
 -------------------------------------*/
-inline blend_func_t blendObject::getBlendFunctionDstRgb() const {
+inline blend_func_t BlendObject::get_blend_function_dst_rgb() const {
     return dstRgbBlendFunc;
 }
 
 /*-------------------------------------
     Get the current blend function from the destination alpha channel
 -------------------------------------*/
-inline blend_func_t blendObject::getBlendFunctionDstAlpha() const {
+inline blend_func_t BlendObject::get_blend_function_dst_alpha() const {
     return dstAlphaBlendFunc;
 }
 
 /*-------------------------------------
     Set the color that should be used for blending operations in OpenGL.
 -------------------------------------*/
-inline void blendObject::setBlendColor(const color::color& rgba) {
+inline void BlendObject::set_blend_color(const color::color& rgba) {
     blendCol = rgba;
 }
 
 /*-------------------------------------
     Get the current color that OpenGL is using for blending operations.
 -------------------------------------*/
-inline color::color blendObject::getBlendColor() const {
+inline color::color BlendObject::get_blend_color() const {
     return blendCol;
 }
 

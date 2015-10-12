@@ -15,29 +15,29 @@ namespace draw {
 /*-------------------------------------
     FBO Error handling
 -------------------------------------*/
-void framebuffer::printStatus(const framebuffer& fbo) {
+void FrameBuffer::print_status(const FrameBuffer& fbo) {
     LOG_GL_ERR();
     
-    const fbo_status_t err = getStatus(fbo);
+    const fbo_status_t err = get_status(fbo);
     
     switch (err) {
         case FBO_COMPLETE:
-            LS_LOG_MSG("Framebuffer ", fbo.getId(), " completed.");
+            LS_LOG_MSG("Framebuffer ", fbo.gpu_id(), " completed.");
             break;
         case FBO_UNDEFINED:
-            LS_LOG_ERR("Framebuffer ", fbo.getId(), " undefined.");
+            LS_LOG_ERR("Framebuffer ", fbo.gpu_id(), " undefined.");
             break;
         case FBO_INCOMPLETE_ATTACHMENT:
-            LS_LOG_ERR("Framebuffer ", fbo.getId(), " contains an incomplete attachment.");
+            LS_LOG_ERR("Framebuffer ", fbo.gpu_id(), " contains an incomplete attachment.");
             break;
         case FBO_INCOMPLETE_MISSING_ATTACHMENT:
-            LS_LOG_ERR("Framebuffer ", fbo.getId(), " is missing attachments.");
+            LS_LOG_ERR("Framebuffer ", fbo.gpu_id(), " is missing attachments.");
             break;
         case FBO_UNSUPPORTED:
-            LS_LOG_ERR("Framebuffer ", fbo.getId(), " uses unsupported formats.");
+            LS_LOG_ERR("Framebuffer ", fbo.gpu_id(), " uses unsupported formats.");
             break;
         case FBO_INCOMPLETE_MULTISAMPLE:
-            LS_LOG_ERR("Framebuffer ", fbo.getId(), " uses alternating samples.");
+            LS_LOG_ERR("Framebuffer ", fbo.gpu_id(), " uses alternating samples.");
             break;
     }
 }
@@ -45,36 +45,36 @@ void framebuffer::printStatus(const framebuffer& fbo) {
 /*-------------------------------------
     Move constructor
 -------------------------------------*/
-framebuffer::framebuffer(framebuffer&& fb) :
+FrameBuffer::FrameBuffer(FrameBuffer&& fb) :
     access{fb.access},
-    fboId{fb.fboId}
+    gpuId{fb.gpuId}
 {
     fb.access = FBO_ACCESS_RW;
-    fb.fboId = 0;
+    fb.gpuId = 0;
 }
 
 /*-------------------------------------
     Destructor
 -------------------------------------*/
-framebuffer::~framebuffer() {
+FrameBuffer::~FrameBuffer() {
     terminate();
 }
 
 /*-------------------------------------
     constructor
 -------------------------------------*/
-framebuffer::framebuffer() {
+FrameBuffer::FrameBuffer() {
 }
 
 /*-------------------------------------
     Move operator
 -------------------------------------*/
-framebuffer& framebuffer::operator=(framebuffer&& fb) {
+FrameBuffer& FrameBuffer::operator=(FrameBuffer&& fb) {
     access = fb.access;
     fb.access = FBO_ACCESS_RW;
     
-    fboId = fb.fboId;
-    fb.fboId = 0;
+    gpuId = fb.gpuId;
+    fb.gpuId = 0;
     
     return *this;
 }
@@ -82,33 +82,33 @@ framebuffer& framebuffer::operator=(framebuffer&& fb) {
 /*-------------------------------------
     Initialization
 -------------------------------------*/
-bool framebuffer::init() {
+bool FrameBuffer::init() {
     terminate();
-    glGenFramebuffers(1, &fboId);
-    return fboId != 0;
+    glGenFramebuffers(1, &gpuId);
+    return gpuId != 0;
 }
 
 /*-------------------------------------
     Termination
 -------------------------------------*/
-void framebuffer::terminate() {
+void FrameBuffer::terminate() {
     access = FBO_ACCESS_RW;
-    glDeleteFramebuffers(1, &fboId);
-    fboId = 0;
+    glDeleteFramebuffers(1, &gpuId);
+    gpuId = 0;
 }
 
 /*-------------------------------------
     Attach a texture to the currently bound framebuffer
 -------------------------------------*/
-void framebuffer::attachRenderTarget(
+void FrameBuffer::attach_render_target(
     fbo_attach_t attachment,
     texture_target_t target,
-    const texture& tex,
+    const Texture& tex,
     int mipmapLevel,
     int layer
 ) {
-    const tex_desc_t desc = tex.getTexType();
-    const unsigned texId = tex.getId();
+    const tex_desc_t desc = tex.get_texture_type();
+    const unsigned texId = tex.gpu_id();
     
     if (desc == TEX_DESC_2D) {
         glFramebufferTexture2D(access, attachment, target, texId, mipmapLevel);
@@ -125,15 +125,15 @@ void framebuffer::attachRenderTarget(
 /*-------------------------------------
     Attach a texture to the currently bound framebuffer
 -------------------------------------*/
-void framebuffer::attachRenderTarget(fbo_attach_t attachment, const texture& tex) {
-    const tex_desc_t desc = tex.getTexType();
+void FrameBuffer::attach_render_target(fbo_attach_t attachment, const Texture& tex) {
+    const tex_desc_t desc = tex.get_texture_type();
     
     if (desc == TEX_DESC_2D) {
-        attachRenderTarget(attachment, texture_target_t::FBO_2D_TARGET, tex);
+        attach_render_target(attachment, texture_target_t::FBO_2D_TARGET, tex);
         return;
     }
     else if (desc == TEX_DESC_3D || desc == TEX_DESC_2D_ARRAY || desc == TEX_DESC_CUBE) {
-        attachRenderTarget(attachment, texture_target_t::FBO_3D_TARGET, tex);
+        attach_render_target(attachment, texture_target_t::FBO_3D_TARGET, tex);
         return;
     }
     else {
@@ -144,8 +144,8 @@ void framebuffer::attachRenderTarget(fbo_attach_t attachment, const texture& tex
 /*-------------------------------------
     Attach a renderbuffer to the currently bound framebuffer
 -------------------------------------*/
-void framebuffer::attachRenderTarget(fbo_attach_t attachment, const renderbuffer& rbo) {
-    const unsigned rboId = rbo.getId();
+void FrameBuffer::attach_render_target(fbo_attach_t attachment, const RenderBuffer& rbo) {
+    const unsigned rboId = rbo.gpu_id();
     glFramebufferRenderbuffer(access, attachment, GL_RENDERBUFFER, rboId);
     LOG_GL_ERR();
 }

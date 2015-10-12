@@ -123,7 +123,7 @@ enum pixel_format_t : int {
  * @return A pixel_layout_t which can be used for the "format" parameter of
  * OpenGL texture objects.
  */
-pixel_layout_t getColorLayout(pixel_format_t internalFormat);
+pixel_layout_t get_color_layout(pixel_format_t internalFormat);
 
 /*-----------------------------------------------------------------------------
     Useful Typedefs

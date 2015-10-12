@@ -13,7 +13,7 @@ namespace draw {
 /*-------------------------------------
     Enable blending and apply blend parameters to OpenGL.
 -------------------------------------*/
-void blendObject::bind() const {
+void BlendObject::bind() const {
     if (!enabled) {
         glDisable(BLEND_STATE);
         return;
@@ -31,17 +31,17 @@ void blendObject::bind() const {
 /*
  * Disable OpenGL blending
  */
-void blendObject::unbind() const {
+void BlendObject::unbind() const {
     // the default constructor already has default OpenGL params.
-    blendObject blender{};
+    BlendObject blender{};
     blender.bind();
 }
 
 /*
  * Reset all members to their default values.
  */
-void blendObject::reset() {
-    *this = blendObject{};
+void BlendObject::reset() {
+    *this = BlendObject{};
 }
 
 } // end draw namespace

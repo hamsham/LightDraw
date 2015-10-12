@@ -7,32 +7,32 @@ namespace draw {
 /*-------------------------------------
  * Destructor
 -------------------------------------*/
-renderbuffer::~renderbuffer() {
+RenderBuffer::~RenderBuffer() {
     terminate();
 }
 
 /*-------------------------------------
  * Constructor
 -------------------------------------*/
-renderbuffer::renderbuffer() :
-    rboId{0}
+RenderBuffer::RenderBuffer() :
+    gpuId{0}
 {}
 
 /*-------------------------------------
  * Move Constructor
 -------------------------------------*/
-renderbuffer::renderbuffer(renderbuffer&& rbo) :
-    rboId{rbo.rboId}
+RenderBuffer::RenderBuffer(RenderBuffer&& rbo) :
+    gpuId{rbo.gpuId}
 {
-    rbo.rboId = 0;
+    rbo.gpuId = 0;
 }
 
 /*-------------------------------------
  * Move Operator
 -------------------------------------*/
-renderbuffer& renderbuffer::operator =(renderbuffer&& rbo) {
-    rboId = rbo.rboId;
-    rbo.rboId = 0;
+RenderBuffer& RenderBuffer::operator =(RenderBuffer&& rbo) {
+    gpuId = rbo.gpuId;
+    rbo.gpuId = 0;
 
     return *this;
 }
@@ -40,12 +40,12 @@ renderbuffer& renderbuffer::operator =(renderbuffer&& rbo) {
 /*-------------------------------------
  * Initialize a renderbuffer
 -------------------------------------*/
-bool renderbuffer::init() {
-    if (!rboId) {
-        glGenRenderbuffers(1, &rboId);
+bool RenderBuffer::init() {
+    if (!gpuId) {
+        glGenRenderbuffers(1, &gpuId);
         LOG_GL_ERR();
 
-        if (rboId == 0) {
+        if (gpuId == 0) {
             LS_LOG_ERR("Unable to generate a renderbuffer object");
             return false;
         }
@@ -57,7 +57,7 @@ bool renderbuffer::init() {
 /*-------------------------------------
  * Initialize a renderbuffer with storage
 -------------------------------------*/
-bool renderbuffer::init(rbo_format_t internalFormat, const math::vec2i& size) {
+bool RenderBuffer::init(rbo_format_t internalFormat, const math::vec2i& size) {
     // render buffers cannot be resized unless first deleted.
     terminate();
 
@@ -65,7 +65,7 @@ bool renderbuffer::init(rbo_format_t internalFormat, const math::vec2i& size) {
         return false;
     }
 
-    glBindRenderbuffer(GL_RENDERBUFFER, rboId);
+    glBindRenderbuffer(GL_RENDERBUFFER, gpuId);
     LOG_GL_ERR();
 
     glRenderbufferStorage(GL_RENDERBUFFER, internalFormat, size[0], size[1]);
@@ -77,10 +77,10 @@ bool renderbuffer::init(rbo_format_t internalFormat, const math::vec2i& size) {
 /*-------------------------------------
  * Release resources
 -------------------------------------*/
-void renderbuffer::terminate() {
-    if (rboId) {
-        glDeleteRenderbuffers(1, &rboId);
-        rboId = 0;
+void RenderBuffer::terminate() {
+    if (gpuId) {
+        glDeleteRenderbuffers(1, &gpuId);
+        gpuId = 0;
     }
 }
 

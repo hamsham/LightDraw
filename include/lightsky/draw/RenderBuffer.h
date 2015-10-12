@@ -63,27 +63,27 @@ enum rbo_format_t : int {
  * to render off-screen. This is useful for framebuffer operations which
  * will not be returned back to the CPU (such as for depth or stencil functions.
 -----------------------------------------------------------------------------*/
-class renderbuffer {
+class RenderBuffer {
     private:
         /**
          * @brief rboId
          *
          * A handle to the GPU-side render buffer object.
          */
-        unsigned rboId;
+        unsigned gpuId;
 
     public:
         /**
          * @brief
          */
-        ~renderbuffer();
+        ~RenderBuffer();
 
         /**
          * @brief Constructor
          *
          * Initializes all local variables.
          */
-        renderbuffer();
+        RenderBuffer();
 
         /**
          * @brief Copy Constructor -- DELETED
@@ -92,7 +92,7 @@ class renderbuffer {
          * Their content is always filled by the framebuffer which contains
          * them.
          */
-        renderbuffer(const renderbuffer&) = delete;
+        RenderBuffer(const RenderBuffer&) = delete;
 
         /**
          * @brief Move Constructor
@@ -104,7 +104,7 @@ class renderbuffer {
          * An r-value reference to a renderbuffer object who's GPU handle will
          * be transferred into *this.
          */
-        renderbuffer(renderbuffer&& rbo);
+        RenderBuffer(RenderBuffer&& rbo);
 
         /**
          * @brief Copy Operator -- DELETED
@@ -113,7 +113,7 @@ class renderbuffer {
          * Their content is always filled by the framebuffer which contains
          * them.
          */
-        renderbuffer& operator=(const renderbuffer&) = delete;
+        RenderBuffer& operator=(const RenderBuffer&) = delete;
 
         /**
          * @brief Move Operator
@@ -127,7 +127,7 @@ class renderbuffer {
          *
          * @return A reference to *this.
          */
-        renderbuffer& operator=(renderbuffer&& rbo);
+        RenderBuffer& operator=(RenderBuffer&& rbo);
 
         /**
          * Get the GPU-Assigned ID that this object references.
@@ -136,7 +136,7 @@ class renderbuffer {
          * renderbuffer object represented by this object. This value returns 0
          * if nothing is referenced by *this.
          */
-        unsigned getId() const;
+        unsigned gpu_id() const;
 
         /**
          * Bind the current renderbuffer to OpenGL
@@ -181,21 +181,21 @@ class renderbuffer {
 /*-------------------------------------
  * Get the GPU-Assigned ID that this object references.
 -------------------------------------*/
-inline unsigned renderbuffer::getId() const {
-    return rboId;
+inline unsigned RenderBuffer::gpu_id() const {
+    return gpuId;
 }
 
 /*-------------------------------------
  * Bind the current renderbuffer to OpenGL
 -------------------------------------*/
-inline void renderbuffer::bind() const {
-    glBindFramebuffer(GL_RENDERBUFFER, rboId);
+inline void RenderBuffer::bind() const {
+    glBindFramebuffer(GL_RENDERBUFFER, gpuId);
 }
 
 /*-------------------------------------
  * Unbind the current renderbuffer to OpenGL
 -------------------------------------*/
-inline void renderbuffer::unbind() const {
+inline void RenderBuffer::unbind() const {
     glBindRenderbuffer(GL_RENDERBUFFER, 0);
 }
 

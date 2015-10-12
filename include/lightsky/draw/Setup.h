@@ -37,8 +37,9 @@
     /*#include <GLES3/gl2ext.h>*/
     #include <GLES3/gl3ext.h>
 #else
-    #undef GL_GLEXT_PROTOTYPES
-    #include "lightsky/draw/lsgl.h"
+    #include <GL/gl.h>
+    #include <GL/glext.h>
+    #include <GL/wglext.h>
 
 #endif
 

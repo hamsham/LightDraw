@@ -22,7 +22,7 @@ namespace draw {
  * Forward Declarations
 -----------------------------------------------------------------------------*/
 enum vertex_data_t : GLenum;
-class shaderProgram;
+class ShaderProgram;
 
 /**----------------------------------------------------------------------------
  * @brief Vertex Attrib Types
@@ -69,7 +69,7 @@ struct VertexAttrib {
  * 
 -------------------------------------*/
 std::string get_attrib_shader_name(
-    const shaderProgram& prog,
+    const ShaderProgram& prog,
     const GLint index,
     GLint* const outVarSize,
     GLenum* const outVarType

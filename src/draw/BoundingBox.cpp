@@ -15,13 +15,13 @@ namespace draw {
 /*-------------------------------------
     Constructor
 -------------------------------------*/
-boundingBox::boundingBox() {
+BoundingBox::BoundingBox() {
 }
 
 /*
     Copy Constructor
 -------------------------------------*/
-boundingBox::boundingBox(const boundingBox& bb) :
+BoundingBox::BoundingBox(const BoundingBox& bb) :
     topRearRight{bb.topRearRight},
     botFrontLeft{bb.botFrontLeft}
 {}
@@ -29,17 +29,17 @@ boundingBox::boundingBox(const boundingBox& bb) :
 /*-------------------------------------
     Move Constructor
 -------------------------------------*/
-boundingBox::boundingBox(boundingBox&& bb) :
+BoundingBox::BoundingBox(BoundingBox&& bb) :
     topRearRight{std::move(bb.topRearRight)},
     botFrontLeft{std::move(bb.botFrontLeft)}
 {
-    bb.resetSize();
+    bb.reset_size();
 }
 
 /*-------------------------------------
     Copy Operator
 -------------------------------------*/
-boundingBox& boundingBox::operator=(const boundingBox& bb) {
+BoundingBox& BoundingBox::operator=(const BoundingBox& bb) {
     topRearRight = bb.topRearRight;
     botFrontLeft = bb.botFrontLeft;
     
@@ -49,11 +49,11 @@ boundingBox& boundingBox::operator=(const boundingBox& bb) {
 /*-------------------------------------
     Move Operator
 -------------------------------------*/
-boundingBox& boundingBox::operator =(boundingBox&& bb) {
+BoundingBox& BoundingBox::operator =(BoundingBox&& bb) {
     topRearRight = std::move(bb.topRearRight);
     botFrontLeft = std::move(bb.botFrontLeft);
     
-    bb.resetSize();
+    bb.reset_size();
     
     return *this;
 }
@@ -61,7 +61,7 @@ boundingBox& boundingBox::operator =(boundingBox&& bb) {
 /*-------------------------------------
     Check if a portion of another bounding box is within *this.
 -------------------------------------*/
-bool boundingBox::isInBox(const math::vec3& v) const {
+bool BoundingBox::is_in_box(const math::vec3& v) const {
     return
     v[0] <= topRearRight[0] && v[1] <= topRearRight[1] && v[2] <= topRearRight[2]
     &&
@@ -71,15 +71,15 @@ bool boundingBox::isInBox(const math::vec3& v) const {
 /*-------------------------------------
     Reset the bounds of this bounding box to their default values.
 -------------------------------------*/
-void boundingBox::resetSize() {
-    setTopRearRight(math::vec3{1.f, 1.f, 1.f});
-    setBotFrontLeft(math::vec3{-1.f, -1.f, -1.f});
+void BoundingBox::reset_size() {
+    set_top_rear_right(math::vec3{1.f, 1.f, 1.f});
+    set_bot_front_left(math::vec3{-1.f, -1.f, -1.f});
 }
 
 /*-------------------------------------
     Compare a point to the current set of vertices.
 -------------------------------------*/
-void boundingBox::compareAndUpdate(const math::vec3& point) {
+void BoundingBox::compare_and_update(const math::vec3& point) {
     math::vec3& trr = topRearRight;
     if (point[0] > trr[0]) {trr[0] = point[0];}
     if (point[1] > trr[1]) {trr[1] = point[1];}

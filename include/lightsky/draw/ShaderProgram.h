@@ -29,7 +29,7 @@ struct VertexAttrib;
  * Represents a combination of OpenGL vertex, fragment, and geometry shader
  * objects.
 -----------------------------------------------------------------------------*/
-class shaderProgram {
+class ShaderProgram {
     private:
         /**
          * A handle to the GPU-side shader program within OpenGL.
@@ -40,12 +40,12 @@ class shaderProgram {
         /**
          * @brief Constructor
          */
-        shaderProgram();
+        ShaderProgram();
         
         /**
          * @brief Copy Constructor -- Deleted
          */
-        shaderProgram(const shaderProgram&) = delete;
+        ShaderProgram(const ShaderProgram&) = delete;
         
         /**
          * @brief Move Constructor
@@ -56,12 +56,12 @@ class shaderProgram {
          * @param sp
          * A, r-value reference to a shader program object to move into *this.
          */
-        shaderProgram(shaderProgram&& sp);
+        ShaderProgram(ShaderProgram&& sp);
         
         /**
          * @brief Copy Operator -- Deleted
          */
-        shaderProgram& operator=(const shaderProgram&) = delete;
+        ShaderProgram& operator=(const ShaderProgram&) = delete;
         
         /**
          * @brief Move Operator
@@ -74,14 +74,14 @@ class shaderProgram {
          * 
          * @return A reference to *this
          */
-        shaderProgram& operator=(shaderProgram&& sp);
+        ShaderProgram& operator=(ShaderProgram&& sp);
         
         /**
          * @brief Destructor
          * 
          * Destroy this object and free any GPU memory it uses.
          */
-        ~shaderProgram();
+        ~ShaderProgram();
         
         /**
          * Free all memory used by this shader object.
@@ -118,7 +118,7 @@ class shaderProgram {
          * @return An unsigned integral type, identifying the shader program
          * used by OpenGL.
          */
-        unsigned getId() const;
+        unsigned gpu_id() const;
         
         /**
          * Bind this program to the current context
@@ -140,7 +140,7 @@ class shaderProgram {
          * @param name
          * The exact name of the vertex array attribute in *this to bind.
          */
-        void bindAttribLocation(GLuint index, const GLchar* const name) const;
+        void bind_attrib_location(GLuint index, const GLchar* const name) const;
         
         /**
          * Get the location of a vertex attribute
@@ -153,7 +153,7 @@ class shaderProgram {
          * A positive value to indicate the attribute's location in OpenGL or
          * -1 for an invalid index.
          */
-        GLint getAttribLocation(const GLchar* const name) const;
+        GLint get_attrib_location(const GLchar* const name) const;
         
         /**
          * @brief Get information about an active uniform located in a shader.
@@ -178,7 +178,7 @@ class shaderProgram {
          * shader.
          * 
          */
-        std::string getAttribName(
+        std::string get_attrib_name(
             const vertex_attrib_t attribType,
             const GLint index,
             GLint* const outVarSize,
@@ -198,7 +198,7 @@ class shaderProgram {
          * @return A std::vector of std::string objects, containing the names of all
          * shader attributes or uniforms within the input program object.
          */
-        std::vector<VertexAttrib> getAttribs(const vertex_attrib_t attribType) const;
+        std::vector<VertexAttrib> get_attribs(const vertex_attrib_t attribType) const;
         
         /**
          * Get the location of a uniform variable.
@@ -207,7 +207,7 @@ class shaderProgram {
          * A positive value to indicate the uniform's location in OpenGL or
          * -1 for an invalid uniform index.
          */
-        GLint getUniformLocation(const GLchar* const name) const;
+        GLint get_uniform_location(const GLchar* const name) const;
         
         /**
          * Get information about an active uniform located in a shader.
@@ -225,166 +225,166 @@ class shaderProgram {
          * source code.
          * 
          */
-        std::string getUniformName(int index, GLint* const varSize, GLenum* const varType) const;
+        std::string get_uniform_name(int index, GLint* const varSize, GLenum* const varType) const;
         
         /**
          * Set a single uniform integer variable
          */
-        void setUniformValue(GLint uniformId, int val) const;
+        void set_uniform_value(GLint uniformId, int val) const;
         
         /**
          * Set two uniform integer variables
          */
-        void setUniformValue(GLint uniformId, int val0, int val1) const;
+        void set_uniform_value(GLint uniformId, int val0, int val1) const;
         
         /**
          * Set three uniform integer variables
          */
-        void setUniformValue(GLint uniformId, int val0, int val1, int val2) const;
+        void set_uniform_value(GLint uniformId, int val0, int val1, int val2) const;
         
         /**
          * Set four uniform integer variables
          */
-        void setUniformValue(GLint uniformId, int val0, int val1, int val2, int val3) const;
+        void set_uniform_value(GLint uniformId, int val0, int val1, int val2, int val3) const;
         
         /**
          * Set a uniform 2d vector of integers
          */
-        void setUniformValue(GLint uniformId, const math::vec2i& val) const;
+        void set_uniform_value(GLint uniformId, const math::vec2i& val) const;
         
         /**
          * Set a uniform 3d vector of integers
          */
-        void setUniformValue(GLint uniformId, const math::vec3i& val) const;
+        void set_uniform_value(GLint uniformId, const math::vec3i& val) const;
         
         /**
          * Set a uniform 4d vector of integers
          */
-        void setUniformValue(GLint uniformId, const math::vec4i& val) const;
+        void set_uniform_value(GLint uniformId, const math::vec4i& val) const;
         
         /**
          * Set a single uniform unsigned int variable
          */
-        void setUniformValue(GLint uniformId, unsigned val) const;
+        void set_uniform_value(GLint uniformId, unsigned val) const;
         
         /**
          * Set two uniform unsigned int variables
          */
-        void setUniformValue(GLint uniformId, unsigned val0, unsigned val1) const;
+        void set_uniform_value(GLint uniformId, unsigned val0, unsigned val1) const;
         
         /**
          * Set three uniform unsigned int variables
          */
-        void setUniformValue(GLint uniformId, unsigned val0, unsigned val1, unsigned val2) const;
+        void set_uniform_value(GLint uniformId, unsigned val0, unsigned val1, unsigned val2) const;
         
         /**
          * Set four uniform unsigned int variables
          */
-        void setUniformValue(GLint uniformId, unsigned val0, unsigned val1, unsigned val2, unsigned val3) const;
+        void set_uniform_value(GLint uniformId, unsigned val0, unsigned val1, unsigned val2, unsigned val3) const;
         
         /**
          * Set a uniform 2d vector of unsigned ints
          */
-        void setUniformValue(GLint uniformId, const math::vec2ui& val) const;
+        void set_uniform_value(GLint uniformId, const math::vec2ui& val) const;
         
         /**
          * Set a uniform 3d vector of unsigned ints
          */
-        void setUniformValue(GLint uniformId, const math::vec3ui& val) const;
+        void set_uniform_value(GLint uniformId, const math::vec3ui& val) const;
         
         /**
          * Set a uniform 4d vector of unsigned ints
          */
-        void setUniformValue(GLint uniformId, const math::vec4ui& val) const;
+        void set_uniform_value(GLint uniformId, const math::vec4ui& val) const;
         
         /**
          * Set a single uniform float variable
          */
-        void setUniformValue(GLint uniformId, float val) const;
+        void set_uniform_value(GLint uniformId, float val) const;
         
         /**
          * Set two uniform float variables
          */
-        void setUniformValue(GLint uniformId, float val0, float val1) const;
+        void set_uniform_value(GLint uniformId, float val0, float val1) const;
         
         /**
          * Set three uniform float variables
          */
-        void setUniformValue(GLint uniformId, float val0, float val1, float val2) const;
+        void set_uniform_value(GLint uniformId, float val0, float val1, float val2) const;
         
         /**
          * Set four uniform float variables
          */
-        void setUniformValue(GLint uniformId, float val0, float val1, float val2, float val3) const;
+        void set_uniform_value(GLint uniformId, float val0, float val1, float val2, float val3) const;
         
         /**
          * Set a uniform 2d vector of floats
          */
-        void setUniformValue(GLint uniformId, const math::vec2& val) const;
+        void set_uniform_value(GLint uniformId, const math::vec2& val) const;
         
         /**
          * Set a uniform 3d vector of floats
          */
-        void setUniformValue(GLint uniformId, const math::vec3& val) const;
+        void set_uniform_value(GLint uniformId, const math::vec3& val) const;
         
         /**
          * Set a uniform 4d vector of floats
          */
-        void setUniformValue(GLint uniformId, const math::vec4& val) const;
+        void set_uniform_value(GLint uniformId, const math::vec4& val) const;
         
         /**
          * Set a uniform 2d matrix
          */
-        void setUniformValue(GLint uniformId, const math::mat2& val, bool transpose = false) const;
+        void set_uniform_value(GLint uniformId, const math::mat2& val, bool transpose = false) const;
         
         /**
          * Set a uniform 3d matrix
          */
-        void setUniformValue(GLint uniformId, const math::mat3& val, bool transpose = false) const;
+        void set_uniform_value(GLint uniformId, const math::mat3& val, bool transpose = false) const;
         
         /**
          * Set a uniform 4d matrix
          */
-        void setUniformValue(GLint uniformId, const math::mat4& val, bool transpose = false) const;
+        void set_uniform_value(GLint uniformId, const math::mat4& val, bool transpose = false) const;
         
         /**
          * Query the bindings of color numbers to user-defined varying out variables
          */
-        GLint getFragDataLocation(const GLchar* const name) const;
+        GLint get_frag_data_location(const GLchar* const name) const;
 };
 
 /*-------------------------------------
     Get the OpenGL ID used by *this.
 -------------------------------------*/
-inline unsigned shaderProgram::getId() const {
+inline unsigned ShaderProgram::gpu_id() const {
     return gpuId;
 }
 
 /*-------------------------------------
     Bind this program to the current context
 -------------------------------------*/
-inline void shaderProgram::bind() const {
+inline void ShaderProgram::bind() const {
     glUseProgram(gpuId);
 }
 
 /*-------------------------------------
     Unbind this program from the context.
 -------------------------------------*/
-inline void shaderProgram::unbind() const {
+inline void ShaderProgram::unbind() const {
     glUseProgram(0);
 }
 
 /*-------------------------------------
     Bind a vertex attribute to a shader
 -------------------------------------*/
-inline void shaderProgram::bindAttribLocation(GLuint index, const GLchar* const name) const {
+inline void ShaderProgram::bind_attrib_location(GLuint index, const GLchar* const name) const {
     glBindAttribLocation(gpuId, index, name);
 }
 
 /*-------------------------------------
     Get the location of a vert6ex attribute
 -------------------------------------*/
-inline GLint shaderProgram::getAttribLocation(const GLchar* const name) const {
+inline GLint ShaderProgram::get_attrib_location(const GLchar* const name) const {
     return glGetAttribLocation(gpuId, name);
 }
 
@@ -395,182 +395,182 @@ inline GLint shaderProgram::getAttribLocation(const GLchar* const name) const {
     A positive value to indicate the uniform's location in OpenGL or
     -1 for an invalid uniform index.
 -------------------------------------*/
-inline GLint shaderProgram::getUniformLocation(const GLchar* const name) const {
+inline GLint ShaderProgram::get_uniform_location(const GLchar* const name) const {
     return glGetUniformLocation(gpuId, name);
 }
 
 /*-------------------------------------
     Set a single uniform integer variable
 -------------------------------------*/
-inline void shaderProgram::setUniformValue(GLint uniformId, int val) const {
+inline void ShaderProgram::set_uniform_value(GLint uniformId, int val) const {
     glUniform1i(uniformId, val);
 }
 
 /*-------------------------------------
     Set two uniform integer variables
 -------------------------------------*/
-inline void shaderProgram::setUniformValue(GLint uniformId, int val0, int val1) const {
+inline void ShaderProgram::set_uniform_value(GLint uniformId, int val0, int val1) const {
     glUniform2i(uniformId, val0, val1);
 }
 
 /*-------------------------------------
     Set three uniform integer variables
 -------------------------------------*/
-inline void shaderProgram::setUniformValue(GLint uniformId, int val0, int val1, int val2) const {
+inline void ShaderProgram::set_uniform_value(GLint uniformId, int val0, int val1, int val2) const {
     glUniform3i(uniformId, val0, val1, val2);
 }
 
 /*-------------------------------------
     Set four uniform integer variables
 -------------------------------------*/
-inline void shaderProgram::setUniformValue(GLint uniformId, int val0, int val1, int val2, int val3) const {
+inline void ShaderProgram::set_uniform_value(GLint uniformId, int val0, int val1, int val2, int val3) const {
     glUniform4i(uniformId, val0, val1, val2, val3);
 }
 
 /*-------------------------------------
     Set a uniform 2d vector of integers
 -------------------------------------*/
-inline void shaderProgram::setUniformValue(GLint uniformId, const math::vec2i& val) const {
+inline void ShaderProgram::set_uniform_value(GLint uniformId, const math::vec2i& val) const {
     glUniform2iv(uniformId, 1, val.v);
 }
 
 /*-------------------------------------
     Set a uniform 3d vector of integers
 -------------------------------------*/
-inline void shaderProgram::setUniformValue(GLint uniformId, const math::vec3i& val) const {
+inline void ShaderProgram::set_uniform_value(GLint uniformId, const math::vec3i& val) const {
     glUniform3iv(uniformId, 1, val.v);
 }
 
 /*-------------------------------------
     Set a uniform 4d vector of integers
 -------------------------------------*/
-inline void shaderProgram::setUniformValue(GLint uniformId, const math::vec4i& val) const {
+inline void ShaderProgram::set_uniform_value(GLint uniformId, const math::vec4i& val) const {
     glUniform4iv(uniformId, 1, val.v);
 }
 
 /*-------------------------------------
     Set a single uniform unsigned int variable
 -------------------------------------*/
-inline void shaderProgram::setUniformValue(GLint uniformId, unsigned val) const {
+inline void ShaderProgram::set_uniform_value(GLint uniformId, unsigned val) const {
     glUniform1ui(uniformId, val);
 }
 
 /*-------------------------------------
     Set two uniform unsigned int variables
 -------------------------------------*/
-inline void shaderProgram::setUniformValue(GLint uniformId, unsigned val0, unsigned val1) const {
+inline void ShaderProgram::set_uniform_value(GLint uniformId, unsigned val0, unsigned val1) const {
     glUniform2ui(uniformId, val0, val1);
 }
 
 /*-------------------------------------
     Set three uniform unsigned int variables
 -------------------------------------*/
-inline void shaderProgram::setUniformValue(GLint uniformId, unsigned val0, unsigned val1, unsigned val2) const {
+inline void ShaderProgram::set_uniform_value(GLint uniformId, unsigned val0, unsigned val1, unsigned val2) const {
     glUniform3ui(uniformId, val0, val1, val2);
 }
 
 /*-------------------------------------
     Set four uniform unsigned int variables
 -------------------------------------*/
-inline void shaderProgram::setUniformValue(GLint uniformId, unsigned val0, unsigned val1, unsigned val2, unsigned val3) const {
+inline void ShaderProgram::set_uniform_value(GLint uniformId, unsigned val0, unsigned val1, unsigned val2, unsigned val3) const {
     glUniform4ui(uniformId, val0, val1, val2, val3);
 }
 
 /*-------------------------------------
     Set a uniform 2d vector of unsigned ints
 -------------------------------------*/
-inline void shaderProgram::setUniformValue(GLint uniformId, const math::vec2ui& val) const {
+inline void ShaderProgram::set_uniform_value(GLint uniformId, const math::vec2ui& val) const {
     glUniform2uiv(uniformId, 1, val.v);
 }
 
 /*-------------------------------------
     Set a uniform 3d vector of unsigned ints
 -------------------------------------*/
-inline void shaderProgram::setUniformValue(GLint uniformId, const math::vec3ui& val) const {
+inline void ShaderProgram::set_uniform_value(GLint uniformId, const math::vec3ui& val) const {
     glUniform3uiv(uniformId, 1, val.v);
 }
 
 /*-------------------------------------
     Set a uniform 4d vector of unsigned ints
 -------------------------------------*/
-inline void shaderProgram::setUniformValue(GLint uniformId, const math::vec4ui& val) const {
+inline void ShaderProgram::set_uniform_value(GLint uniformId, const math::vec4ui& val) const {
     glUniform4uiv(uniformId, 1, val.v);
 }
 
 /*-------------------------------------
     Set a single uniform float variable
 -------------------------------------*/
-inline void shaderProgram::setUniformValue(GLint uniformId, float val) const {
+inline void ShaderProgram::set_uniform_value(GLint uniformId, float val) const {
     glUniform1f(uniformId, val);
 }
 
 /*-------------------------------------
     Set two uniform float variables
 -------------------------------------*/
-inline void shaderProgram::setUniformValue(GLint uniformId, float val0, float val1) const {
+inline void ShaderProgram::set_uniform_value(GLint uniformId, float val0, float val1) const {
     glUniform2f(uniformId, val0, val1);
 }
 
 /*-------------------------------------
     Set three uniform float variables
 -------------------------------------*/
-inline void shaderProgram::setUniformValue(GLint uniformId, float val0, float val1, float val2) const {
+inline void ShaderProgram::set_uniform_value(GLint uniformId, float val0, float val1, float val2) const {
     glUniform3f(uniformId, val0, val1, val2);
 }
 
 /*-------------------------------------
     Set four uniform float variables
 -------------------------------------*/
-inline void shaderProgram::setUniformValue(GLint uniformId, float val0, float val1, float val2, float val3) const {
+inline void ShaderProgram::set_uniform_value(GLint uniformId, float val0, float val1, float val2, float val3) const {
     glUniform4f(uniformId, val0, val1, val2, val3);
 }
 
 /*-------------------------------------
     Set a uniform 2d vector of floats
 -------------------------------------*/
-inline void shaderProgram::setUniformValue(GLint uniformId, const math::vec2& val) const {
+inline void ShaderProgram::set_uniform_value(GLint uniformId, const math::vec2& val) const {
     glUniform2fv(uniformId, 1, val.v);
 }
 
 /*-------------------------------------
     Set a uniform 3d vector of floats
 -------------------------------------*/
-inline void shaderProgram::setUniformValue(GLint uniformId, const math::vec3& val) const {
+inline void ShaderProgram::set_uniform_value(GLint uniformId, const math::vec3& val) const {
     glUniform3fv(uniformId, 1, val.v);
 }
 
 /*-------------------------------------
     Set a uniform 4d vector of floats
 -------------------------------------*/
-inline void shaderProgram::setUniformValue(GLint uniformId, const math::vec4& val) const {
+inline void ShaderProgram::set_uniform_value(GLint uniformId, const math::vec4& val) const {
     glUniform4fv(uniformId, 1, val.v);
 }
 
 /*-------------------------------------
     Set a uniform 2d matrix
 -------------------------------------*/
-inline void shaderProgram::setUniformValue(GLint uniformId, const math::mat2& val, bool transpose) const {
+inline void ShaderProgram::set_uniform_value(GLint uniformId, const math::mat2& val, bool transpose) const {
     glUniformMatrix2fv(uniformId, 1, transpose ? GL_TRUE : GL_FALSE, &val[0]);
 }
 
 /*-------------------------------------
     Set a uniform 3d matrix
 -------------------------------------*/
-inline void shaderProgram::setUniformValue(GLint uniformId, const math::mat3& val, bool transpose) const {
+inline void ShaderProgram::set_uniform_value(GLint uniformId, const math::mat3& val, bool transpose) const {
     glUniformMatrix3fv(uniformId, 1, transpose ? GL_TRUE : GL_FALSE, &val[0]);
 }
 
 /*-------------------------------------
     Set a uniform 4d matrix
 -------------------------------------*/
-inline void shaderProgram::setUniformValue(GLint uniformId, const math::mat4& val, bool transpose) const {
+inline void ShaderProgram::set_uniform_value(GLint uniformId, const math::mat4& val, bool transpose) const {
     glUniformMatrix4fv(uniformId, 1, transpose ? GL_TRUE : GL_FALSE, &val[0]);
 }
 
 /*-------------------------------------
     Query the bindings of color numbers to user-defined varying out variables
 -------------------------------------*/
-inline GLint shaderProgram::getFragDataLocation(const GLchar* const name) const {
+inline GLint ShaderProgram::get_frag_data_location(const GLchar* const name) const {
     return glGetFragDataLocation(gpuId, name);
 }
 

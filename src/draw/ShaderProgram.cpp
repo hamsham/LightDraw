@@ -16,14 +16,14 @@ namespace draw {
 /*-------------------------------------
     Constructor
 -------------------------------------*/
-shaderProgram::shaderProgram() :
+ShaderProgram::ShaderProgram() :
     gpuId{0}
 {}
 
 /*-------------------------------------
     Move Constructor
 -------------------------------------*/
-shaderProgram::shaderProgram(shaderProgram&& sp) :
+ShaderProgram::ShaderProgram(ShaderProgram&& sp) :
     gpuId{sp.gpuId}
 {
     sp.gpuId = 0;
@@ -32,14 +32,14 @@ shaderProgram::shaderProgram(shaderProgram&& sp) :
 /*-------------------------------------
     Destructor
 -------------------------------------*/
-shaderProgram::~shaderProgram() {
+ShaderProgram::~ShaderProgram() {
     terminate();
 }
 
 /*-------------------------------------
     Move Operator
 -------------------------------------*/
-shaderProgram& shaderProgram::operator=(shaderProgram&& sp) {
+ShaderProgram& ShaderProgram::operator=(ShaderProgram&& sp) {
     gpuId = sp.gpuId;
     sp.gpuId = 0;
     return *this;
@@ -48,7 +48,7 @@ shaderProgram& shaderProgram::operator=(shaderProgram&& sp) {
 /*-------------------------------------
     Termination
 -------------------------------------*/
-void shaderProgram::terminate() {
+void ShaderProgram::terminate() {
     glDeleteProgram(gpuId);
     gpuId = 0;
 }
@@ -56,7 +56,7 @@ void shaderProgram::terminate() {
 /*-------------------------------------
     Attaching Shaders
 -------------------------------------*/
-bool shaderProgram::init(
+bool ShaderProgram::init(
     const vertexShader& vs,
     const fragmentShader& fs
 ) {
@@ -71,8 +71,8 @@ bool shaderProgram::init(
         }
     }
     
-    glAttachShader(gpuId, vs.objectId);
-    glAttachShader(gpuId, fs.objectId);
+    glAttachShader(gpuId, vs.gpuId);
+    glAttachShader(gpuId, fs.gpuId);
     
     return true;
 }
@@ -80,7 +80,7 @@ bool shaderProgram::init(
 /*-------------------------------------
     Linking
 -------------------------------------*/
-bool shaderProgram::link() {
+bool ShaderProgram::link() {
     GLint linkResult = 0;
     
     glLinkProgram(gpuId);
@@ -108,7 +108,7 @@ bool shaderProgram::link() {
 /*-------------------------------------
  * Shader Uniform information
 -------------------------------------*/
-std::string shaderProgram::getAttribName(
+std::string ShaderProgram::get_attrib_name(
     const vertex_attrib_t attribType,
     const GLint index,
     GLint* const outVarSize,
@@ -144,21 +144,20 @@ std::string shaderProgram::getAttribName(
 /*-------------------------------------
  * Get all shader uniform names
 -------------------------------------*/
-std::vector<VertexAttrib> shaderProgram::getAttribs(const vertex_attrib_t attribType) const {
+std::vector<VertexAttrib> ShaderProgram::get_attribs(const vertex_attrib_t attribType) const {
     const GLenum paramType = attribType == vertex_attrib_t::UNIFORM_ATTRIB
         ? GL_ACTIVE_UNIFORMS
         : GL_ACTIVE_ATTRIBUTES;
     GLint total = 0;
     glGetProgramiv(gpuId, paramType, &total);
     
-    std::vector<VertexAttrib> ret;
-    ret.reserve((unsigned)total);
+    std::vector<VertexAttrib> ret{(unsigned)total};
+    
     
     for (int i = 0; i < total; ++i) {
-        ret.emplace_back(VertexAttrib{});
-        VertexAttrib& attrib = ret.back();
+        VertexAttrib& attrib = ret[i];
         
-        attrib.name = std::move(getAttribName(
+        attrib.name = std::move(get_attrib_name(
             attribType, i, &attrib.components, (GLenum*)&attrib.type
         ));
     }
@@ -169,7 +168,7 @@ std::vector<VertexAttrib> shaderProgram::getAttribs(const vertex_attrib_t attrib
 /*-------------------------------------
     Uniform information
 -------------------------------------*/
-std::string shaderProgram::getUniformName(
+std::string ShaderProgram::get_uniform_name(
     int index,
     GLint* const varSize,
     GLenum* const varType

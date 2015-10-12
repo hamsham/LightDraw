@@ -37,7 +37,7 @@ namespace draw {
 /*-------------------------------------
  * Deduce an image's file format
 -------------------------------------*/
-FREE_IMAGE_FORMAT deduceImageFormat(const std::string& filename) {
+FREE_IMAGE_FORMAT deduce_img_format(const std::string& filename) {
 	FREE_IMAGE_FORMAT outFormat = FreeImage_GetFileType(filename.c_str(), 0);
 	if (outFormat == FIF_UNKNOWN) {
 		outFormat = FreeImage_GetFIFFromFilename(filename.c_str());
@@ -48,7 +48,7 @@ FREE_IMAGE_FORMAT deduceImageFormat(const std::string& filename) {
 /*-------------------------------------
  * Predefined image flags
 -------------------------------------*/
-int getImageFlags(FREE_IMAGE_FORMAT inFormat) {
+int get_img_flags(FREE_IMAGE_FORMAT inFormat) {
 	switch(inFormat) {
 		case FIF_JPEG:  return JPEG_ACCURATE;
 		case FIF_TARGA: return TARGA_LOAD_RGB888;
@@ -60,7 +60,7 @@ int getImageFlags(FREE_IMAGE_FORMAT inFormat) {
 /*-------------------------------------
  * Get an image's pixel format, combined with its bits per pixel
 -------------------------------------*/
-color_type_t getBitmapSize(FIBITMAP* pImg) {
+color_type_t get_bitmap_size(FIBITMAP* pImg) {
     // Get the data type of the image. Convert to an internal format
     const int storageType = FreeImage_GetImageType(pImg);
     color_type_t dataType = COLOR_TYPE_DEFAULT;
@@ -119,7 +119,7 @@ color_type_t getBitmapSize(FIBITMAP* pImg) {
     return dataType;
 }
 
-void getPixelFormat(
+void get_pixel_format(
     FIBITMAP* pImg,
     unsigned bpp,
     pixel_format_t& intFmt,
@@ -194,15 +194,15 @@ void getPixelFormat(
 /*-------------------------------------
     Constructor
 -------------------------------------*/
-imageResource::imageResource() :
-    resource{}
+ImageResource::ImageResource() :
+    Resource{}
 {}
 
 /*-------------------------------------
  * Move Constructor
 -------------------------------------*/
-imageResource::imageResource(imageResource&& img) :
-    resource{}
+ImageResource::ImageResource(ImageResource&& img) :
+    Resource{}
 {
     this->operator =(std::move(img));
 }
@@ -210,14 +210,14 @@ imageResource::imageResource(imageResource&& img) :
 /*-------------------------------------
  * Destructor
 -------------------------------------*/
-imageResource::~imageResource() {
+ImageResource::~ImageResource() {
     unload();
 }
 
 /*-------------------------------------
  * Move operator
 -------------------------------------*/
-imageResource& imageResource::operator =(imageResource&& img) {
+ImageResource& ImageResource::operator =(ImageResource&& img) {
     // Resolve movement for the base class members first
     unload();
     
@@ -247,7 +247,7 @@ imageResource& imageResource::operator =(imageResource&& img) {
 /*-------------------------------------
  * Loading
 -------------------------------------*/
-bool imageResource::loadFile(const std::string& filename) {
+bool ImageResource::load_file(const std::string& filename) {
     LS_LOG_MSG("Attempting to load the image ", filename);
     unload();
     
@@ -260,7 +260,7 @@ bool imageResource::loadFile(const std::string& filename) {
     FreeImage_SetOutputMessage(&printImageLoadError);
     
     // Determine the file type that should be loaded
-    FREE_IMAGE_FORMAT fileFormat = deduceImageFormat(filename.c_str());
+    FREE_IMAGE_FORMAT fileFormat = deduce_img_format(filename.c_str());
     
     if (fileFormat == FIF_UNKNOWN) {
         LS_LOG_ERR("\tUnable to determine the file type for ", filename, ".\n");
@@ -278,7 +278,7 @@ bool imageResource::loadFile(const std::string& filename) {
     // Preliminary setup passed. Attempt to load the file data
     
     // Use some predefined image flags
-    const int fileFlags = getImageFlags(fileFormat);
+    const int fileFlags = get_img_flags(fileFormat);
     FIBITMAP* fileData = FreeImage_Load(fileFormat, filename.c_str(), fileFlags);
     
     if (!fileData) {
@@ -289,7 +289,7 @@ bool imageResource::loadFile(const std::string& filename) {
         return false;
     }
     
-    const color_type_t dataType = getBitmapSize(fileData);
+    const color_type_t dataType = get_bitmap_size(fileData);
     if (dataType == COLOR_TYPE_INVALID) {
         LS_LOG_ERR('\t', filename, " contains an unsupported pixel format.\n");
         FreeImage_Unload(fileData);
@@ -303,7 +303,7 @@ bool imageResource::loadFile(const std::string& filename) {
     this->pixelType     = dataType;
     this->dataSize      = this->imgSize[0] * this->imgSize[1];
     
-    getPixelFormat(fileData, this->bitsPerPixel, intFormat, extFormat);
+    get_pixel_format(fileData, this->bitsPerPixel, intFormat, extFormat);
     
     LS_LOG_MSG("\tSuccessfully loaded ", filename, ".\n");
     
@@ -313,7 +313,7 @@ bool imageResource::loadFile(const std::string& filename) {
 /*-------------------------------------
  * Unloading
 -------------------------------------*/
-void imageResource::unload() {
+void ImageResource::unload() {
     if (pData == nullptr) {
         return;
     }
@@ -332,7 +332,7 @@ void imageResource::unload() {
 /*-------------------------------------
  * saving
 -------------------------------------*/
-bool imageResource::saveFile(const std::string& filename, img_file_t format) const {
+bool ImageResource::save_file(const std::string& filename, img_file_t format) const {
     if (this->pData == nullptr) {
         return false;
     }
@@ -362,7 +362,7 @@ bool imageResource::saveFile(const std::string& filename, img_file_t format) con
 /*-------------------------------------
  * Get the data stored in pData
 -------------------------------------*/
-void* imageResource::getData() const {
+void* ImageResource::get_data() const {
     return (void*) FreeImage_GetBits(reinterpret_cast<FIBITMAP*>(pData));
 }
 

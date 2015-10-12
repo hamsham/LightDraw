@@ -13,39 +13,39 @@ namespace draw {
 /*-------------------------------------
     Constructor
 -------------------------------------*/
-texture::texture(tex_desc_t td) :
+Texture::Texture(tex_desc_t td) :
     dimensions{td},
-    texId{0},
+    gpuId{0},
     slot{tex_slot_t::TEXTURE_SLOT_DEFAULT}
 {}
 
 /*-------------------------------------
     Move Constructor
 -------------------------------------*/
-texture::texture(texture&& t) :
+Texture::Texture(Texture&& t) :
     dimensions{t.dimensions},
-    texId{t.texId},
+    gpuId{t.gpuId},
     slot{t.slot}
 {
-    t.texId = 0;
+    t.gpuId = 0;
     t.slot = tex_slot_t::TEXTURE_SLOT_DEFAULT;
 }
         
 /*-------------------------------------*
     Destructor
 -------------------------------------*/
-texture::~texture() {
+Texture::~Texture() {
     terminate();
 }
 
 /*-------------------------------------
     Move Operator
 -------------------------------------*/
-texture& texture::operator=(texture&& t) {
+Texture& Texture::operator=(Texture&& t) {
     LS_DEBUG_ASSERT(t.dimensions == dimensions);
     
-    texId = t.texId;
-    t.texId = 0;
+    gpuId = t.gpuId;
+    t.gpuId = 0;
     
     slot = t.slot;
     t.slot = tex_slot_t::TEXTURE_SLOT_DEFAULT;
@@ -56,12 +56,12 @@ texture& texture::operator=(texture&& t) {
 /*-------------------------------------
     Create an OpenGL texture with no data.
 -------------------------------------*/
-bool texture::init() {
-    if (!texId) {
-        glGenTextures(1, &texId);
+bool Texture::init() {
+    if (!gpuId) {
+        glGenTextures(1, &gpuId);
         LOG_GL_ERR();
         
-        if (texId == 0) {
+        if (gpuId == 0) {
             LS_LOG_ERR("Unable to generate a texture object");
             return false;
         }
@@ -73,31 +73,31 @@ bool texture::init() {
 /*-------------------------------------
     Load 1D Textures
 -------------------------------------*/
-bool texture::init(pixel_format_t internalFormat, int size) {
-    const pixel_layout_t layout = getColorLayout(internalFormat);
+bool Texture::init(pixel_format_t internalFormat, int size) {
+    const pixel_layout_t layout = get_color_layout(internalFormat);
     return init(0, internalFormat, size, layout, color_type_t::COLOR_TYPE_DEFAULT, nullptr);
 }
 
 /*-------------------------------------
     Load 2D Textures
 -------------------------------------*/
-bool texture::init(pixel_format_t internalFormat, const math::vec2i& size) {
-    const pixel_layout_t layout = getColorLayout(internalFormat);
+bool Texture::init(pixel_format_t internalFormat, const math::vec2i& size) {
+    const pixel_layout_t layout = get_color_layout(internalFormat);
     return init(0, internalFormat, size, layout, color_type_t::COLOR_TYPE_DEFAULT, nullptr);
 }
 
 /*-------------------------------------
     Load 3D Textures
 -------------------------------------*/
-bool texture::init(pixel_format_t internalFormat, const math::vec3i& size) {
-    const pixel_layout_t layout = getColorLayout(internalFormat);
+bool Texture::init(pixel_format_t internalFormat, const math::vec3i& size) {
+    const pixel_layout_t layout = get_color_layout(internalFormat);
     return init(0, internalFormat, size, layout, color_type_t::COLOR_TYPE_DEFAULT, nullptr);
 }
 
 /*-------------------------------------
     Load 1D Textures
 -------------------------------------*/
-bool texture::init(
+bool Texture::init(
     int             mipmapLevel,
     pixel_format_t  internalFormat,
     int             size,
@@ -109,7 +109,7 @@ bool texture::init(
         return false;
     }
     
-    glBindTexture(dimensions, texId);
+    glBindTexture(dimensions, gpuId);
     LOG_GL_ERR();
     
     glTexImage2D(dimensions, mipmapLevel, internalFormat, size, 1, 0, format, dataType, data);
@@ -121,7 +121,7 @@ bool texture::init(
 /*-------------------------------------
     Load 2D Textures
 -------------------------------------*/
-bool texture::init(
+bool Texture::init(
     int              mipmapLevel,
     pixel_format_t   internalFormat,
     const math::vec2i& size,
@@ -133,7 +133,7 @@ bool texture::init(
         return false;
     }
     
-    glBindTexture(dimensions, texId);
+    glBindTexture(dimensions, gpuId);
     LOG_GL_ERR();
     
     glTexImage2D(
@@ -148,7 +148,7 @@ bool texture::init(
 /*-------------------------------------
     Load 3D Textures
 -------------------------------------*/
-bool texture::init(
+bool Texture::init(
     int              mipmapLevel,
     pixel_format_t   internalFormat,
     const math::vec3i& size,
@@ -160,7 +160,7 @@ bool texture::init(
         return false;
     }
     
-    glBindTexture(dimensions, texId);
+    glBindTexture(dimensions, gpuId);
     LOG_GL_ERR();
     
     glTexImage3D(

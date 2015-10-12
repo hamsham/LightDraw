@@ -122,7 +122,7 @@ enum tex_desc_t : int {
 /**----------------------------------------------------------------------------
  * Texture Objects
 -----------------------------------------------------------------------------*/
-class texture {
+class Texture {
     private:
         /**
          * Dimension is a constant which is initialized upon construction of
@@ -135,7 +135,7 @@ class texture {
          * Texture ID
          * The handle to the current texture used by OpenGL.
          */
-        unsigned texId = 0;
+        unsigned gpuId = 0;
         
         tex_slot_t slot = tex_slot_t::TEXTURE_SLOT_DEFAULT;
         
@@ -143,12 +143,12 @@ class texture {
         /**
          * @brief Constructor
          */
-        texture(tex_desc_t td = TEX_DESC_2D);
+        Texture(tex_desc_t td = TEX_DESC_2D);
         
         /**
          * @brief Copy Constructor -- DELETED
          */
-        texture(const texture&) = delete;
+        Texture(const Texture&) = delete;
         
         /**
          * @brief Move Constructor
@@ -159,24 +159,24 @@ class texture {
          * @param t
          * An r-value reference to another texture object.
          */
-        texture(texture&& t);
+        Texture(Texture&& t);
         
         /**
          * @brief Destructor
          * 
          * Releases all memory referenced by texId
          */
-        ~texture();
+        ~Texture();
         
         /**
          * @brief Copy Operator -- DELETED
          */
-        texture& operator=(const texture&) = delete;
+        Texture& operator=(const Texture&) = delete;
         
         /**
          * @brief Move Operator -- DELETED
          */
-        texture& operator=(texture&& t);
+        Texture& operator=(Texture&& t);
         
         /**
          * Get the GPU-Assigned ID used by *this.
@@ -184,14 +184,14 @@ class texture {
          * @return An unsigned integral type that correlates to a texture on
          * the GPU.
          */
-        unsigned getId() const;
+        unsigned gpu_id() const;
         
         /**
          * @brief Determine if *this is able to be used for rendering.
          * 
          * @return TRUE if *this contains a valid texture ID, FALSE if not.
          */
-        bool isValid() const;
+        bool is_valid() const;
         
         /**
          * Bind the current texture to OpenGL
@@ -210,7 +210,7 @@ class texture {
          * @param activeSlot
          * An enumeration of the tex_slot_t type.
          */
-        void setTextureSlot(tex_slot_t activeSlot);
+        void set_texture_slot(tex_slot_t activeSlot);
         
         /**
          * @brief Get the texture slot which *this will be bound to when a
@@ -218,7 +218,7 @@ class texture {
          * 
          * @return An enumeration of the tex_slot_t type.
          */
-        tex_slot_t getTextureSlot() const;
+        tex_slot_t get_texture_slot() const;
         
         /**
          * Set a integer texture parameter.
@@ -231,7 +231,7 @@ class texture {
          * @param param
          * The particular texture setting to use for *this.
          */
-        void setParameter(int paramName, int param) const;
+        void set_parameter(int paramName, int param) const;
         
         /**
          * @brief Set a float texture parameter.
@@ -245,7 +245,7 @@ class texture {
          * @param param
          * The particular texture setting to use for *this.
          */
-        void setParameter(int paramName, float param) const;
+        void set_parameter(int paramName, float param) const;
         
         /**
          * Create an OpenGL texture with no data.
@@ -344,7 +344,7 @@ class texture {
          * 
          * @return true if the operation was successful. False if otherwise.
          */
-        bool init(const imageResource& resource, int mipmapLevel = 0);
+        bool init(const ImageResource& resource, int mipmapLevel = 0);
         
         /**
          * Modify the internal data of a texture.
@@ -374,7 +374,7 @@ class texture {
          * @return the GPU-descriptor that's used to apply *this texture object
          * onto polygons.
          */
-        tex_desc_t getTexType() const;
+        tex_desc_t get_texture_type() const;
         
         /**
          * Get the maximum texture size supported by OpenGL.
@@ -382,35 +382,35 @@ class texture {
          * @return an integral type which can be used to determine the maximum
          * byte size of a texture supported by the GPU.
          */
-        static int getMaxTextureSize();
+        static int get_max_texture_size();
 };
 
 /*-------------------------------------
     Get the GPU-Assigned ID used by *this.
 -------------------------------------*/
-inline unsigned texture::getId() const {
-    return texId;
+inline unsigned Texture::gpu_id() const {
+    return gpuId;
 }
 
 /*-------------------------------------
  Determine if *this can be used during rendering operations.
 -------------------------------------*/
-inline bool texture::isValid() const {
-    return texId != 0;
+inline bool Texture::is_valid() const {
+    return gpuId != 0;
 }
 
 /*-------------------------------------
     Bind the current texture to OpenGL
 -------------------------------------*/
-inline void texture::bind() const {
+inline void Texture::bind() const {
     glActiveTexture(slot);
-    glBindTexture(dimensions, texId);
+    glBindTexture(dimensions, gpuId);
 }
 
 /*-------------------------------------
     Unbind the current texture to OpenGL
 -------------------------------------*/
-inline void texture::unbind() const {
+inline void Texture::unbind() const {
     glActiveTexture(slot);
     glBindTexture(dimensions, 0);
 }
@@ -418,14 +418,14 @@ inline void texture::unbind() const {
 /*-------------------------------------
  * Set the active texture slot.
 -------------------------------------*/
-inline void texture::setTextureSlot(tex_slot_t activeSlot) {
+inline void Texture::set_texture_slot(tex_slot_t activeSlot) {
     slot = activeSlot;
 }
 
 /*-------------------------------------
  * Get the active texture slot.
 -------------------------------------*/
-inline tex_slot_t texture::getTextureSlot() const {
+inline tex_slot_t Texture::get_texture_slot() const {
     return slot;
 }
 
@@ -433,7 +433,7 @@ inline tex_slot_t texture::getTextureSlot() const {
     Set a integer texture parameter.
     Make sure that "bind() const" has been called before using this method.
 -------------------------------------*/
-inline void texture::setParameter(int paramName, int param) const {
+inline void Texture::set_parameter(int paramName, int param) const {
     glTexParameteri(dimensions, paramName, param);
 }
 
@@ -441,80 +441,80 @@ inline void texture::setParameter(int paramName, int param) const {
     Set a float texture parameter.
     Make sure that "bind() const" has been called before using this method.
 -------------------------------------*/
-inline void texture::setParameter(int paramName, float param) const {
+inline void Texture::set_parameter(int paramName, float param) const {
     glTexParameterf(dimensions, paramName, param);
 }
 
 /*-------------------------------------
     Create an OpenGL texture by using preexisting image data.
 -------------------------------------*/
-inline bool texture::init(const imageResource& resource, int mipmapLevel) {
+inline bool Texture::init(const ImageResource& resource, int mipmapLevel) {
     return init(
         mipmapLevel,
-        resource.getInternalFormat(),
-        resource.getPixelSize(),
-        resource.getExternalFormat(),
-        resource.getPixelType(),
-        resource.getData()
+        resource.get_internal_format(),
+        resource.get_pixel_size(),
+        resource.get_external_format(),
+        resource.get_pixel_type(),
+        resource.get_data()
     );
 }
 
 /*-------------------------------------
     Modify the internal data of a texture.
 -------------------------------------*/
-inline void texture::modify(int offset, int size, int format, int dataType, void* data) {
-    glTexSubImage2D(getTexType(), 0, offset, 0, size, 0, format, dataType, data);
+inline void Texture::modify(int offset, int size, int format, int dataType, void* data) {
+    glTexSubImage2D(get_texture_type(), 0, offset, 0, size, 0, format, dataType, data);
     LOG_GL_ERR();
 }
 
 /*-------------------------------------
     Modify the internal data of a texture.
 -------------------------------------*/
-inline void texture::modify(
+inline void Texture::modify(
     const math::vec2i& offset,
     const math::vec2i& size,
     int format,
     int dataType,
     void* data
 ) {
-    glTexSubImage2D(getTexType(), 0, offset[0], offset[1], size[0], size[1], format, dataType, data);
+    glTexSubImage2D(get_texture_type(), 0, offset[0], offset[1], size[0], size[1], format, dataType, data);
     LOG_GL_ERR();
 }
 
 /*-------------------------------------
     Modify the internal data of a texture.
 -------------------------------------*/
-inline void texture::modify(
+inline void Texture::modify(
     const math::vec3i& offset,
     const math::vec3i& size,
     int format,
     int dataType,
     void* data
 ) {
-    glTexSubImage3D(getTexType(), 0, offset[0], offset[1], offset[2], size[0], size[1], size[2], format, dataType, data);
+    glTexSubImage3D(get_texture_type(), 0, offset[0], offset[1], offset[2], size[0], size[1], size[2], format, dataType, data);
     LOG_GL_ERR();
 }
 
 /*-------------------------------------
     Release all memory referenced by *this.
 -------------------------------------*/
-inline void texture::terminate() {
-    glDeleteTextures(1, &texId);
-    texId = 0;
+inline void Texture::terminate() {
+    glDeleteTextures(1, &gpuId);
+    gpuId = 0;
     slot = tex_slot_t::TEXTURE_SLOT_DEFAULT;
 }
 
 /*-------------------------------------
     Get the texture type of that this texture uses in OpenGL
 -------------------------------------*/
-inline tex_desc_t texture::getTexType() const {
+inline tex_desc_t Texture::get_texture_type() const {
     return dimensions;
 }
 
 /*-------------------------------------
     Get the maximum texture size supported by OpenGL
 -------------------------------------*/
-inline int texture::getMaxTextureSize() {
+inline int Texture::get_max_texture_size() {
     int maxTexSize;
     glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTexSize);
     return maxTexSize;

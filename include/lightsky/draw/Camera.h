@@ -15,7 +15,7 @@ enum class camera_mode_t {
 /**----------------------------------------------------------------------------
  * @brief Camera transformation class
 -----------------------------------------------------------------------------*/
-class camera {
+class Camera {
     public:
         /**
          * @brief Default Camera aspect width.
@@ -59,7 +59,7 @@ class camera {
          * will help keep camera's rotation method just between FPS/arcball
          * rotations with either a locked or unlocked Yaw axis.
          */
-        void (camera::*rotateFunction)(const math::vec3&);
+        void (Camera::*rotateFunction)(const math::vec3&);
 
         /**
          * @brief fov Determines the angle of vision for the camera.
@@ -103,7 +103,7 @@ class camera {
          * @brief The viewTransform contains all transformations used for the
          * view matrix.
          */
-        transform viewTransform;
+        Transform viewTransform;
 
         /**
          * @brief rotateUnlockedY
@@ -114,7 +114,7 @@ class camera {
          * The amount, in percent, that the camera should rotate by. These
          * angles correspond to Pitch, Yaw, and Roll, respectively.
          */
-        void rotateUnlockedY(const math::vec3& amount);
+        void rotate_unlocked_y(const math::vec3& amount);
 
         /**
          * @brief rotateLockedY
@@ -125,50 +125,50 @@ class camera {
          * The amount, in percent, that the camera should rotate by. These
          * angles correspond to Pitch, Yaw, and Roll, respectively.
          */
-        void rotateLockedY(const math::vec3& amount);
+        void rotate_locked_y(const math::vec3& amount);
 
     public:
         /**
          * @brief Destructor
          */
-        ~camera();
+        ~Camera();
         
         /**
          * @brief Constructor
          */
-        camera();
+        Camera();
 
         /**
          * @brief Copy Constructor
          */
-        camera(const camera&);
+        Camera(const Camera&);
 
         /**
          * @brief Move Constructor
          */
-        camera(camera&&);
+        Camera(Camera&&);
 
         /**
          * @brief Copy Operator
          */
-        camera& operator = (const camera&);
+        Camera& operator = (const Camera&);
 
         /**
          * @brief Move Operator
          */
-        camera& operator = (camera&&);
+        Camera& operator = (Camera&&);
 
         /**
          * @brief Reconstruct the projection matrix in *this so it uses
          * orthographic projection.
          */
-        void makeOrtho();
+        void make_ortho();
 
         /**
          * @brief Reconstruct the projection matrix in *this so it uses
          * perspective projection.
          */
-        void makePerspective();
+        void make_perspective();
 
         /**
          * @brief Store a set of perspective-projection parameters in *this so
@@ -194,7 +194,7 @@ class camera {
          * Determines the internal projection's clipping distance for distant
          * objects.
          */
-        void setProjectionParams(
+        void set_projection_params(
             float inFov         = DEFAULT_VIEW_ANGLE,
             float aspectWidth   = DEFAULT_ASPECT_WIDTH,
             float aspectHeight  = DEFAULT_ASPECT_HEIGHT,
@@ -207,7 +207,7 @@ class camera {
          * 
          * @return An enumeration of the type camera_mode_t.
          */
-        camera_mode_t getViewMode() const;
+        camera_mode_t get_view_mode() const;
         
         /**
          * @brief Set the view/look mode for *this.
@@ -215,7 +215,7 @@ class camera {
          * @param mode
          * An enumeration of the type camera_mode_t.
          */
-        void setViewMode(camera_mode_t mode);
+        void set_view_mode(camera_mode_t mode);
 
         /**
          * @brief Get the current position of the camera in 3D cartesian space.
@@ -223,7 +223,7 @@ class camera {
          * @return A 3D vector, containing the X, Y, and Z position of the
          * camera's view matrix.
          */
-        const math::vec3& getPosition() const;
+        const math::vec3& get_position() const;
 
         /**
          * @brief Get the current position of the view matrix.
@@ -232,7 +232,7 @@ class camera {
          * row of the view matrix, representing the absolute position before
          * a perspective divide.
          */
-        math::vec3 getAbsolutePosition() const;
+        math::vec3 get_abs_position() const;
 
         /**
          * @brief Set the position of the camera in 3D cartesian space.
@@ -241,7 +241,7 @@ class camera {
          * A 3D vector, containing the desired X, Y, and Z position of the
          * camera.
          */
-        void setPosition(const math::vec3& p);
+        void set_position(const math::vec3& p);
 
         /**
          * @brief Get the center target of the arcball rotation camera in 3D
@@ -250,7 +250,7 @@ class camera {
          * @return A 3D vector, containing the X, Y, and Z position of the
          * camera's orbital movement.
          */
-        const math::vec3& getTarget() const;
+        const math::vec3& get_target() const;
 
         /**
          * @brief Set the center target of the arcball rotation camera in 3D
@@ -260,21 +260,21 @@ class camera {
          * A 3D vector, containing the desired X, Y, and Z position of the
          * camera's orbital movement.
          */
-        void setTarget(const math::vec3& p);
+        void set_target(const math::vec3& p);
 
         /**
          * @brief Retrieve the current direction that the camera is facing.
          * 
          * @return A 3D unit vector containing the view matrix Z-axis.
          */
-        math::vec3 getDirection() const;
+        math::vec3 get_direction() const;
 
         /**
          * @brief Get the camera's normal vector.
          * 
          * @return a 3D vector, used to determine which direction is upwards.
          */
-        math::vec3 getUpDirection() const;
+        math::vec3 get_up_direction() const;
 
         /**
          * @brief Retrieve the camera's view matrix for external use.
@@ -282,7 +282,7 @@ class camera {
          * @return A 4x4 rotation matrix which is used for the camera's
          * internal orientation.
          */
-        const math::mat4& getViewMatrix() const;
+        const math::mat4& get_view_matrix() const;
 
         /**
          * @brief Retrieve the camera's projection matrix for external use.
@@ -290,7 +290,7 @@ class camera {
          * @return A 4x4 projection matrix which is used by *this for
          * projecting geometry data.
          */
-        const math::mat4& getProjMatrix() const;
+        const math::mat4& get_proj_matrix() const;
 
         /**
          * @brief Calculate the combined view-projection matrix of the camera.
@@ -298,7 +298,7 @@ class camera {
          * @return The view and projection matrices, multiplied together to
          * create a VP matrix.
          */
-        math::mat4 getVPMatrix() const ;
+        math::mat4 get_vp_matrix() const ;
 
         /**
          * @brief Get the internal orientation of the camera.
@@ -306,7 +306,7 @@ class camera {
          * @return A quaternion used internally to represent the camera's
          * 3D orientation.
          */
-        const math::quat& getOrientation() const;
+        const math::quat& get_orientation() const;
 
         /**
          * @brief Set the internal orientation of the camera.
@@ -315,7 +315,7 @@ class camera {
          * A quaternion that will be used to represent the camera's 3D
          * orientation.
          */
-        void setOrientation(const math::quat& o);
+        void set_orientation(const math::quat& o);
         
         /**
          * @brief Set the field of view for the camera;
@@ -327,7 +327,7 @@ class camera {
          * The desired horizontal angle, in radians, which the field of view
          * should be set to.
          */
-        void setFov(unsigned viewAngle);
+        void set_fov(unsigned viewAngle);
         
         /**
          * @brief Retrieve the horizontal field of view of the camera.
@@ -335,7 +335,7 @@ class camera {
          * @return A floating point number, representing the number of radians
          * of the field of view of the camera.
          */
-        float getFov() const;
+        float get_fov() const;
 
         /**
          * @brief Set the aspect ration of the internal camera.
@@ -346,7 +346,7 @@ class camera {
          * @param h
          * The height of the projection matrix frustum.
          */
-        void setAspectRatio(float w, float h);
+        void get_aspect_ratio(float w, float h);
 
         /**
          * @brief Get the aspect ratio of the camera's projection matrix.
@@ -354,7 +354,7 @@ class camera {
          * @return A floating-point value, representing the width of the
          * projection matrix frustum, divided by its height.
          */
-        float getAspectRatio() const;
+        float get_aspect_ratio() const;
 
         /**
          * @brief Get the width of the projection matrix frustum.
@@ -362,7 +362,7 @@ class camera {
          * @return A floating-point value, representing the width of the
          * projection matrix frustum.
          */
-        float getAspectWidth() const;
+        float get_aspect_width() const;
 
         /**
          * @brief Get the height of the projection matrix frustum.
@@ -370,7 +370,7 @@ class camera {
          * @return A floating-point value, representing the height of the
          * projection matrix frustum.
          */
-        float getAspectHeight() const;
+        float get_aspect_height() const;
 
         /**
          * @brief Set the distance to the camera's near-clipping plane.
@@ -379,7 +379,7 @@ class camera {
          * A floating point value, representing the distance to the camera's
          * near-clipping plane.
          */
-        void setNearPlane(float inZNear);
+        void set_near_plane(float inZNear);
 
         /**
          * @brief Get the distance to the camera's near-clipping plane.
@@ -387,7 +387,7 @@ class camera {
          * @return A floating point value, representing the distance to the
          * camera's near-clipping plane.
          */
-        float getNearPlane() const;
+        float get_near_plane() const;
 
         /**
          * @brief Set the distance to the camera's far-clipping plane.
@@ -396,7 +396,7 @@ class camera {
          * A floating point value, representing the distance to the camera's
          * far-clipping plane.
          */
-        void setFarPlane(float inZFar);
+        void set_far_plane(float inZFar);
 
         /**
          * @brief Get the distance to the camera's far-clipping plane.
@@ -404,7 +404,7 @@ class camera {
          * @return A floating point value, representing the distance to the
          * camera's far-clipping plane.
          */
-        float getFarPlane() const;
+        float get_far_plane() const;
 
         /**
          * @brief Set whether or not the Y axis of the camera should be locked.
@@ -413,7 +413,7 @@ class camera {
          * A boolean value, determining if the camera should be permitted to
          * roll.
          */
-        void lockYAxis(bool shouldLock);
+        void lock_y_axis(bool shouldLock);
 
         /**
          * @brief Make the camera frustum face in the direction of a target.
@@ -427,7 +427,7 @@ class camera {
          * @param up
          * The direction which determines which way is upwards.
          */
-        void lookAt(const math::vec3& eye, const math::vec3& point, const math::vec3& up = {0.f, 1.f, 0.f});
+        void look_at(const math::vec3& eye, const math::vec3& point, const math::vec3& up = {0.f, 1.f, 0.f});
 
         /**
          * @brief Look at a point using the camera's current position and
@@ -436,7 +436,7 @@ class camera {
          * @param point
          * A point that the camera should look at.
          */
-        void lookAt(const math::vec3& point);
+        void look_at(const math::vec3& point);
 
         /**
          * @brief Modify the camera's current position by a given amount.
@@ -466,105 +466,105 @@ class camera {
 /*-------------------------------------
  * Create an orthographic camera
 -------------------------------------*/
-inline void camera::makeOrtho() {
+inline void Camera::make_ortho() {
     projMatrix = math::ortho(0.f, aspectW, 0.f, aspectH, zNear, zFar);
 }
 
 /*-------------------------------------
  * Create an perspective-projection camera
 -------------------------------------*/
-inline void camera::makePerspective() {
+inline void Camera::make_perspective() {
     projMatrix = math::perspective(fov, aspectW/aspectH, zNear, zFar);
 }
 
 /*-------------------------------------
  * Get the camera view mode
 -------------------------------------*/
-inline camera_mode_t camera::getViewMode() const {
+inline camera_mode_t Camera::get_view_mode() const {
     return viewMode;
 }
 
 /*-------------------------------------
  * Get the camera position
 -------------------------------------*/
-inline const math::vec3& camera::getPosition() const {
-    return viewTransform.getPosition();
+inline const math::vec3& Camera::get_position() const {
+    return viewTransform.get_position();
 }
 
 /*-------------------------------------
  * Set the camera position
 -------------------------------------*/
-inline void camera::setPosition(const math::vec3& p) {
-    viewTransform.setPosition(p);
+inline void Camera::set_position(const math::vec3& p) {
+    viewTransform.set_position(p);
 }
 
 /*-------------------------------------
  * Get the camera target
 -------------------------------------*/
-inline const math::vec3& camera::getTarget() const {
+inline const math::vec3& Camera::get_target() const {
     return target;
 }
 
 /*-------------------------------------
  * Set the camera target
 -------------------------------------*/
-inline void camera::setTarget(const math::vec3& t) {
+inline void Camera::set_target(const math::vec3& t) {
     target = t;
 }
 
 /*-------------------------------------
  * Get the camera view matrix
 -------------------------------------*/
-inline const math::mat4& camera::getViewMatrix() const {
-    return viewTransform.getTransform();
+inline const math::mat4& Camera::get_view_matrix() const {
+    return viewTransform.get_transform();
 }
 
 /*-------------------------------------
  * Get the projection matrix
 -------------------------------------*/
-inline const math::mat4& camera::getProjMatrix() const {
+inline const math::mat4& Camera::get_proj_matrix() const {
     return projMatrix;
 }
 
 /*-------------------------------------
  * Generate and return the View/Projection matrix
 -------------------------------------*/
-inline math::mat4 camera::getVPMatrix() const {
-    return projMatrix * viewTransform.getTransform();
+inline math::mat4 Camera::get_vp_matrix() const {
+    return projMatrix * viewTransform.get_transform();
 }
 
 /*-------------------------------------
  * Get the camera's orientation
 -------------------------------------*/
-inline const math::quat& camera::getOrientation() const {
-    return viewTransform.getOrientation();
+inline const math::quat& Camera::get_orientation() const {
+    return viewTransform.get_orientation();
 }
 
 /*-------------------------------------
  * Set the camera's rotation orientation.
 -------------------------------------*/
-inline void camera::setOrientation(const math::quat& o) {
-    viewTransform.setOrientation(o);
+inline void Camera::set_orientation(const math::quat& o) {
+    viewTransform.set_orientation(o);
 }
 
 /*-------------------------------------
  * Set the FOV
 -------------------------------------*/
-inline void camera::setFov(unsigned viewAngle) {
+inline void Camera::set_fov(unsigned viewAngle) {
     fov = viewAngle;
 }
 
 /*-------------------------------------
  * Get the FOV
 -------------------------------------*/
-inline float camera::getFov() const {
+inline float Camera::get_fov() const {
     return fov;
 }
 
 /*-------------------------------------
  * Set the aspect ratio
 -------------------------------------*/
-inline void camera::setAspectRatio(float w, float h) {
+inline void Camera::get_aspect_ratio(float w, float h) {
     aspectW = w;
     aspectH = h;
 }
@@ -572,63 +572,63 @@ inline void camera::setAspectRatio(float w, float h) {
 /*-------------------------------------
  * Get the current aspect ratio.
 -------------------------------------*/
-inline float camera::getAspectRatio() const {
+inline float Camera::get_aspect_ratio() const {
     return aspectW / aspectH;
 }
 
 /*-------------------------------------
  * Get the current aspect width.
 -------------------------------------*/
-inline float camera::getAspectWidth() const {
+inline float Camera::get_aspect_width() const {
     return aspectW;
 }
 
 /*-------------------------------------
  * Get the current aspect height.
 -------------------------------------*/
-inline float camera::getAspectHeight() const {
+inline float Camera::get_aspect_height() const {
     return aspectH;
 }
 
 /*-------------------------------------
  * Set the near plane distance
 -------------------------------------*/
-inline void camera::setNearPlane(float inZNear) {
+inline void Camera::set_near_plane(float inZNear) {
     zNear = inZNear;
 }
 
 /*-------------------------------------
  * Get the near plane distance
 -------------------------------------*/
-inline float camera::getNearPlane() const {
+inline float Camera::get_near_plane() const {
     return zNear;
 }
 
 /*-------------------------------------
  * Set the far plane distance
 -------------------------------------*/
-inline void camera::setFarPlane(float inZFar) {
+inline void Camera::set_far_plane(float inZFar) {
     zFar = inZFar;
 }
 
 /*-------------------------------------
  * Get the distance to the far plane.
 -------------------------------------*/
-inline float camera::getFarPlane() const {
+inline float Camera::get_far_plane() const {
     return zFar;
 }
 
 /*-------------------------------------
  * Look At function from the current cam position
 -------------------------------------*/
-inline void camera::lookAt(const math::vec3& point) {
-    lookAt(viewTransform.getPosition(), point, getUpDirection());
+inline void Camera::look_at(const math::vec3& point) {
+    look_at(viewTransform.get_position(), point, get_up_direction());
 }
 
 /*-------------------------------------
  * Camera Rotation function
 -------------------------------------*/
-inline void camera::rotate(const math::vec3& amount) {
+inline void Camera::rotate(const math::vec3& amount) {
     (this->*rotateFunction)(amount);
 }
 

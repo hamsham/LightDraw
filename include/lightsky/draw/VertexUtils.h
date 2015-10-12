@@ -73,47 +73,47 @@ constexpr unsigned BONE_VERTEX = 0
 /**
  * @brief Common name for a vertex attribute containing positional vertices.
  */
-constexpr char vertex_position[] = "pos";
+constexpr char VERTEX_POSITION_NAME[] = "pos";
 
 /**
  * @brief Common name for a vertex attribute containing UV coordinates.
  */
-constexpr char vertex_uv[] = "uv";
+constexpr char VERTEX_UV_NAME[] = "uv";
 
 /**
  * @brief Common name for a vertex attribute containing vertex normals.
  */
-constexpr char vertex_normal[] = "norm";
+constexpr char VERTEX_NORMAL_NAME[] = "norm";
 
 /**
  * @brief Common name for a vertex attribute containing vertex tangents.
  */
-constexpr char vertex_tangent[] = "tang";
+constexpr char VERTEX_TANGENT_NAME[] = "tang";
 
 /**
  * @brief Common name for a vertex attribute containing vertex bi-tangents.
  */
-constexpr char vertex_bitangent[] = "bitang";
+constexpr char VERTEX_BITANGENT_NAME[] = "bitang";
 
 /**
  * @brief Common name for a vertex attribute containing model matrices.
  */
-constexpr char vertex_model_matrix[] = "modelMat";
+constexpr char VERTEX_MODEL_MAT_NAME[] = "modelMat";
 
 /**
  * @brief Common name for a vertex attribute containing skeletal bone weights.
  */
-constexpr char vertex_bone_weight[] = "boneWeight";
+constexpr char VERTEX_BONE_WEIGHT_NAME[] = "boneWeight";
 
 /**
  * @brief Common name for a vertex attribute containing skeletal bone IDs.
  */
-constexpr char vertex_boneId[] = "boneId";
+constexpr char VERTEX_BONE_ID_NAME[] = "boneId";
 
 /**
  * @brief Common name for a vertex attribute containing index elements.
  */
-constexpr char index_vertex[] = "ibo";
+constexpr char INDEX_VERTEX_NAME[] = "ibo";
 
 /**------------------------------------
  * @brief Determine the number of bytes required to store one or more vertices

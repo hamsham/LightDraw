@@ -96,7 +96,7 @@ enum fbo_mask_t : int {
  * default buffer residing within a render context. Framebuffer objects can
  * be used to render to a texture as well.
 -----------------------------------------------------------------------------*/
-class framebuffer final {
+class FrameBuffer final {
     public:
         /**
          * Get the maximum number of supported color attachments from the
@@ -106,7 +106,7 @@ class framebuffer final {
          * @return A signed integral type representing the number of currently
          * supported render targets.
          */
-        static int getMaxNumAttachments();
+        static int get_max_num_attachments();
 
         /**
          * Error code handling for framebuffer creation. The input FBO must be
@@ -115,7 +115,7 @@ class framebuffer final {
          * @param fbo
          * A constant reference to the active framebuffer object.
          */
-        static void printStatus(const framebuffer& fbo);
+        static void print_status(const FrameBuffer& fbo);
         
         /**
          * Get the completion status of a framebuffer based on the currently
@@ -125,14 +125,14 @@ class framebuffer final {
          * 
          * @return framebuffer
          */
-        static fbo_status_t getStatus(const framebuffer& fbo);
+        static fbo_status_t get_status(const FrameBuffer& fbo);
         
         /**
          * Bind the default read/write buffer
          * 
          * @param fbo_access_t
          */
-        static void bindDefaultFramebuffer(fbo_access_t access = FBO_ACCESS_RW);
+        static void bind_default_framebuffer(fbo_access_t access = FBO_ACCESS_RW);
         
     private:
         /**
@@ -145,7 +145,7 @@ class framebuffer final {
          * fboID is a GPU-assigned handle to a framebuffer object within
          * OpenGL.
          */
-        unsigned fboId = 0;
+        unsigned gpuId = 0;
         
     public:
         /**
@@ -154,12 +154,12 @@ class framebuffer final {
          * Initializes all values within *this to their default values. This
          * does not initialize a framebuffer on the GPU.
          */
-        framebuffer();
+        FrameBuffer();
         
         /**
          * @brief Copy Constructor - DELETED
          */
-        framebuffer(const framebuffer&) = delete;
+        FrameBuffer(const FrameBuffer&) = delete;
         
         /**
          * @brief Move Constructor
@@ -170,19 +170,19 @@ class framebuffer final {
          * @param fbo
          * An r-value reference to another Framebuffer Object.
          */
-        framebuffer(framebuffer&& fbo);
+        FrameBuffer(FrameBuffer&& fbo);
         
         /**
          * @brief Destructor
          * 
          * Frees all memory, GPU-handles, and resources used by *this.
          */
-        ~framebuffer();
+        ~FrameBuffer();
         
         /**
          * @brief Copy Operator - DELETED
          */
-        framebuffer& operator=(const framebuffer&) = delete;
+        FrameBuffer& operator=(const FrameBuffer&) = delete;
         
         /**
          * @brief Move Operator
@@ -193,7 +193,7 @@ class framebuffer final {
          * @param fbo
          * An r-value reference to another Framebuffer Object.
          */
-        framebuffer& operator=(framebuffer&& fbo);
+        FrameBuffer& operator=(FrameBuffer&& fbo);
         
         /**
          * Get the GPU-Assigned ID that this object references.
@@ -202,7 +202,7 @@ class framebuffer final {
          * framebuffer object represented by this object.
          * This value returns 0 if nothing is referenced by *this.
          */
-        unsigned getId() const;
+        unsigned gpu_id() const;
         
         /**
          * Get the framebuffer acccess type.
@@ -211,7 +211,7 @@ class framebuffer final {
          * An enumeration that can help make perform framebuffer read/write
          * operations
          */
-        fbo_access_t getAccessType() const;
+        fbo_access_t get_access_type() const;
         
         /**
          * Set the framebuffer access type.
@@ -220,7 +220,7 @@ class framebuffer final {
          * An enumeration that can help make perform framebuffer read/write
          * operations.
          */
-        void setAccessType(fbo_access_t a);
+        void set_access_type(fbo_access_t a);
         
         /**
          * Bind the current framebuffer to OpenGL
@@ -299,7 +299,7 @@ class framebuffer final {
          * @param targets
          * The set of all render targets that should be rendered to by this.
          */
-        void setDrawTargets(unsigned numTargets, const fbo_attach_t* targets);
+        void set_draw_targets(unsigned numTargets, const fbo_attach_t* targets);
         
         /**
          * Attach a texture to the currently bound framebuffer
@@ -323,10 +323,10 @@ class framebuffer final {
          * In the event that 'tex' is a 3D texture, this parameter specifies
          * which 3D layer to use for rendering.
          */
-        void attachRenderTarget(
+        void attach_render_target(
             fbo_attach_t atch,
             texture_target_t trgt,
-            const texture& tex,
+            const Texture& tex,
             int mipmapLevel = 0,
             int layer = 0
         );
@@ -342,7 +342,7 @@ class framebuffer final {
          * A constant reference to a texture object to bind to this and use as
          * a render target.
          */
-        void attachRenderTarget(fbo_attach_t atch, const texture& tex);
+        void attach_render_target(fbo_attach_t atch, const Texture& tex);
 
         /**
          * Attach a render buffer to the currently bound framebuffer
@@ -355,34 +355,34 @@ class framebuffer final {
          * A constant reference to a renderbuffer object to bind to this for
          * use as a render target.
          */
-        void attachRenderTarget(fbo_attach_t atch, const renderbuffer& rbo);
+        void attach_render_target(fbo_attach_t atch, const RenderBuffer& rbo);
 };
 
 /*-------------------------------------
     Get the GPU-Assigned ID that this object references.
 -------------------------------------*/
-inline unsigned framebuffer::getId() const {
-    return fboId;
+inline unsigned FrameBuffer::gpu_id() const {
+    return gpuId;
 }
 
 /*-------------------------------------
     Get the framebuffer acccess type.
 -------------------------------------*/
-inline fbo_access_t framebuffer::getAccessType() const {
+inline fbo_access_t FrameBuffer::get_access_type() const {
     return access;
 }
 
 /*-------------------------------------
     Set the framebuffer access type.
 -------------------------------------*/
-inline void framebuffer::setAccessType(fbo_access_t a) {
+inline void FrameBuffer::set_access_type(fbo_access_t a) {
     access = a;
 }
 
 /*-------------------------------------
     Get the maximum number of supported color attachments.
 -------------------------------------*/
-inline int framebuffer::getMaxNumAttachments() {
+inline int FrameBuffer::get_max_num_attachments() {
     int numAttachments;
     glGetIntegerv(GL_MAX_DRAW_BUFFERS, &numAttachments);
     return numAttachments;
@@ -391,36 +391,36 @@ inline int framebuffer::getMaxNumAttachments() {
 /*-------------------------------------
     Get the status of the current framebuffer.
 -------------------------------------*/
-inline fbo_status_t framebuffer::getStatus(const framebuffer& fbo) {
+inline fbo_status_t FrameBuffer::get_status(const FrameBuffer& fbo) {
     LOG_GL_ERR();
-    return (fbo_status_t)glCheckFramebufferStatus(fbo.getAccessType());
+    return (fbo_status_t)glCheckFramebufferStatus(fbo.get_access_type());
 }
 
 /*-------------------------------------
     Bind the default read/write buffer
 -------------------------------------*/
-inline void framebuffer::bindDefaultFramebuffer(fbo_access_t access) {
+inline void FrameBuffer::bind_default_framebuffer(fbo_access_t access) {
     glBindFramebuffer(access, 0);
 }
 
 /*-------------------------------------
     Bind the current framebuffer to OpenGL
 -------------------------------------*/
-inline void framebuffer::bind() const {
-    glBindFramebuffer(access, fboId);
+inline void FrameBuffer::bind() const {
+    glBindFramebuffer(access, gpuId);
 }
 
 /*-------------------------------------
     Unbind the current framebuffer to OpenGL
 -------------------------------------*/
-inline void framebuffer::unbind() const {
+inline void FrameBuffer::unbind() const {
     glBindFramebuffer(access, 0);
 }
 
 /*-------------------------------------
     Blit this framebuffer to the current draw buffer.
 -------------------------------------*/
-inline void framebuffer::blit(
+inline void FrameBuffer::blit(
     const math::vec2i& srcOrig, const math::vec2i& srcSize,
     const math::vec2i& dstOrig, const math::vec2i& dstSize,
     fbo_mask_t mask, tex_filter_t filter
@@ -435,14 +435,14 @@ inline void framebuffer::blit(
 /*-------------------------------------
     Clear the color attachment indicated by the input parameter.
 -------------------------------------*/
-inline void framebuffer::clear(fbo_mask_t mask) const {
+inline void FrameBuffer::clear(fbo_mask_t mask) const {
     glClear((int)mask);
 }
 
 /*-------------------------------------
     Set the current draw targets to be used by this.
 -------------------------------------*/
-inline void framebuffer::setDrawTargets(unsigned numTargets, const fbo_attach_t* targets) {
+inline void FrameBuffer::set_draw_targets(unsigned numTargets, const fbo_attach_t* targets) {
     glDrawBuffers(numTargets, (const GLenum*)targets);
 }
 

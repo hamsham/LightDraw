@@ -14,7 +14,7 @@ namespace draw {
  * This class is primarily intended to contain the transformations of renderable
  * objects, as well as simplify the management of their model matrices.
  */
-class transform {
+class Transform {
     private:
         /**
          * @brief dirtyFlag
@@ -56,12 +56,12 @@ class transform {
         /**
          * @brief Destructor
          */
-        ~transform();
+        ~Transform();
 
         /**
          * @brief Constructor
          */
-        transform();
+        Transform();
 
         /**
          * @brief Matrix Constructor
@@ -70,7 +70,7 @@ class transform {
          * A constant reference to a matrix which will be used to pre-transform
          * *this during construction.
          */
-        transform(const math::mat4& modelMat);
+        Transform(const math::mat4& modelMat);
 
         /**
          * @brief Copy Constructor
@@ -78,7 +78,7 @@ class transform {
          * @param t
          * A constant reference to another transform object
          */
-        transform(const transform& t);
+        Transform(const Transform& t);
 
         /**
          * @brief Move Constructor
@@ -86,7 +86,7 @@ class transform {
          * @param t
          * An r-value reference to another transform object
          */
-        transform(transform&& t);
+        Transform(Transform&& t);
 
         /**
          * @brief Copy Operator
@@ -94,7 +94,7 @@ class transform {
          * @param t
          * A constant reference to another transform object
          */
-        transform& operator=(const transform& t);
+        Transform& operator=(const Transform& t);
 
         /**
          * @brief Move Operator
@@ -102,7 +102,7 @@ class transform {
          * @param t
          * An r-value reference to another transform object
          */
-        transform& operator=(transform&& t);
+        Transform& operator=(Transform&& t);
 
         /**
          * @brief Check if the current transformation object needs to be
@@ -114,7 +114,7 @@ class transform {
          * @return TRUE if *this object had the position, scale, or orientation
          * adjusted, FALSE otherwise.
          */
-        bool isDirty() const;
+        bool is_dirty() const;
 
         /**
          * @brief Make the current transform appear to require an update.
@@ -122,7 +122,7 @@ class transform {
          * Dirty transformations must have the "applyTransforms()" method
          * called in order to update the internal model matrix.
          */
-        void setDirty();
+        void set_dirty();
 
         /**
          * @brief Adjust *this transformation object's internal position.
@@ -151,7 +151,7 @@ class transform {
          * A constant reference to a 3D vector which will adjust the internal
          * position of *this in 3D cartesian space.
          */
-        void setPosition(const math::vec3& newPos);
+        void set_position(const math::vec3& newPos);
 
         /**
          * @brief Retrieve the current position of *this.
@@ -159,7 +159,7 @@ class transform {
          * @return a reference to a 3D vector, representing the position of a
          * point in 3D cartesian space.
          */
-        const math::vec3& getPosition() const;
+        const math::vec3& get_position() const;
 
         /**
          * @brief Retrieve the current position of *this by extracting the 
@@ -169,7 +169,7 @@ class transform {
          * @return a 3D vector, representing the absolute position of a
          * point in 3D Cartesian space since the last internal update.
          */
-        math::vec3 getAbsolutePosition() const;
+        math::vec3 get_abs_position() const;
 
         /**
          * @brief Adjust *this transformation object's internal size.
@@ -193,7 +193,7 @@ class transform {
          * A constant reference to a 3D vector which will adjust the internal
          * size of *this in 3D cartesian space.
          */
-        void setScale(const math::vec3& newScale);
+        void set_scale(const math::vec3& newScale);
 
         /**
          * @brief Retrieve the current scaling of *this.
@@ -201,7 +201,7 @@ class transform {
          * @return a reference to a 3D vector, representing the scale of a
          * point in 3D cartesian space.
          */
-        const math::vec3& getScale() const;
+        const math::vec3& get_scale() const;
 
         /**
          * @brief Adjust *this transformation object's internal orientation.
@@ -225,7 +225,7 @@ class transform {
          * A constant reference to a quaternion which will adjust the internal
          * orientation of *this in 3D cartesian space.
          */
-        void setOrientation(const math::quat& newRotation);
+        void set_orientation(const math::quat& newRotation);
 
         /**
          * @brief Retrieve the current orientation of *this.
@@ -233,7 +233,7 @@ class transform {
          * @return a reference to a quaternion, representing the orientation of
          * a point in 3D cartesian space.
          */
-        const math::quat& getOrientation() const;
+        const math::quat& get_orientation() const;
 
         /**
          * @brief Apply any pending adjustments to the internal model matrix.
@@ -246,7 +246,7 @@ class transform {
          * This method is implicitly called if the internal model matrix has
          * been modified manually.
          */
-        void applyTransforms(bool useSRT = true);
+        void apply_transform(bool useSRT = true);
 
         /**
          * @brief Multiply *this by another 4x4 homogenous transformation
@@ -267,7 +267,7 @@ class transform {
          * transformation, or a STR transformation (choose if the rotation
          * should be applied before translation, or the other way around).
          */
-        void applyPreTransforms(const math::mat4& deltaTransform, bool useSRT = true);
+        void apply_pre_transforms(const math::mat4& deltaTransform, bool useSRT = true);
 
         /**
          * @brief Multiply *this by another 4x4 homogenous transformation
@@ -288,7 +288,7 @@ class transform {
          * transformation, or a STR transformation (choose if the rotation
          * should be applied before translation, or the other way around).
          */
-        void applyPostTransforms(const math::mat4& deltaTransform, bool useSRT = true);
+        void apply_post_transforms(const math::mat4& deltaTransform, bool useSRT = true);
 
         /**
          * @brief Set *this transformation object's internal model matrix.
@@ -300,7 +300,7 @@ class transform {
          * A constant reference to a 4x4 matrix which, representing the
          * position, scale, and orientation of a point in 3D space.
          */
-        void extractTransforms(const math::mat4& newTransform);
+        void extract_transforms(const math::mat4& newTransform);
 
         /**
          * @brief Retrieve the current model matrix of *this.
@@ -308,7 +308,7 @@ class transform {
          * @return a reference to a 4x4 matrix, representing the position,
          * scale, and orientation of a point in 3D cartesian space.
          */
-        const math::mat4& getTransform() const;
+        const math::mat4& get_transform() const;
         
         /**
          * @brief Generate a 4x4 homogenous matrix which has been uniformly
@@ -319,7 +319,7 @@ class transform {
          * @return A 4x4 transformation matrix which can be used for 3D
          * positioning, rotation, and scaling.
          */
-        math::mat4 getSRTMatrix() const;
+        math::mat4 get_srt_matrix() const;
         
         /**
          * @brief Generate a 4x4 homogenous matrix which has been uniformly
@@ -328,55 +328,55 @@ class transform {
          * @return A 4x4 transformation matrix which can be used for 3D
          * positioning, rotation, and scaling.
          */
-        math::mat4 getSTRMatrix() const;
+        math::mat4 get_str_matrix() const;
 };
 
 /*-------------------------------------
  * Check if the model matrix needs updating
 -------------------------------------*/
-inline bool transform::isDirty() const {
+inline bool Transform::is_dirty() const {
     return dirtyFlag;
 }
 
 /*-------------------------------------
  * Make the current transform require updating
 -------------------------------------*/
-inline void transform::setDirty() {
+inline void Transform::set_dirty() {
     dirtyFlag = true;
 }
 
 /*-------------------------------------
  * Get the current position
 -------------------------------------*/
-inline const math::vec3& transform::getPosition() const {
+inline const math::vec3& Transform::get_position() const {
     return position;
 }
 
 /*-------------------------------------
  * Get the absolute position
 -------------------------------------*/
-inline math::vec3 transform::getAbsolutePosition() const {
+inline math::vec3 Transform::get_abs_position() const {
     return math::vec3{modelMatrix[3][0], modelMatrix[3][1], modelMatrix[3][2]};
 }
 
 /*-------------------------------------
  * Get the current scale
 -------------------------------------*/
-inline const math::vec3& transform::getScale() const {
+inline const math::vec3& Transform::get_scale() const {
     return scaling;
 }
 
 /*-------------------------------------
  * Get the current orientation
 -------------------------------------*/
-inline const math::quat& transform::getOrientation() const {
+inline const math::quat& Transform::get_orientation() const {
     return orientation;
 }
 
 /*-------------------------------------
  * Get the current model matrix
 -------------------------------------*/
-inline const math::mat4& transform::getTransform() const {
+inline const math::mat4& Transform::get_transform() const {
     return modelMatrix;
 }
 

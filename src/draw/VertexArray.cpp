@@ -13,13 +13,13 @@ namespace draw {
 /*-------------------------------------
     Constructor
 -------------------------------------*/
-vertexArray::vertexArray() {
+VertexArray::VertexArray() {
 }
 
 /*-------------------------------------
     Move Constructor
 -------------------------------------*/
-vertexArray::vertexArray(vertexArray&& va) :
+VertexArray::VertexArray(VertexArray&& va) :
     vaoId{va.vaoId}
 {
     va.vaoId = 0;
@@ -28,14 +28,14 @@ vertexArray::vertexArray(vertexArray&& va) :
 /*-------------------------------------
     Destructor
 -------------------------------------*/
-vertexArray::~vertexArray() {
+VertexArray::~VertexArray() {
     terminate();
 }
 
 /*-------------------------------------
     Move Operator
 -------------------------------------*/
-vertexArray& vertexArray::operator=(vertexArray&& va) {
+VertexArray& VertexArray::operator=(VertexArray&& va) {
     vaoId = va.vaoId;
     va.vaoId = 0;
     return *this;
@@ -44,7 +44,7 @@ vertexArray& vertexArray::operator=(vertexArray&& va) {
 /*-------------------------------------
     Array initialization.
 -------------------------------------*/
-bool vertexArray::init() {
+bool VertexArray::init() {
     if (vaoId != 0) {
         terminate();
     }
