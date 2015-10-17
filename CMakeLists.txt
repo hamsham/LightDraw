@@ -52,3 +52,14 @@ target_link_libraries("${OUTPUT_NAME}" liblssetup liblsutils liblsmath)
 # -------------------------------------
 install(TARGETS "${OUTPUT_NAME}" ARCHIVE DESTINATION lib)
 install(DIRECTORY include/lightsky/draw DESTINATION include/lightsky)
+
+
+
+# -------------------------------------
+# LS Draw Testing Area
+# -------------------------------------
+set(LS_BUILD_DRAW_TESTS TRUE CACHE BOOL "Build tests for the LightDraw library.")
+
+if(LS_BUILD_DRAW_TESTS)
+    add_subdirectory("tests")
+endif(LS_BUILD_DRAW_TESTS)
