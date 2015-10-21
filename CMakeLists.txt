@@ -43,7 +43,7 @@ set(LS_DRAW_SOURCES
 add_library("${OUTPUT_NAME}" STATIC "${LS_DRAW_SOURCES}")
 
 # Dependencies
-target_link_libraries("${OUTPUT_NAME}" liblssetup liblsutils liblsmath)
+target_link_libraries("${OUTPUT_NAME}" lssetup lsutils lsmath)
 
 
 
