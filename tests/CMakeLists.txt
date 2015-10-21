@@ -36,7 +36,10 @@ include_directories(".")
 # -------------------------------------
 # Source Paths
 # -------------------------------------
-set(LS_DRAW_PROTO_COMMON_SOURCES)
+set(LS_DRAW_PROTO_COMMON_SOURCES
+    "context.cpp"
+    "display.cpp"
+)
 
 set(
     LS_DRAW_PROTO_HELLO_SOURCES
