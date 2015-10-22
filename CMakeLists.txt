@@ -60,6 +60,6 @@ install(DIRECTORY include/lightsky/draw DESTINATION include/lightsky)
 # -------------------------------------
 set(LS_BUILD_DRAW_TESTS TRUE CACHE BOOL "Build tests for the LightDraw library.")
 
-if(LS_BUILD_DRAW_TESTS)
-    add_subdirectory("tests")
-endif(LS_BUILD_DRAW_TESTS)
+#if(LS_BUILD_DRAW_TESTS)
+#    add_subdirectory("tests")
+#endif(LS_BUILD_DRAW_TESTS)

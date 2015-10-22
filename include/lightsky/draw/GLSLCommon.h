@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   glsl_common.h
  * Author: Miles Lacey
  *
@@ -10,6 +10,24 @@
 
 namespace ls {
 namespace draw {
+
+/**----------------------------------------------------------------------------
+ * These enumerations can be used to describe vertex layouts to VAO objects.
+-----------------------------------------------------------------------------*/
+enum class layout_loc_t : int {
+    LAYOUT_LOC_POS          = 0,
+    LAYOUT_LOC_TEX          = 1,
+    LAYOUT_LOC_NORM         = 2,
+
+    LAYOUT_LOC_MAT_ROW      = 3, /* Matrices can be used for instancing */
+    LAYOUT_LOC_MAT_ROW0     = 3, /* Row 1, mat4_t<>[0][] */
+    LAYOUT_LOC_MAT_ROW1     = 4, /* Row 2, mat4_t<>[1][] */
+    LAYOUT_LOC_MAT_ROW2     = 5, /* Row 3, mat4_t<>[2][] */
+    LAYOUT_LOC_MAT_ROW3     = 6, /* Row 4, mat4_t<>[3][] */
+
+    LAYOUT_LOC_BONE_ID      = 7,
+    LAYOUT_LOC_BONE_WEIGHT  = 8,
+};
 
 /*-------------------------------------
  * Shader Versions
@@ -48,4 +66,3 @@ float getDiffuseIntensity(in vec3 vertNorm, in vec3 lightDir) {
 } // end ls namespace
 
 #endif	/* __LS_DRAW_GLSL_COMMON_H__ */
-

@@ -2,7 +2,7 @@
 #ifndef __LS_DRAW_TRANSFORM_H__
 #define __LS_DRAW_TRANSFORM_H__
 
-#include "lightsky/math/math.h"
+#include "lightsky/math/Math.h"
 
 namespace ls {
 namespace draw {

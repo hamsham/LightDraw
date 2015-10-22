@@ -11,7 +11,7 @@
 #include <string>
 
 #include "lightsky/draw/Setup.h"
-#include "lightsky/utils/resource.h"
+#include "lightsky/utils/Resource.h"
 #include "lightsky/draw/Color.h"
 
 namespace ls {

@@ -10,9 +10,9 @@
 
 #include <cstddef> // ptrdiff_t
 
-#include "lightsky/setup/macros.h"
+#include "lightsky/setup/Macros.h"
 
-#include "lightsky/utils/pointer.h"
+#include "lightsky/utils/Pointer.h"
 
 #include "lightsky/draw/Setup.h"
 #include "lightsky/draw/VertexAttrib.h"

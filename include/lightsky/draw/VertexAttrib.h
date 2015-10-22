@@ -11,7 +11,7 @@
 #include <string>
 #include <vector>
 
-#include "lightsky/math/math.h"
+#include "lightsky/math/Math.h"
 
 #include "lightsky/draw/Setup.h"
 
