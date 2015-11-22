@@ -75,6 +75,9 @@ int init_ls_draw();
     #include <GLES3/gl3ext.h>
 
 #elif defined (LS_OS_WINDOWS)
+    #ifndef WIN32_LEAN_AND_MEAN
+        #define WIN32_LEAN_AND_MEAN
+    #endif
     #include <GL/gl.h>
     #include <GL/glext.h>
 

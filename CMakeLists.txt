@@ -2,14 +2,18 @@
 # -------------------------------------
 # Project Setup
 # -------------------------------------
-project(LightMath CXX)
+project(LightGame CXX)
 set(OUTPUT_NAME lsdraw)
 
 
 
 # -------------------------------------
-# Freetype requires special care
+# Include Paths
 # -------------------------------------
+include_directories("include")
+
+
+# Freetype requires special care
 include(FindFreetype)
 include_directories(${FREETYPE_INCLUDE_DIRS})
 
@@ -18,8 +22,6 @@ include_directories(${FREETYPE_INCLUDE_DIRS})
 # -------------------------------------
 # Source Paths
 # -------------------------------------
-include_directories("include")
-
 set(LS_DRAW_SOURCES
     "src/draw/Atlas.cpp"
     "src/draw/BlendObject.cpp"
@@ -48,12 +50,42 @@ set(LS_DRAW_SOURCES
 
 
 # -------------------------------------
+# Dependency Setup
+# -------------------------------------
+set(
+    LS_DRAW_INTERNAL_DEPS
+    lssetup
+    lsutils
+    lsmath
+)
+
+
+if(WIN32)
+    set(
+        LS_DRAW_EXTERNAL_DEPS
+        freetype
+        opengl32
+    )
+else()
+    set(
+        LS_DRAW_EXTERNAL_DEPS
+        freetype
+        GL
+    )
+endif(WIN32)
+
+
+
+# -------------------------------------
 # Library Setup
 # -------------------------------------
 add_library("${OUTPUT_NAME}" STATIC "${LS_DRAW_SOURCES}")
 
-# Dependencies
-target_link_libraries("${OUTPUT_NAME}" lssetup lsutils lsmath)
+# Internal dependencies
+add_dependencies(${LS_DRAW_INTERNAL_DEPS})
+
+# Linking Setup
+target_link_libraries("${OUTPUT_NAME}" ${LS_DRAW_INTERNAL_DEPS} ${LS_DRAW_EXTERNAL_DEPS})
 
 
 
