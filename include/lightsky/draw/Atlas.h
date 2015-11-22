@@ -8,7 +8,7 @@
 #ifndef __LS_DRAW_ATLAS_H__
 #define	__LS_DRAW_ATLAS_H__
 
-#include "lightsky/utils/pointer.h"
+#include "lightsky/utils/Pointer.h"
 
 #include "lightsky/draw/Texture.h"
 
