@@ -148,7 +148,7 @@ class Texture {
         /**
          * @brief Copy Constructor -- DELETED
          */
-        Texture(const Texture&) = delete;
+        Texture(const Texture&);
         
         /**
          * @brief Move Constructor
@@ -171,7 +171,7 @@ class Texture {
         /**
          * @brief Copy Operator -- DELETED
          */
-        Texture& operator=(const Texture&) = delete;
+        Texture& operator=(const Texture&);
         
         /**
          * @brief Move Operator -- DELETED

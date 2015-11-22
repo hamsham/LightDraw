@@ -8,17 +8,27 @@ set(OUTPUT_NAME lsdraw)
 
 
 # -------------------------------------
+# Freetype requires special care
+# -------------------------------------
+include(FindFreetype)
+include_directories(${FREETYPE_INCLUDE_DIRS})
+
+
+
+# -------------------------------------
 # Source Paths
 # -------------------------------------
 include_directories("include")
 
 set(LS_DRAW_SOURCES
+    "src/draw/Atlas.cpp"
     "src/draw/BlendObject.cpp"
     "src/draw/BoundingBox.cpp"
     "src/draw/BufferObject.cpp"
     "src/draw/Camera.cpp"
     "src/draw/Color.cpp"
     "src/draw/DepthObject.cpp"
+    "src/draw/FontResource.cpp"
     "src/draw/FrameBuffer.cpp"
     "src/draw/GeometryUtils.cpp"
     "src/draw/ImageResource.cpp"

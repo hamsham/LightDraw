@@ -226,7 +226,7 @@ enum vertex_data_t : GLenum {
 /*-----------------------------------------------------------------------------
  * Vertex Attrib Layout Functions
 -----------------------------------------------------------------------------*/
-inline VertexAttrib createVertexAttrib(const vertex_data_t type) {
+inline VertexAttrib create_vertex_attrib(const vertex_data_t type) {
     const unsigned numComponents = get_num_attrib_subcomponents(type);
     return VertexAttrib{
         0,
@@ -240,7 +240,7 @@ inline VertexAttrib createVertexAttrib(const vertex_data_t type) {
 }
 
 template <vertex_data_t data_t>
-inline VertexAttrib createVertexAttrib() {
+inline VertexAttrib create_vertex_attrib() {
     ls::utils::runtime_assert(
         false,
         ls::utils::error_t::LS_ERROR,
@@ -251,97 +251,97 @@ inline VertexAttrib createVertexAttrib() {
 }
 
 template <>
-inline VertexAttrib createVertexAttrib<VERTEX_DATA_BYTE>() {
+inline VertexAttrib create_vertex_attrib<VERTEX_DATA_BYTE>() {
     return VertexAttrib{0, 1, VERTEX_DATA_BYTE, 0, 0, nullptr, ""};
 }
 
 template <>
-inline VertexAttrib createVertexAttrib<VERTEX_DATA_INT>() {
+inline VertexAttrib create_vertex_attrib<VERTEX_DATA_INT>() {
     return VertexAttrib{0, 1, VERTEX_DATA_INT, 0, 0, nullptr, ""};
 }
 
 template <>
-inline VertexAttrib createVertexAttrib<VERTEX_DATA_UINT>() {
+inline VertexAttrib create_vertex_attrib<VERTEX_DATA_UINT>() {
     return VertexAttrib{0, 1, VERTEX_DATA_UINT, 0, 0, nullptr, ""};
 }
 
 template <>
-inline VertexAttrib createVertexAttrib<VERTEX_DATA_FLOAT>() {
+inline VertexAttrib create_vertex_attrib<VERTEX_DATA_FLOAT>() {
     return VertexAttrib{0, 1, VERTEX_DATA_FLOAT, 0, 0, nullptr, ""};
 }
 
 template <>
-inline VertexAttrib createVertexAttrib<VERTEX_DATA_VEC_2B>() {
+inline VertexAttrib create_vertex_attrib<VERTEX_DATA_VEC_2B>() {
     return VertexAttrib{0, 2, VERTEX_DATA_VEC_2B, 0, 0, nullptr, ""};
 }
 
 template <>
-inline VertexAttrib createVertexAttrib<VERTEX_DATA_VEC_2I>() {
+inline VertexAttrib create_vertex_attrib<VERTEX_DATA_VEC_2I>() {
     return VertexAttrib{0, 2, VERTEX_DATA_VEC_2I, 0, 0, nullptr, ""};
 }
 
 template <>
-inline VertexAttrib createVertexAttrib<VERTEX_DATA_VEC_2UI>() {
+inline VertexAttrib create_vertex_attrib<VERTEX_DATA_VEC_2UI>() {
     return VertexAttrib{0, 2, VERTEX_DATA_VEC_2UI, 0, 0, nullptr, ""};
 }
 
 template <>
-inline VertexAttrib createVertexAttrib<VERTEX_DATA_VEC_2F>() {
+inline VertexAttrib create_vertex_attrib<VERTEX_DATA_VEC_2F>() {
     return VertexAttrib{0, 2, VERTEX_DATA_VEC_2F, 0, 0, nullptr, ""};
 }
 
 template <>
-inline VertexAttrib createVertexAttrib<VERTEX_DATA_VEC_3B>() {
+inline VertexAttrib create_vertex_attrib<VERTEX_DATA_VEC_3B>() {
     return VertexAttrib{0, 3, VERTEX_DATA_VEC_3B, 0, 0, nullptr, ""};
 }
 
 template <>
-inline VertexAttrib createVertexAttrib<VERTEX_DATA_VEC_3I>() {
+inline VertexAttrib create_vertex_attrib<VERTEX_DATA_VEC_3I>() {
     return VertexAttrib{0, 3, VERTEX_DATA_VEC_3I, 0, 0, nullptr, ""};
 }
 
 template <>
-inline VertexAttrib createVertexAttrib<VERTEX_DATA_VEC_3UI>() {
+inline VertexAttrib create_vertex_attrib<VERTEX_DATA_VEC_3UI>() {
     return VertexAttrib{0, 3, VERTEX_DATA_VEC_3UI, 0, 0, nullptr, ""};
 }
 
 template <>
-inline VertexAttrib createVertexAttrib<VERTEX_DATA_VEC_3F>() {
+inline VertexAttrib create_vertex_attrib<VERTEX_DATA_VEC_3F>() {
     return VertexAttrib{0, 3, VERTEX_DATA_VEC_3F, 0, 0, nullptr, ""};
 }
 
 template <>
-inline VertexAttrib createVertexAttrib<VERTEX_DATA_VEC_4B>() {
+inline VertexAttrib create_vertex_attrib<VERTEX_DATA_VEC_4B>() {
     return VertexAttrib{0, 4, VERTEX_DATA_VEC_4B, 0, 0, nullptr, ""};
 }
 
 template <>
-inline VertexAttrib createVertexAttrib<VERTEX_DATA_VEC_4I>() {
+inline VertexAttrib create_vertex_attrib<VERTEX_DATA_VEC_4I>() {
     return VertexAttrib{0, 4, VERTEX_DATA_VEC_4I, 0, 0, nullptr, ""};
 }
 
 template <>
-inline VertexAttrib createVertexAttrib<VERTEX_DATA_VEC_4UI>() {
+inline VertexAttrib create_vertex_attrib<VERTEX_DATA_VEC_4UI>() {
     return VertexAttrib{0, 4, VERTEX_DATA_VEC_4UI, 0, 0, nullptr, ""};
 }
 
 template <>
-inline VertexAttrib createVertexAttrib<VERTEX_DATA_VEC_4F>() {
+inline VertexAttrib create_vertex_attrib<VERTEX_DATA_VEC_4F>() {
     return VertexAttrib{0, 4, VERTEX_DATA_VEC_4F, 0, 0, nullptr, ""};
 }
 
 template <>
-inline VertexAttrib createVertexAttrib<VERTEX_DATA_MAT_2F>() {
+inline VertexAttrib create_vertex_attrib<VERTEX_DATA_MAT_2F>() {
     return VertexAttrib{0, 2, VERTEX_DATA_MAT_2F, 0, 0, nullptr, ""};
 }
 
 template <>
-inline VertexAttrib createVertexAttrib<VERTEX_DATA_MAT_3F>() {
+inline VertexAttrib create_vertex_attrib<VERTEX_DATA_MAT_3F>() {
     return VertexAttrib{0, 3, VERTEX_DATA_MAT_3F, 0, 0, nullptr, ""};
 }
 
 template <>
-inline VertexAttrib createVertexAttrib<VERTEX_DATA_MAT_4F>() {
+inline VertexAttrib create_vertex_attrib<VERTEX_DATA_MAT_4F>() {
     return VertexAttrib{0, 4, VERTEX_DATA_MAT_4F, 0, 0, nullptr, ""};
 }
 

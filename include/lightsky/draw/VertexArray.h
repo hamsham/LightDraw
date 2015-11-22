@@ -9,6 +9,7 @@
 #define	__LS_DRAW_VERTEX_ARRAY_H__
 
 #include "lightsky/draw/Setup.h"
+#include "lightsky/draw/VertexAttrib.h"
 
 namespace ls {
 namespace draw {
@@ -22,7 +23,7 @@ namespace draw {
 class VertexArray {
     private:
         /**
-         * A handle to the vertex array object residing on the GPU.
+         * @brief A handle to the vertex array object residing on the GPU.
          */
         unsigned vaoId = 0;
 
@@ -84,13 +85,13 @@ class VertexArray {
         bool init();
         
         /**
-         * Terminate the vertex array and release all of its resources back to
-         * the GPU.
+         * @brief Terminate the vertex array and release all of its resources
+         * back to the GPU.
          */
         void terminate();
         
         /**
-         * Determine if there is data used by this object
+         * @brief Determine if there is data used by this object
          * 
          * @returns true if this object has data residing on GPU memory, false
          * if not.
@@ -98,14 +99,14 @@ class VertexArray {
         bool is_valid() const;
         
         /**
-         * Get the GPU-assigned ID for this VAO
+         * @brief Get the GPU-assigned ID for this VAO
          * 
          * @return an unsigned integral type representing this VAO.
          */
         unsigned gpu_id() const;
         
         /**
-         * Enable an attribute contained within the vertex array.
+         * @brief Enable an attribute contained within the vertex array.
          * 
          * @param index
          * The array-index to an attribute that is to be enabled.
@@ -113,7 +114,7 @@ class VertexArray {
         void enable_attrib(int index);
         
         /**
-         * Disable an attribute contained in the array.
+         * @brief Disable an attribute contained in the array.
          * 
          * @param index
          * The array-index to an attribute that is to be disabled.
@@ -121,7 +122,9 @@ class VertexArray {
         void disable_attrib(int index);
         
         /**
-         * Set the memory layout/offset of an attribute in the vertex array.
+         * @brief Set the memory layout/offset of an attribute in the vertex
+         * array.
+         * 
          * @param index
          * The array attribute to be modified
          * 
@@ -151,7 +154,18 @@ class VertexArray {
         );
         
         /**
-         * Get the byte-offset to an element in the array.
+         * @brief Set the memory layout/offset of an attribute in the vertex
+         * array.
+         * 
+         * @param attrib
+         * A constant reference to an attrib object which contains all of the
+         * parameters required to determine a vertex's position, offset, type
+         * stride, and normalization parameters within a VAO object.
+         */
+        void set_attrib_offset(const VertexAttrib& attrib);
+        
+        /**
+         * @brief Get the byte-offset to an element in the array.
          * 
          * @param index
          * An element's index in the array.
@@ -161,8 +175,8 @@ class VertexArray {
         void* get_attrib_offset(int index) const;
         
         /**
-         * Set the rate at which an attribute should repeat during instanced
-         * draw calls on the GPU.
+         * @brief Set the rate at which an attribute should repeat during
+         * instanced draw calls on the GPU.
          * 
          * @param index
          * The attribute's index within the array.
@@ -174,12 +188,14 @@ class VertexArray {
         void set_attrib_instance_rate(int index, int instancesPerAttrib);
         
         /**
-         * Bind this vertex array to the current global rendering context.
+         * @brief Bind this vertex array to the current global rendering
+         * context.
          */
         void bind() const;
         
         /**
-         * Unbind this vertex array object from the current render context.
+         * @brief Unbind this vertex array object from the current render
+         * context.
          */
         void unbind() const;
 };
@@ -239,6 +255,20 @@ inline void VertexArray::set_attrib_offset(
     const void* elementOffset
 ) {
     glVertexAttribPointer(index, elementsPerVert, type, normalize, vertexOffset, elementOffset);
+}
+
+/*-------------------------------------
+    Set the memory layout/offset of an attribute in the vertex array.
+-------------------------------------*/
+inline void VertexArray::set_attrib_offset(const VertexAttrib& attrib) {
+    glVertexAttribPointer(
+        attrib.index,
+        attrib.components,
+        attrib.type,
+        attrib.normalized,
+        attrib.stride,
+        attrib.offset
+    );
 }
 
 /*-------------------------------------

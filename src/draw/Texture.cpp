@@ -9,6 +9,13 @@
 
 namespace ls {
 namespace draw {
+        
+/*-------------------------------------*
+    Destructor
+-------------------------------------*/
+Texture::~Texture() {
+    terminate();
+}
 
 /*-------------------------------------
     Constructor
@@ -17,6 +24,15 @@ Texture::Texture(tex_desc_t td) :
     dimensions{td},
     gpuId{0},
     slot{tex_slot_t::TEXTURE_SLOT_DEFAULT}
+{}
+
+/*-------------------------------------
+    Copy Constructor
+-------------------------------------*/
+Texture::Texture(const Texture& t) :
+    dimensions{t.dimensions},
+    gpuId{t.gpuId},
+    slot{t.slot}
 {}
 
 /*-------------------------------------
@@ -30,12 +46,16 @@ Texture::Texture(Texture&& t) :
     t.gpuId = 0;
     t.slot = tex_slot_t::TEXTURE_SLOT_DEFAULT;
 }
-        
-/*-------------------------------------*
-    Destructor
+
+/*-------------------------------------
+    Move Operator
 -------------------------------------*/
-Texture::~Texture() {
-    terminate();
+Texture& Texture::operator=(const Texture& t) {
+    dimensions = t.dimensions;
+    gpuId = t.gpuId;
+    slot = t.slot;
+    
+    return *this;
 }
 
 /*-------------------------------------
