@@ -165,6 +165,29 @@ class VertexArray {
         void set_attrib_offset(const VertexAttrib& attrib);
         
         /**
+         * @brief Set the memory layout/offset of an attribute in the vertex
+         * array.
+         * 
+         * @param pAttribs
+         * A constant reference to an array of VertexAttrib objects which
+         * contain all of the parameters required to determine the array
+         * positions, offsets, types strides, and normalization parameters for
+         * multiple types contained within a VAO object.
+         * 
+         * @param numAttribs
+         * Contains the number of VertexAttrib objects in the input array.
+         * 
+         * @param vertStride
+         * The number of bytes in between each consecutive vertex within the
+         * input vertex attribs.
+         */
+        void set_attrib_offsets(
+            VertexAttrib* const pAttribs,
+            const unsigned numAttribs,
+            const unsigned vertStride
+        );
+        
+        /**
          * @brief Get the byte-offset to an element in the array.
          * 
          * @param index

@@ -74,6 +74,9 @@ void printGlError(int line, const char* file) {
             case GL_INVALID_FRAMEBUFFER_OPERATION:
                 LS_LOG_ERR("OpenGL Error: GL_INVALID_FRAMEBUFFER_OPERATION On line ", line, " of file ", file, '\n');
                 break;
+            default:
+                LS_LOG_ERR("OpenGL Error: On line ", line, " of file ", file, '\n');
+                break;
         }
         
         errorCode = glGetError();
@@ -91,6 +94,9 @@ int init_ls_draw() {
 }
 
 #else
+
+} // end draw namespace
+} // end ls namespace
 
 /*-------------------------------------
  * OpenGL Function Declarations (static)
@@ -838,6 +844,10 @@ PFNGLRESETMINMAXPROC glResetMinmax;
 PFNGLGETPIXELMAPXVPROC glGetPixelMapxv;
 PFNGLPIXELMAPXPROC glPixelMapx;
 PFNGLPIXELSTOREXPROC glPixelStorex;
+
+
+namespace ls {
+namespace draw {
 
 int init_ls_draw() {
     int ret = 0; /* Contains the number of functions initialized */

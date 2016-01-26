@@ -79,7 +79,7 @@ Texture& Texture::operator=(Texture&& t) {
 bool Texture::init() {
     if (!gpuId) {
         glGenTextures(1, &gpuId);
-        LOG_GL_ERR();
+        LS_LOG_GL_ERR();
         
         if (gpuId == 0) {
             LS_LOG_ERR("Unable to generate a texture object");
@@ -130,10 +130,10 @@ bool Texture::init(
     }
     
     glBindTexture(dimensions, gpuId);
-    LOG_GL_ERR();
+    LS_LOG_GL_ERR();
     
     glTexImage2D(dimensions, mipmapLevel, internalFormat, size, 1, 0, format, dataType, data);
-    LOG_GL_ERR();
+    LS_LOG_GL_ERR();
     
     return true;
 }
@@ -154,13 +154,13 @@ bool Texture::init(
     }
     
     glBindTexture(dimensions, gpuId);
-    LOG_GL_ERR();
+    LS_LOG_GL_ERR();
     
     glTexImage2D(
         dimensions, mipmapLevel, internalFormat,
         size[0], size[1], 0, format, dataType, data
     );
-    LOG_GL_ERR();
+    LS_LOG_GL_ERR();
     
     return true;
 }
@@ -181,14 +181,14 @@ bool Texture::init(
     }
     
     glBindTexture(dimensions, gpuId);
-    LOG_GL_ERR();
+    LS_LOG_GL_ERR();
     
     glTexImage3D(
         dimensions, mipmapLevel, internalFormat,
         size[0], size[1], size[2], 0, format, dataType,
         data
     );
-    LOG_GL_ERR();
+    LS_LOG_GL_ERR();
     
     return true;
 }

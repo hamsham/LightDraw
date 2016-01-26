@@ -6,6 +6,7 @@
  */
 
 #include <utility>
+#include <memory>
 
 #include "lightsky/draw/ShaderProgram.h"
 #include "lightsky/draw/VertexAttrib.h"
@@ -88,15 +89,14 @@ bool ShaderProgram::link() {
     
     if (linkResult != GL_TRUE) {
         GLint logLength = 0;
-        GLchar* logData = nullptr;
         glGetProgramiv(gpuId, GL_INFO_LOG_LENGTH, &logLength);
-        logData = new GLchar[logLength+1];
+        
+        std::unique_ptr<GLchar[]> logData{new GLchar[logLength+1]};
         logData[logLength] = '\0';
 
-        glGetProgramInfoLog(gpuId, logLength, nullptr, logData);
+        glGetProgramInfoLog(gpuId, logLength, nullptr, logData.get());
         LS_LOG_ERR("Program linkage error:\n", logData, '\n');
 
-        delete [] logData;
         terminate();
         
         return false;
@@ -109,18 +109,13 @@ bool ShaderProgram::link() {
  * Shader Uniform information
 -------------------------------------*/
 std::string ShaderProgram::get_attrib_name(
-    const vertex_attrib_t attribType,
     const GLint index,
     GLint* const outVarSize,
     GLenum* const outVarType
 ) const {
     GLint maxVarNameLen = 0;
     
-    const GLenum paramType = attribType == vertex_attrib_t::UNIFORM_ATTRIB
-        ? GL_ACTIVE_UNIFORM_MAX_LENGTH
-        : GL_ACTIVE_ATTRIBUTE_MAX_LENGTH;
-    
-    glGetProgramiv(gpuId, paramType, &maxVarNameLen);
+    glGetProgramiv(gpuId, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &maxVarNameLen);
     
     if (maxVarNameLen < 1) {
         return std::string{};
@@ -129,25 +124,31 @@ std::string ShaderProgram::get_attrib_name(
     std::string varName;
     GLsizei varNameLen = 0;
     varName.resize(maxVarNameLen);
-    
-    if (attribType == vertex_attrib_t::UNIFORM_ATTRIB) {
-        glGetActiveUniform(gpuId, index, maxVarNameLen, &varNameLen, outVarSize, outVarType, &varName[0]);
-    }
-    else {
-        glGetActiveAttrib(gpuId, index, maxVarNameLen, &varNameLen, outVarSize, outVarType, &varName[0]);
-    }
+    glGetActiveAttrib(gpuId, index, maxVarNameLen, &varNameLen, outVarSize, outVarType, &varName[0]);
     
     varName.resize(varNameLen);
     return varName;
 }
 
 /*-------------------------------------
- * Get all shader uniform names
+ * Get all shader attrib/uniform names
 -------------------------------------*/
-std::vector<VertexAttrib> ShaderProgram::get_attribs(const vertex_attrib_t attribType) const {
-    const GLenum paramType = attribType == vertex_attrib_t::UNIFORM_ATTRIB
-        ? GL_ACTIVE_UNIFORMS
-        : GL_ACTIVE_ATTRIBUTES;
+std::vector<VertexAttrib> ShaderProgram::get_attribs_impl(const vertex_attrib_t attribType) const {
+    GLenum paramType;
+    std::string (ShaderProgram::* pNameGrabFunc)(const GLint, GLint* const, GLenum* const) const;
+    GLint (*pIndexGrabFunc)(GLuint, const GLchar*);
+    
+    if (attribType == vertex_attrib_t::UNIFORM_ATTRIB) {
+        paramType = GL_ACTIVE_UNIFORMS;
+        pNameGrabFunc = &ShaderProgram::get_uniform_name;
+        pIndexGrabFunc = glGetUniformLocation;
+    }
+    else {
+        paramType = GL_ACTIVE_ATTRIBUTES;
+        pNameGrabFunc = &ShaderProgram::get_attrib_name;
+        pIndexGrabFunc = glGetAttribLocation;
+    }
+    
     GLint total = 0;
     glGetProgramiv(gpuId, paramType, &total);
     
@@ -157,9 +158,8 @@ std::vector<VertexAttrib> ShaderProgram::get_attribs(const vertex_attrib_t attri
     for (int i = 0; i < total; ++i) {
         VertexAttrib& attrib = ret[i];
         
-        attrib.name = std::move(get_attrib_name(
-            attribType, i, &attrib.components, (GLenum*)&attrib.type
-        ));
+        attrib.name = std::move((this->*pNameGrabFunc)(i, &attrib.components, (GLenum*)&attrib.type));
+        attrib.index = pIndexGrabFunc(gpuId, attrib.name.c_str());
     }
     
     return ret;
@@ -169,9 +169,9 @@ std::vector<VertexAttrib> ShaderProgram::get_attribs(const vertex_attrib_t attri
     Uniform information
 -------------------------------------*/
 std::string ShaderProgram::get_uniform_name(
-    int index,
-    GLint* const varSize,
-    GLenum* const varType
+    const int index,
+    GLint* const outVarSize,
+    GLenum* const outVarType
 ) const {
     GLint maxVarNameLen = 0;
     
@@ -181,18 +181,13 @@ std::string ShaderProgram::get_uniform_name(
         return std::string{};
     }
     
-    GLchar* varName = nullptr;
-    GLsizei* varNameLen = nullptr;
+    std::string varName;
+    GLsizei varNameLen = 0;
+    varName.resize(maxVarNameLen);
+    glGetActiveUniform(gpuId, index, maxVarNameLen, &varNameLen, outVarSize, outVarType, &varName[0]);
     
-    glGetActiveUniform(
-        gpuId, index, maxVarNameLen, varNameLen, varSize, varType, varName
-    );
-    
-    if (varNameLen == nullptr || *varNameLen < 1 || varName == nullptr) {
-        return std::string{};
-    }
-    
-    return std::string{varName, (std::size_t)varNameLen};
+    varName.resize(varNameLen);
+    return varName;
 }
 
 } // end draw namespace

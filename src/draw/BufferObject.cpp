@@ -260,6 +260,7 @@ bool setup_vertex_buffer_attribs(BufferObject& buf, const common_vertex_t attrib
  * Dynamically create the indxe attributes required for a BufferObject.
 -------------------------------------*/
 bool setup_index_buffer_attribs(BufferObject& buf, const index_element_t indexType) {
+    buf.bufferType = ls::draw::VBO_BUFFER_ELEMENT;
     utils::Pointer<VertexAttrib[]> pAttrib = nullptr;
     
     if (buf.numAttribs != 1) {

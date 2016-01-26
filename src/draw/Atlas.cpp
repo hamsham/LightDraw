@@ -136,13 +136,13 @@ bool Atlas::init(const FontResource& fr) {
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     
     if (!this->atlasTex.init(0, COLOR_FMT_R_8, maxGlyphSize*dimensions, COLOR_LAYOUT_R, COLOR_TYPE_UNSIGNED_BYTE, nullptr)) {
-        LOG_GL_ERR();
+        LS_LOG_GL_ERR();
         LS_LOG_ERR("\tAn error occurred while allocating space for a font atlas.\n");
         this->pEntries.release();
         return false;
     }
     
-    LOG_GL_ERR();
+    LS_LOG_GL_ERR();
     
     // Upload the data
     this->numEntries = fr.get_num_glyphs();
@@ -192,11 +192,11 @@ bool Atlas::init(const FontResource& fr) {
     this->atlasTex.set_parameter(TEX_PARAM_WRAP_S, TEX_PARAM_CLAMP_EDGE);
     this->atlasTex.set_parameter(TEX_PARAM_WRAP_T, TEX_PARAM_CLAMP_EDGE);
     this->atlasTex.unbind();
-    LOG_GL_ERR();
+    LS_LOG_GL_ERR();
     
     // Restore OpenGL's default pixel packing format 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
-    LOG_GL_ERR();
+    LS_LOG_GL_ERR();
     
     this->pixelRatio = 1.f / (float)fr.get_font_size();
     

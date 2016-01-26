@@ -464,7 +464,7 @@ inline bool Texture::init(const ImageResource& resource, int mipmapLevel) {
 -------------------------------------*/
 inline void Texture::modify(int offset, int size, int format, int dataType, void* data) {
     glTexSubImage2D(get_texture_type(), 0, offset, 0, size, 0, format, dataType, data);
-    LOG_GL_ERR();
+    LS_LOG_GL_ERR();
 }
 
 /*-------------------------------------
@@ -478,7 +478,7 @@ inline void Texture::modify(
     void* data
 ) {
     glTexSubImage2D(get_texture_type(), 0, offset[0], offset[1], size[0], size[1], format, dataType, data);
-    LOG_GL_ERR();
+    LS_LOG_GL_ERR();
 }
 
 /*-------------------------------------
@@ -492,7 +492,7 @@ inline void Texture::modify(
     void* data
 ) {
     glTexSubImage3D(get_texture_type(), 0, offset[0], offset[1], offset[2], size[0], size[1], size[2], format, dataType, data);
-    LOG_GL_ERR();
+    LS_LOG_GL_ERR();
 }
 
 /*-------------------------------------

@@ -12,23 +12,6 @@ namespace ls {
 namespace draw {
 
 /*-------------------------------------
- * Get active attribute info from a shader.
--------------------------------------*/
-std::string get_attrib_shader_name(
-    const ShaderProgram& prog,
-    const GLint index,
-    GLint* const outVarSize,
-    GLenum* const outVarType
-) {
-    return prog.get_attrib_name(
-        vertex_attrib_t::VERTEX_ATTRIB,
-        index,
-        outVarSize,
-        outVarType
-    );
-}
-
-/*-------------------------------------
  * Get the number of bytes occupied by an attribute
 -------------------------------------*/
 unsigned get_num_attrib_bytes(const vertex_data_t type) {

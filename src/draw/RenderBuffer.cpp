@@ -43,7 +43,7 @@ RenderBuffer& RenderBuffer::operator =(RenderBuffer&& rbo) {
 bool RenderBuffer::init() {
     if (!gpuId) {
         glGenRenderbuffers(1, &gpuId);
-        LOG_GL_ERR();
+        LS_LOG_GL_ERR();
 
         if (gpuId == 0) {
             LS_LOG_ERR("Unable to generate a renderbuffer object");
@@ -66,10 +66,10 @@ bool RenderBuffer::init(rbo_format_t internalFormat, const math::vec2i& size) {
     }
 
     glBindRenderbuffer(GL_RENDERBUFFER, gpuId);
-    LOG_GL_ERR();
+    LS_LOG_GL_ERR();
 
     glRenderbufferStorage(GL_RENDERBUFFER, internalFormat, size[0], size[1]);
-    LOG_GL_ERR();
+    LS_LOG_GL_ERR();
 
     return true;
 }

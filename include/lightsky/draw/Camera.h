@@ -346,7 +346,7 @@ class Camera {
          * @param h
          * The height of the projection matrix frustum.
          */
-        void get_aspect_ratio(float w, float h);
+        void set_aspect_ratio(float w, float h);
 
         /**
          * @brief Get the aspect ratio of the camera's projection matrix.
@@ -564,7 +564,7 @@ inline float Camera::get_fov() const {
 /*-------------------------------------
  * Set the aspect ratio
 -------------------------------------*/
-inline void Camera::get_aspect_ratio(float w, float h) {
+inline void Camera::set_aspect_ratio(float w, float h) {
     aspectW = w;
     aspectH = h;
 }

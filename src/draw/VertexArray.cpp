@@ -11,13 +11,13 @@ namespace ls {
 namespace draw {
 
 /*-------------------------------------
-    Constructor
+ * Constructor
 -------------------------------------*/
 VertexArray::VertexArray() {
 }
 
 /*-------------------------------------
-    Move Constructor
+ * Move Constructor
 -------------------------------------*/
 VertexArray::VertexArray(VertexArray&& va) :
     vaoId{va.vaoId}
@@ -26,14 +26,14 @@ VertexArray::VertexArray(VertexArray&& va) :
 }
 
 /*-------------------------------------
-    Destructor
+ * Destructor
 -------------------------------------*/
 VertexArray::~VertexArray() {
     terminate();
 }
 
 /*-------------------------------------
-    Move Operator
+ * Move Operator
 -------------------------------------*/
 VertexArray& VertexArray::operator=(VertexArray&& va) {
     vaoId = va.vaoId;
@@ -42,7 +42,7 @@ VertexArray& VertexArray::operator=(VertexArray&& va) {
 }
 
 /*-------------------------------------
-    Array initialization.
+ * Array initialization.
 -------------------------------------*/
 bool VertexArray::init() {
     if (vaoId != 0) {
@@ -51,6 +51,30 @@ bool VertexArray::init() {
 
     glGenVertexArrays(1, &vaoId);
     return vaoId != 0;
+}
+
+/*-------------------------------------
+ * Set the memory layout/offset of an attribute in the vertex array.
+-------------------------------------*/
+void VertexArray::set_attrib_offsets(
+    VertexAttrib* const pAttribs,
+    const unsigned numAttribs,
+    const unsigned vertStride
+) {
+    
+    unsigned offset = 0;
+    const unsigned stride = vertStride;
+    
+    for (unsigned i = 0; i < numAttribs; ++i) {
+        VertexAttrib& attrib = pAttribs[i];
+        
+        attrib.index = i;
+        attrib.offset = reinterpret_cast<void*>(offset);
+        attrib.stride = stride;
+        offset += get_num_attrib_bytes(attrib.type);
+        
+        this->set_attrib_offset(attrib);
+    }
 }
 
 } // end draw namespace

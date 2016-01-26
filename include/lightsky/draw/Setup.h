@@ -46,8 +46,8 @@ int init_ls_draw();
 
 
 
-#ifndef LOG_GL_ERR
-    #define LOG_GL_ERR() ls::draw::printGlError(__LINE__, __FILE__)
+#ifndef LS_LOG_GL_ERR
+    #define LS_LOG_GL_ERR() ls::draw::printGlError(__LINE__, __FILE__)
 #endif
 
 

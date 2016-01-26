@@ -49,32 +49,6 @@ struct VertexAttrib {
     std::string     name;
 };
 
-/**------------------------------------
- * @brief Get information about an active vertex attribute located in a shader.
- * 
- * @param prog
- * A constant reference to successfully compiled a shaderProgram object.
- * 
- * @param index - indicates the index of the attribute to be queried.
- * 
- * @param varSize - indicates the number of elements contained within
- * the attribute. This will be a value of 1 for all variables that are not
- * arrays.
- * 
- * @param varType - used to determine the variable's data type; such as
- * an int, float, sampler, matrix, or sampler array.
- * 
- * @returns the name of the variable as it is known in the shader
- * source code.
- * 
--------------------------------------*/
-std::string get_attrib_shader_name(
-    const ShaderProgram& prog,
-    const GLint index,
-    GLint* const outVarSize,
-    GLenum* const outVarType
-);
-
 /**----------------------------------------------------------------------------
  * @brief Determine the number of bytes which are used by a vertex attribute
  * type.

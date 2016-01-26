@@ -392,7 +392,7 @@ inline int FrameBuffer::get_max_num_attachments() {
     Get the status of the current framebuffer.
 -------------------------------------*/
 inline fbo_status_t FrameBuffer::get_status(const FrameBuffer& fbo) {
-    LOG_GL_ERR();
+    LS_LOG_GL_ERR();
     return (fbo_status_t)glCheckFramebufferStatus(fbo.get_access_type());
 }
 

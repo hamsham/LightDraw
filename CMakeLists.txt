@@ -39,7 +39,6 @@ set(LS_DRAW_SOURCES
     "src/draw/Setup.cpp"
     "src/draw/ShaderObject.cpp"
     "src/draw/ShaderProgram.cpp"
-    "src/draw/ShaderUniform.cpp"
     "src/draw/Texture.cpp"
     "src/draw/Transform.cpp"
     "src/draw/VertexArray.cpp"

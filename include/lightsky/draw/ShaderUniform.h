@@ -12,7 +12,6 @@
 
 #include "lightsky/draw/Setup.h"
 #include "lightsky/draw/VertexAttrib.h"
-#include "lightsky/draw/ShaderProgram.h"
 
 namespace ls {
 namespace draw {
@@ -21,75 +20,10 @@ namespace draw {
  * Forward Declarations
 -----------------------------------------------------------------------------*/
 enum vertex_data_t : GLenum;
-class ShaderProgram;
-
-/*-----------------------------------------------------------------------------
- * Typedefs and Aliases
------------------------------------------------------------------------------*/
-typedef VertexAttrib ShaderUniform;
 
 /*-----------------------------------------------------------------------------
  * Shader Uniform Functions
 -----------------------------------------------------------------------------*/
-/**------------------------------------
- * @brief Get information about an active uniform located in a shader.
- * 
- * @param prog
- * A constant reference to successfully compiled a ShaderProgram object.
- * 
- * @param index - indicates the index of the uniform to be queried.
- * 
- * @param varSize - indicates the number of elements contained within
- * the uniform. This will be a value of 1 for all variables that are not
- * arrays.
- * 
- * @param varType - used to determine the variable's data type; such as
- * an int, float, sampler, matrix, or sampler array.
- * 
- * @returns the name of the variable as it is known in the shader
- * source code.
- * 
--------------------------------------*/
-std::string get_shader_uniform_name(
-    const ShaderProgram& prog,
-    const GLint index,
-    GLint* const outVarSize,
-    GLenum* const outVarType
-);
-
-/**------------------------------------
- * @brief Retrieve a list of all shader uniform attributes.
- * 
- * @param prog
- * A constant reference to successfully compiled a ShaderProgram object.
- * 
- * @return A std::vector of std::string objects, containing the names of all
- * shader uniforms within the input program object.
--------------------------------------*/
-std::vector<ShaderUniform> get_shader_uniforms(const ShaderProgram& prog);
-
-/**------------------------------------
- * @brief Get the location of a uniform variable.
- * 
- * @return GLint
- * A positive value to indicate the uniform's location in OpenGL or
- * -1 for an invalid uniform index.
--------------------------------------*/
-inline GLint get_shader_uniform_location(const ShaderProgram& sp, const GLchar* const name) {
-    return glGetUniformLocation(sp.gpu_id(), name);
-}
-
-/**------------------------------------
- * @brief Get the location of a uniform variable.
- * 
- * @return GLint
- * A positive value to indicate the uniform's location in OpenGL or
- * -1 for an invalid uniform index.
--------------------------------------*/
-inline GLint get_shader_uniform_location(const ShaderProgram& sp, const std::string& name) {
-    return glGetUniformLocation(sp.gpu_id(), name.c_str());
-}
-
 /**------------------------------------
  * @brief Set a single uniform integer variable
 -------------------------------------*/
@@ -240,21 +174,21 @@ inline void set_shader_uniform(GLint uniformId, const math::vec4& val) {
 /**------------------------------------
  * @brief Set a uniform 2d matrix
 -------------------------------------*/
-inline void set_shader_uniform(GLint uniformId, const math::mat2& val, bool transpose) {
+inline void set_shader_uniform(GLint uniformId, const math::mat2& val, bool transpose = false) {
     glUniformMatrix2fv(uniformId, 1, transpose ? GL_TRUE : GL_FALSE, &val[0]);
 }
 
 /**------------------------------------
  * @brief Set a uniform 3d matrix
 -------------------------------------*/
-inline void set_shader_uniform(GLint uniformId, const math::mat3& val, bool transpose) {
+inline void set_shader_uniform(GLint uniformId, const math::mat3& val, bool transpose = false) {
     glUniformMatrix3fv(uniformId, 1, transpose ? GL_TRUE : GL_FALSE, &val[0]);
 }
 
 /**------------------------------------
  * @brief Set a uniform 4d matrix
 -------------------------------------*/
-inline void set_shader_uniform(GLint uniformId, const math::mat4& val, bool transpose) {
+inline void set_shader_uniform(GLint uniformId, const math::mat4& val, bool transpose = false) {
     glUniformMatrix4fv(uniformId, 1, transpose ? GL_TRUE : GL_FALSE, &val[0]);
 }
 

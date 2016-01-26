@@ -16,7 +16,7 @@ namespace draw {
     FBO Error handling
 -------------------------------------*/
 void FrameBuffer::print_status(const FrameBuffer& fbo) {
-    LOG_GL_ERR();
+    LS_LOG_GL_ERR();
     
     const fbo_status_t err = get_status(fbo);
     
@@ -119,7 +119,7 @@ void FrameBuffer::attach_render_target(
     else {
         LS_LOG_ERR("Attempting to load an unsupported texture type into a framebuffer.");
     }
-    LOG_GL_ERR();
+    LS_LOG_GL_ERR();
 }
 
 /*-------------------------------------
@@ -147,7 +147,7 @@ void FrameBuffer::attach_render_target(fbo_attach_t attachment, const Texture& t
 void FrameBuffer::attach_render_target(fbo_attach_t attachment, const RenderBuffer& rbo) {
     const unsigned rboId = rbo.gpu_id();
     glFramebufferRenderbuffer(access, attachment, GL_RENDERBUFFER, rboId);
-    LOG_GL_ERR();
+    LS_LOG_GL_ERR();
 }
 
 } // end draw namespace
