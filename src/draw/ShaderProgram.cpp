@@ -95,7 +95,7 @@ bool ShaderProgram::link() {
         logData[logLength] = '\0';
 
         glGetProgramInfoLog(gpuId, logLength, nullptr, logData.get());
-        LS_LOG_ERR("Program linkage error:\n", logData, '\n');
+        LS_LOG_ERR("Program linkage error:\n", logData.get(), '\n');
 
         terminate();
         

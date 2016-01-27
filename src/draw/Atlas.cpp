@@ -200,14 +200,14 @@ bool Atlas::init(const FontResource& fr) {
     
     this->pixelRatio = 1.f / (float)fr.get_font_size();
     
-    LS_LOG_MSG("\tSuccessfully loaded a font atlas.\n");
     LS_LOG_MSG(
         "\tSuccessfully loaded a font atlas.",
         "\n\t\tTotal Resolution:   ", texResolution[0], 'x', texResolution[1],
         "\n\t\tGlyphs Per Row/Col: ", dimensions, " x ", dimensions,
         "\n\t\tTotal Glyph Count:  ", fr.get_num_glyphs(),
         "\n\t\tWidth Per Glyph:    ", maxGlyphSize[0],
-        "\n\t\tHeight Per Glyph:   ", maxGlyphSize[1]
+        "\n\t\tHeight Per Glyph:   ", maxGlyphSize[1],
+        '\n'
     );
     
     

@@ -248,7 +248,7 @@ class Texture {
         void set_parameter(int paramName, float param) const;
         
         /**
-         * Create an OpenGL texture with no data.
+         * @brief Create an OpenGL texture with no data.
          * 
          * @return true if the operation was successful. False if otherwise.
          */

@@ -277,7 +277,7 @@ class Transform {
          * this->modelMatrix = deltaTransform * this->modelMatrix.
          *
          * Calling this method will apply all pending transformations, making
-         * firther calls to "isDirty()" to return false.
+         * further calls to "isDirty()" to return false.
          *
          * @param deltaTransform
          * A 4x4 transformation matrix which will determine how much to adjust
@@ -293,8 +293,8 @@ class Transform {
         /**
          * @brief Set *this transformation object's internal model matrix.
          *
-         * Calling this method will apply all pending transformations, making
-         * further calls to "isDirty()" return FALSE.
+         * Calling this method will discard all pending transformations and
+         * further calls to "isDirty()" return TRUE.
          *
          * @param newTransform
          * A constant reference to a 4x4 matrix which, representing the
@@ -306,7 +306,7 @@ class Transform {
          * @brief Retrieve the current model matrix of *this.
          *
          * @return a reference to a 4x4 matrix, representing the position,
-         * scale, and orientation of a point in 3D cartesian space.
+         * scale, and orientation of a point in 3D Cartesian space.
          */
         const math::mat4& get_transform() const;
         

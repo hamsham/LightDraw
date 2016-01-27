@@ -287,7 +287,7 @@ inline void VertexArray::set_attrib_offset(const VertexAttrib& attrib) {
     glVertexAttribPointer(
         attrib.index,
         attrib.components,
-        attrib.type,
+        get_attrib_base_type(attrib.type),
         attrib.normalized,
         attrib.stride,
         attrib.offset
