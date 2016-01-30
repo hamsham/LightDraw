@@ -176,7 +176,8 @@ class Camera {
          * according to the input parameters.
          * 
          * @param inFov
-         * Determines the horizontal viewing angle of the projection matrix.
+         * Determines the horizontal viewing angle, in radians, of the
+         * projection matrix.
          * 
          * @param aspectWidth
          * Determines the width, in user-defined units, of the camera's
@@ -510,6 +511,7 @@ inline const math::vec3& Camera::get_target() const {
 -------------------------------------*/
 inline void Camera::set_target(const math::vec3& t) {
     target = t;
+    viewTransform.set_dirty();
 }
 
 /*-------------------------------------

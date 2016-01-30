@@ -23,6 +23,8 @@ unsigned get_num_attrib_bytes(const vertex_data_t type) {
             return sizeof(unsigned char);
         case VERTEX_DATA_INT:
             return sizeof(int);
+        case VERTEX_DATA_USHORT:
+            return sizeof(unsigned short);
         case VERTEX_DATA_UINT:
             return sizeof(unsigned);
         case VERTEX_DATA_FLOAT:
@@ -114,6 +116,7 @@ unsigned get_num_attrib_components(const vertex_data_t type) {
             return 0;
 
         case VERTEX_DATA_BYTE:
+        case VERTEX_DATA_USHORT:
         case VERTEX_DATA_INT:
         case VERTEX_DATA_UINT:
         case VERTEX_DATA_FLOAT:
@@ -210,6 +213,7 @@ unsigned get_num_attrib_subcomponents(const vertex_data_t type) {
 -------------------------------------*/
 vertex_data_t get_attrib_base_type(const vertex_data_t type) {
     switch(type) {
+        case VERTEX_DATA_USHORT:
         case VERTEX_DATA_HALF_FLOAT:
         case VERTEX_DATA_FIXED:
         case VERTEX_DATA_2_10I:

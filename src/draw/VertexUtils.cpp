@@ -56,4 +56,22 @@ draw::index_element_t draw::get_required_index_type(const unsigned numVertices) 
         : draw::index_element_t::INDEX_TYPE_UINT;
 }
 
+/*-------------------------------------
+ * Get the number of bytes required to store a set of indices.
+-------------------------------------*/
+unsigned draw::get_index_byte_size(const draw::index_element_t indexType) {
+    switch(indexType) {
+        case INDEX_TYPE_UBYTE:
+            return sizeof(unsigned char);
+        case INDEX_TYPE_USHORT:
+            return sizeof(unsigned short);
+        case INDEX_TYPE_UINT:
+            return sizeof(unsigned int);
+        default:
+            break;
+    }
+    
+    return (unsigned)-1;
+}
+
 } // end ls namespace

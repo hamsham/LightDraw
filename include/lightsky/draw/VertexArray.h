@@ -277,6 +277,7 @@ inline void VertexArray::set_attrib_offset(
     int vertexOffset,
     const void* elementOffset
 ) {
+    enable_attrib(index);
     glVertexAttribPointer(index, elementsPerVert, type, normalize, vertexOffset, elementOffset);
 }
 
@@ -284,7 +285,7 @@ inline void VertexArray::set_attrib_offset(
     Set the memory layout/offset of an attribute in the vertex array.
 -------------------------------------*/
 inline void VertexArray::set_attrib_offset(const VertexAttrib& attrib) {
-    glVertexAttribPointer(
+    set_attrib_offset(
         attrib.index,
         attrib.components,
         get_attrib_base_type(attrib.type),

@@ -119,7 +119,8 @@ vertex_data_t get_attrib_base_type(const vertex_data_t type);
 enum vertex_data_t : GLenum {
     VERTEX_DATA_UNKNOWN = GL_ZERO,
     
-    VERTEX_DATA_BYTE = GL_BOOL,
+    VERTEX_DATA_BYTE = GL_BYTE,
+    VERTEX_DATA_USHORT = GL_UNSIGNED_SHORT,
     VERTEX_DATA_INT = GL_INT,
     VERTEX_DATA_UINT = GL_UNSIGNED_INT,
     VERTEX_DATA_FLOAT = GL_FLOAT,
@@ -227,6 +228,11 @@ inline VertexAttrib create_vertex_attrib() {
 template <>
 inline VertexAttrib create_vertex_attrib<VERTEX_DATA_BYTE>() {
     return VertexAttrib{0, 1, VERTEX_DATA_BYTE, 0, 0, nullptr, ""};
+}
+
+template <>
+inline VertexAttrib create_vertex_attrib<VERTEX_DATA_USHORT>() {
+    return VertexAttrib{0, 1, VERTEX_DATA_USHORT, 0, 0, nullptr, ""};
 }
 
 template <>

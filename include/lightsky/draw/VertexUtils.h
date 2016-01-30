@@ -309,6 +309,18 @@ inline IndexRange& IndexRange::operator=(IndexRange&& ir) {
 -------------------------------------*/
 index_element_t get_required_index_type(const unsigned numVertices);
 
+/**------------------------------------
+ * @brief Determine the number of bytes required to store one or more indices
+ * within a flexible-index-format.
+ * 
+ * @param indexType
+ * An enumeration containing the types of indices which will be used in the
+ * output byte-size calculation.
+ * 
+ * @return The size, in bytes, of a flexible-index-format.
+-------------------------------------*/
+unsigned get_index_byte_size(const index_element_t indexType);
+
 } // end draw namespace
 } // end ls namespace
 
