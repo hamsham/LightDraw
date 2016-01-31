@@ -268,7 +268,7 @@ class Camera {
          * 
          * @return A 3D unit vector containing the view matrix Z-axis.
          */
-        math::vec3 get_direction() const;
+        math::vec3 get_eye_direction() const;
 
         /**
          * @brief Get the camera's normal vector.
@@ -276,6 +276,14 @@ class Camera {
          * @return a 3D vector, used to determine which direction is upwards.
          */
         math::vec3 get_up_direction() const;
+
+        /**
+         * @brief Get the camera's "right" direction (its X-Axis).
+         * 
+         * @return a 3D vector, used to determine which direction is to the
+         * right of the camera.
+         */
+        math::vec3 get_right_direction() const;
 
         /**
          * @brief Retrieve the camera's view matrix for external use.

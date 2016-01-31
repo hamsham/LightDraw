@@ -25,9 +25,10 @@ enum class view_axis_t : unsigned {
  * or axis of rotation.
  */
 inline ls::math::vec3 extractMVVector(const ls::math::mat4& viewMat, const view_axis_t axis) {
-    const ls::math::mat3&& rotationMat = ls::math::mat3{viewMat};
-    const unsigned a = LS_ENUM_VAL(axis);
-    const ls::math::vec3&& mvVec = ls::math::vec3{-viewMat[a][0], -viewMat[a][1], -viewMat[a][2]};
+    const unsigned          a           = LS_ENUM_VAL(axis);
+    const ls::math::mat3&&  rotationMat = ls::math::mat3{viewMat};
+    const ls::math::vec3&&  mvVec       = -rotationMat[a];
+    
     return mvVec * ls::math::transpose(rotationMat);
 }
 
@@ -119,7 +120,8 @@ Camera& Camera::operator =(Camera&& c) {
  * Get the absolute view position
 -------------------------------------*/
 math::vec3 Camera::get_abs_position() const {
-    return extractMVVector(viewTransform.get_transform(), view_axis_t::MV_POSITION);
+    //return extractMVVector(viewTransform.get_transform(), view_axis_t::MV_POSITION);
+    return viewTransform.get_abs_position();
 }
 
 /*-------------------------------------
@@ -137,7 +139,7 @@ void Camera::set_view_mode(camera_mode_t mode) {
 /*-------------------------------------
  * Get the forward direction
 -------------------------------------*/
-math::vec3 Camera::get_direction() const {
+math::vec3 Camera::get_eye_direction() const {
     return extractMVVector(viewTransform.get_transform(), view_axis_t::MV_Z_AXIS);
 }
 
@@ -146,6 +148,13 @@ math::vec3 Camera::get_direction() const {
 -------------------------------------*/
 math::vec3 Camera::get_up_direction() const {
     return extractMVVector(viewTransform.get_transform(), view_axis_t::MV_Y_AXIS);
+}
+
+/*-------------------------------------
+ * Retrieve the camera's right vector
+-------------------------------------*/
+math::vec3 Camera::get_right_direction() const {
+    return extractMVVector(viewTransform.get_transform(), view_axis_t::MV_X_AXIS);
 }
 
 /*-------------------------------------
