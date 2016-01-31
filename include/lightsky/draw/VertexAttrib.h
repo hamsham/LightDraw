@@ -183,6 +183,7 @@ enum vertex_data_t : GLenum {
     POSITION_VERTEX_TYPE    = VERTEX_DATA_VEC_3F,
     TEXTURE_VERTEX_TYPE     = VERTEX_DATA_VEC_2F,
     NORMAL_VERTEX_TYPE      = VERTEX_DATA_VEC_3F,
+    COLOR_VERTEX_TYPE       = VERTEX_DATA_VEC_4F,
     
     TANGENT_VERTEX_TYPE     = NORMAL_VERTEX_TYPE,
     BITANGENT_VERTEX_TYPE   = NORMAL_VERTEX_TYPE,
@@ -192,10 +193,11 @@ enum vertex_data_t : GLenum {
     BONE_ID_VERTEX_TYPE     = VERTEX_DATA_INT,
     BONE_WEIGHT_VERTEX_TYPE = VERTEX_DATA_FLOAT,
     
-//    AMBIENT_VERTEX_TYPE   = ?,
-//    SPECULAR_VERTEX_TYPE  = ?,
-//    DIFFUSE_VERTEX_TYPE   = ?,
-//    ROUGHNESS_VERTEX_TYPE = ?
+//    AMBIENT_VERTEX_TYPE     = ?,
+//    SPECULAR_VERTEX_TYPE    = ?,
+//    DIFFUSE_VERTEX_TYPE     = ?,
+//    ROUGHNESS_VERTEX_TYPE   = ?
+//    METALLIC_VERTEX_TYPE    = ?
 };
 
 /*-----------------------------------------------------------------------------

@@ -33,19 +33,21 @@ enum common_vertex_t : unsigned {
     POSITION_VERTEX     = 0x1000,
     TEXTURE_VERTEX      = 0x2000,
     NORMAL_VERTEX       = 0x4000,
+    COLOR_VERTEX        = 0x8000,
     
-    TANGENT_VERTEX      = 0x8000,
-    BITANGENT_VERTEX    = 0x0100,
+    TANGENT_VERTEX      = 0x0100,
+    BITANGENT_VERTEX    = 0x0200,
     
-    MODEL_MAT_VERTEX    = 0x0200,
+    MODEL_MAT_VERTEX    = 0x0400,
     
-    BONE_ID_VERTEX      = 0x0400,
-    BONE_WEIGHT_VERTEX  = 0x0800,
+    BONE_ID_VERTEX      = 0x0800,
+    BONE_WEIGHT_VERTEX  = 0x0010,
     
-//    AMBIENT_VERTEX      = 0x0010,
-//    SPECULAR_VERTEX     = 0x0020,
-//    DIFFUSE_VERTEX      = 0x0040,
-//    ROUGHNESS_VERTEX    = 0x0080
+//    AMBIENT_VERTEX      = 0x0020,
+//    SPECULAR_VERTEX     = 0x0040,
+//    DIFFUSE_VERTEX      = 0x0080,
+//    ROUGHNESS_VERTEX    = 0x0001,
+//    METALLIC_VERTEX     = 0x0002
 };
 
 /**
@@ -73,47 +75,53 @@ constexpr unsigned BONE_VERTEX = 0
 /**
  * @brief Common name for a vertex attribute containing positional vertices.
  */
-constexpr char VERTEX_POSITION_NAME[] = "pos";
+constexpr char VERTEX_POSITION_NAME[] = "posAttrib";
 
 /**
  * @brief Common name for a vertex attribute containing UV coordinates.
  */
-constexpr char VERTEX_UV_NAME[] = "uv";
+constexpr char VERTEX_UV_NAME[] = "uvAttrib";
+
+/**
+ * @brief Common name for a vertex attribute containing floating-point color
+ * information.
+ */
+constexpr char VERTEX_COLOR_NAME[] = "rgbaFAttrib";
 
 /**
  * @brief Common name for a vertex attribute containing vertex normals.
  */
-constexpr char VERTEX_NORMAL_NAME[] = "norm";
+constexpr char VERTEX_NORMAL_NAME[] = "normAttrib";
 
 /**
  * @brief Common name for a vertex attribute containing vertex tangents.
  */
-constexpr char VERTEX_TANGENT_NAME[] = "tang";
+constexpr char VERTEX_TANGENT_NAME[] = "tangAttrib";
 
 /**
  * @brief Common name for a vertex attribute containing vertex bi-tangents.
  */
-constexpr char VERTEX_BITANGENT_NAME[] = "bitang";
+constexpr char VERTEX_BITANGENT_NAME[] = "bitangAttrib";
 
 /**
  * @brief Common name for a vertex attribute containing model matrices.
  */
-constexpr char VERTEX_MODEL_MAT_NAME[] = "modelMat";
+constexpr char VERTEX_MODEL_MAT_NAME[] = "modelMatAttrib";
 
 /**
  * @brief Common name for a vertex attribute containing skeletal bone weights.
  */
-constexpr char VERTEX_BONE_WEIGHT_NAME[] = "boneWeight";
+constexpr char VERTEX_BONE_WEIGHT_NAME[] = "boneWeightAttrib";
 
 /**
  * @brief Common name for a vertex attribute containing skeletal bone IDs.
  */
-constexpr char VERTEX_BONE_ID_NAME[] = "boneId";
+constexpr char VERTEX_BONE_ID_NAME[] = "boneIdAttrib";
 
 /**
  * @brief Common name for a vertex attribute containing index elements.
  */
-constexpr char INDEX_VERTEX_NAME[] = "ibo";
+constexpr char INDEX_VERTEX_NAME[] = "iboAttrib";
 
 /**------------------------------------
  * @brief Determine the number of bytes required to store one or more vertices

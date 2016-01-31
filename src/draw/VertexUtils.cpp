@@ -7,6 +7,7 @@
 
 #include <limits>
 
+#include "lightsky/draw/VertexAttrib.h"
 #include "lightsky/draw/VertexUtils.h"
 
 namespace ls {
@@ -35,14 +36,41 @@ constexpr char draw::vertex_boneId[];
 unsigned draw::get_vertex_byte_size(const draw::common_vertex_t vertexTypes) {
     unsigned numBytes = 0;
     
-    if (vertexTypes & common_vertex_t::POSITION_VERTEX)     {numBytes += sizeof(math::vec3);}
-    if (vertexTypes & common_vertex_t::TEXTURE_VERTEX)      {numBytes += sizeof(math::vec2);}
-    if (vertexTypes & common_vertex_t::NORMAL_VERTEX)       {numBytes += sizeof(math::vec3);}
-    if (vertexTypes & common_vertex_t::TANGENT_VERTEX)      {numBytes += sizeof(math::vec3);}
-    if (vertexTypes & common_vertex_t::BITANGENT_VERTEX)    {numBytes += sizeof(math::vec3);}
-    if (vertexTypes & common_vertex_t::MODEL_MAT_VERTEX)    {numBytes += sizeof(math::mat4);}
-    if (vertexTypes & common_vertex_t::BONE_ID_VERTEX)      {numBytes += sizeof(unsigned);}
-    if (vertexTypes & common_vertex_t::BONE_WEIGHT_VERTEX)  {numBytes += sizeof(float);}
+    if (vertexTypes & common_vertex_t::POSITION_VERTEX) {
+        numBytes += get_num_attrib_bytes(vertex_data_t::POSITION_VERTEX_TYPE);
+    }
+    
+    if (vertexTypes & common_vertex_t::TEXTURE_VERTEX) {
+        numBytes += get_num_attrib_bytes(vertex_data_t::TEXTURE_VERTEX_TYPE);
+    }
+    
+    if (vertexTypes & common_vertex_t::COLOR_VERTEX) {
+        numBytes += get_num_attrib_bytes(vertex_data_t::COLOR_VERTEX_TYPE);
+    }
+    
+    if (vertexTypes & common_vertex_t::NORMAL_VERTEX) {
+        numBytes += get_num_attrib_bytes(vertex_data_t::NORMAL_VERTEX_TYPE);
+    }
+    
+    if (vertexTypes & common_vertex_t::TANGENT_VERTEX) {
+        numBytes += get_num_attrib_bytes(vertex_data_t::TANGENT_VERTEX_TYPE);
+    }
+    
+    if (vertexTypes & common_vertex_t::BITANGENT_VERTEX) {
+        numBytes += get_num_attrib_bytes(vertex_data_t::BITANGENT_VERTEX_TYPE);
+    }
+    
+    if (vertexTypes & common_vertex_t::MODEL_MAT_VERTEX) {
+        numBytes += get_num_attrib_bytes(vertex_data_t::MODEL_MAT_VERTEX_TYPE);
+    }
+    
+    if (vertexTypes & common_vertex_t::BONE_ID_VERTEX) {
+        numBytes += get_num_attrib_bytes(vertex_data_t::BONE_ID_VERTEX_TYPE);
+    }
+    
+    if (vertexTypes & common_vertex_t::BONE_WEIGHT_VERTEX) {
+        numBytes += get_num_attrib_bytes(vertex_data_t::BONE_WEIGHT_VERTEX_TYPE);
+    }
     
     return numBytes;
 }

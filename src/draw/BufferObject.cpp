@@ -223,6 +223,11 @@ bool setup_vertex_buffer_attribs(BufferObject& buf, const common_vertex_t attrib
         set_buffer_attrib(get_num_attrib_components(cmp), cmp, ls::draw::VERTEX_UV_NAME);
     }
     
+    if (attribs & common_vertex_t::COLOR_VERTEX) {
+        const vertex_data_t cmp = vertex_data_t::COLOR_VERTEX_TYPE;
+        set_buffer_attrib(get_num_attrib_components(cmp), cmp, ls::draw::VERTEX_COLOR_NAME);
+    }
+    
     if (attribs & common_vertex_t::NORMAL_VERTEX) {
         const vertex_data_t cmp = vertex_data_t::NORMAL_VERTEX_TYPE;
         set_buffer_attrib(get_num_attrib_components(cmp), cmp, ls::draw::VERTEX_NORMAL_NAME);
