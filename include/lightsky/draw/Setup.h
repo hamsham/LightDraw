@@ -34,7 +34,7 @@ int init_ls_draw();
 #ifdef LS_DEBUG
     void printGlError(const char* const func, const int line, const char* const file);
 #else
-    inline void printGlError(int, const char*) {}
+    inline void printGlError(const char* const, int, const char*) {}
 #endif
 
 
