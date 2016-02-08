@@ -182,7 +182,7 @@ class VertexArray {
          * input vertex attribs.
          */
         void set_attrib_offsets(
-            VertexAttrib* const pAttribs,
+            const VertexAttrib* const pAttribs,
             const unsigned numAttribs,
             const unsigned vertStride
         );

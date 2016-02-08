@@ -5,6 +5,8 @@
  * Created on January 27, 2014, 8:35 PM
  */
 
+#include "lightsky/utils/Assertions.h"
+
 #include "lightsky/draw/Texture.h"
 
 namespace ls {

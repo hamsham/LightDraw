@@ -127,7 +127,7 @@ struct BufferObject {
     /**
      * @brief Constructor.
      */
-    BufferObject();
+    BufferObject(const buffer_use_t usage = buffer_use_t::VBO_BUFFER_ARRAY);
 
     /**
      * @brief Copy Constructor
@@ -188,19 +188,18 @@ struct BufferObject {
  * @param buf
  * A reference to the buffer object who's data is to be manipulated.
  * 
- * @param buf
- * A reference to the buffer object who's data is to be manipulated.
+ * @param usage
+ * Indicates the intended usage of the buffer object being initialized. This
+ * parameter can impact context-sensitive GL functionality such as binding
+ * a VBO to a VAO or draw calls.
  * 
  * @return TRUE if the buffer was successfully created, FALSE if not.
  */
-bool init_buffer(BufferObject& buf);
+bool init_buffer(BufferObject& buf, const buffer_use_t usage = buffer_use_t::VBO_BUFFER_ARRAY);
 
 /**
  * @brief Terminate the vertex buffer and release all of its resources back to
  * the GPU.
- * 
- * @param buf
- * A reference to the buffer object who's data is to be manipulated.
  * 
  * @param buf
  * A reference to the buffer object who's data is to be manipulated.

@@ -54,28 +54,28 @@ namespace draw {
  * OpenGL Errors
 -------------------------------------*/
 #ifdef LS_DEBUG
-void printGlError(int line, const char* file) {
+void printGlError(const char* const func, const int line, const char* const file) {
     GLenum errorCode = glGetError();
     
     while (errorCode != GL_NO_ERROR) {
         switch(errorCode) {
             case GL_INVALID_ENUM:
-                LS_LOG_ERR("OpenGL Error: GL_INVALID_ENUM On line ", line, " of file ", file, '\n');
+                LS_LOG_ERR("OpenGL Error: GL_INVALID_ENUM in function \"", func, "\", line ", line, " of ", file, '\n');
                 break;
             case GL_INVALID_VALUE:
-                LS_LOG_ERR("OpenGL Error: GL_INVALID_VALUE On line ", line, " of file ", file, '\n');
+                LS_LOG_ERR("OpenGL Error: GL_INVALID_VALUE in function \"", func, "\", line ", line, " of ", file, '\n');
                 break;
             case GL_INVALID_OPERATION:
-                LS_LOG_ERR("OpenGL Error: GL_INVALID_OPERATION On line ", line, " of file ", file, '\n');
+                LS_LOG_ERR("OpenGL Error: GL_INVALID_OPERATION in function \"", func, "\", line ", line, " of ", file, '\n');
                 break;
             case GL_OUT_OF_MEMORY:
-                LS_LOG_ERR("OpenGL Error: GL_OUT_OF_MEMORY On line ", line, " of file ", file, '\n');
+                LS_LOG_ERR("OpenGL Error: GL_OUT_OF_MEMORY in function \"", func, "\", line ", line, " of ", file, '\n');
                 break;
             case GL_INVALID_FRAMEBUFFER_OPERATION:
-                LS_LOG_ERR("OpenGL Error: GL_INVALID_FRAMEBUFFER_OPERATION On line ", line, " of file ", file, '\n');
+                LS_LOG_ERR("OpenGL Error: GL_INVALID_FRAMEBUFFER_OPERATION in function \"", func, "\", line ", line, " of ", file, '\n');
                 break;
             default:
-                LS_LOG_ERR("OpenGL Error: On line ", line, " of file ", file, '\n');
+                LS_LOG_ERR("OpenGL Error: ", errorCode, " in function \"", func, "\", line ", line, " of ", file, '\n');
                 break;
         }
         

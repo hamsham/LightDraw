@@ -57,23 +57,21 @@ bool VertexArray::init() {
  * Set the memory layout/offset of an attribute in the vertex array.
 -------------------------------------*/
 void VertexArray::set_attrib_offsets(
-    VertexAttrib* const pAttribs,
+    const VertexAttrib* const pAttribs,
     const unsigned numAttribs,
     const unsigned vertStride
 ) {
-    
-    unsigned offset = 0;
-    const unsigned stride = vertStride;
-    
     for (unsigned i = 0; i < numAttribs; ++i) {
-        VertexAttrib& attrib = pAttribs[i];
+        const VertexAttrib& attrib = pAttribs[i];
         
-        attrib.index = i;
-        attrib.offset = reinterpret_cast<void*>(offset);
-        attrib.stride = stride;
-        offset += get_num_attrib_bytes(attrib.type);
-        
-        this->set_attrib_offset(attrib);
+        this->set_attrib_offset(
+            i,
+            attrib.components,
+            attrib.type,
+            attrib.normalized,
+            vertStride,
+            attrib.offset
+        );
     }
 }
 

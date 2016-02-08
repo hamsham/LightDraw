@@ -137,6 +137,10 @@ class Texture {
          */
         unsigned gpuId = 0;
         
+        /**
+         * Current texture slot *this objects will be bound to during drawing
+         * operations.
+         */
         tex_slot_t slot = tex_slot_t::TEXTURE_SLOT_DEFAULT;
         
     public:

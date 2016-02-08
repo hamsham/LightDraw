@@ -20,9 +20,9 @@ namespace draw {
 /*-------------------------------------
  * Constructor
 -------------------------------------*/
-BufferObject::BufferObject() :
+BufferObject::BufferObject(const buffer_use_t usage) :
     gpuId{0},
-    bufferType{buffer_use_t::VBO_BUFFER_ARRAY},
+    bufferType{usage},
     numAttribs{0},
     pAttribs{nullptr}
 {}
@@ -105,10 +105,12 @@ BufferObject& BufferObject::operator=(BufferObject&& b) {
 /*-------------------------------------
  * Buffer initialization
 -------------------------------------*/
-bool init_buffer(BufferObject& buf) {
+bool init_buffer(BufferObject& buf, const buffer_use_t usage) {
     if (!buf.gpuId) {
         glGenBuffers(1, &buf.gpuId);
     }
+    
+    buf.bufferType = usage;
     
     return buf.gpuId != 0;
 }
@@ -182,30 +184,33 @@ bool copy_buffer_data(const BufferObject& from, BufferObject& to) {
  * Dynamically create the vertex attributes required for a BufferObject.
 -------------------------------------*/
 bool setup_vertex_buffer_attribs(BufferObject& buf, const common_vertex_t attribs) {
-    const unsigned numAttribs = math::count_set_bits(attribs);
-    VertexAttrib* pAttribs = nullptr;
-    unsigned attribIndex = 0;
-    const GLsizei byteStride = get_vertex_byte_size(attribs);
-    char* byteOffset = nullptr;
+    const unsigned  attribCount = math::count_set_bits(attribs);
+    VertexAttrib*   pAttribs    = nullptr;
+    unsigned        attribIndex = 0;
+    const GLsizei   byteStride  = get_vertex_byte_size(attribs);
+    const char*     byteOffset  = nullptr;
     
-    if (buf.numAttribs != numAttribs) {
-        buf.numAttribs = 0;
-        buf.pAttribs.release();
-        pAttribs = new(std::nothrow) VertexAttrib[numAttribs];
+    if (buf.numAttribs != attribCount) {
+        buf.pAttribs.reset(new VertexAttrib[attribCount]);
         
-        if (!pAttribs) {
+        if (!buf.pAttribs) {
             return false;
         }
-    }
-    else {
-        pAttribs = buf.pAttribs.get();
+        else {
+            buf.numAttribs = attribCount;
+        }
     }
     
-    auto set_buffer_attrib = [&](const unsigned components, const vertex_data_t dataType, const char* const name)->void {
+    pAttribs = buf.pAttribs.get();
+    
+    auto set_buffer_attrib = [&pAttribs, &attribIndex, &byteStride, &byteOffset](
+        const vertex_data_t dataType,
+        const char* const name
+    )->void {
         VertexAttrib& attrib = pAttribs[attribIndex];
         
-        attrib.index      = attribIndex; ++attribIndex;
-        attrib.components = components;
+        attrib.index      = attribIndex++;
+        attrib.components = get_num_attrib_components(dataType);
         attrib.type       = get_attrib_base_type(dataType);
         attrib.normalized = GL_FALSE;
         attrib.stride     = byteStride;
@@ -214,48 +219,39 @@ bool setup_vertex_buffer_attribs(BufferObject& buf, const common_vertex_t attrib
     };
     
     if (attribs & common_vertex_t::POSITION_VERTEX) {
-        const vertex_data_t cmp = vertex_data_t::POSITION_VERTEX_TYPE;
-        set_buffer_attrib(get_num_attrib_components(cmp), cmp, ls::draw::VERTEX_POSITION_NAME);
+        set_buffer_attrib(vertex_data_t::POSITION_VERTEX_TYPE, ls::draw::VERTEX_POSITION_NAME);
     }
     
     if (attribs & common_vertex_t::TEXTURE_VERTEX) {
-        const vertex_data_t cmp = vertex_data_t::TEXTURE_VERTEX_TYPE;
-        set_buffer_attrib(get_num_attrib_components(cmp), cmp, ls::draw::VERTEX_UV_NAME);
+        set_buffer_attrib(vertex_data_t::TEXTURE_VERTEX_TYPE, ls::draw::VERTEX_UV_NAME);
     }
     
     if (attribs & common_vertex_t::COLOR_VERTEX) {
-        const vertex_data_t cmp = vertex_data_t::COLOR_VERTEX_TYPE;
-        set_buffer_attrib(get_num_attrib_components(cmp), cmp, ls::draw::VERTEX_COLOR_NAME);
+        set_buffer_attrib(vertex_data_t::COLOR_VERTEX_TYPE, ls::draw::VERTEX_COLOR_NAME);
     }
     
     if (attribs & common_vertex_t::NORMAL_VERTEX) {
-        const vertex_data_t cmp = vertex_data_t::NORMAL_VERTEX_TYPE;
-        set_buffer_attrib(get_num_attrib_components(cmp), cmp, ls::draw::VERTEX_NORMAL_NAME);
+        set_buffer_attrib(vertex_data_t::NORMAL_VERTEX_TYPE, ls::draw::VERTEX_NORMAL_NAME);
     }
     
     if (attribs & common_vertex_t::TANGENT_VERTEX) {
-        const vertex_data_t cmp = vertex_data_t::TANGENT_VERTEX_TYPE;
-        set_buffer_attrib(get_num_attrib_components(cmp), cmp, ls::draw::VERTEX_TANGENT_NAME);
+        set_buffer_attrib(vertex_data_t::TANGENT_VERTEX_TYPE, ls::draw::VERTEX_TANGENT_NAME);
     }
     
     if (attribs & common_vertex_t::BITANGENT_VERTEX) {
-        const vertex_data_t cmp = vertex_data_t::BITANGENT_VERTEX_TYPE;
-        set_buffer_attrib(get_num_attrib_components(cmp), cmp, ls::draw::VERTEX_BITANGENT_NAME);
+        set_buffer_attrib(vertex_data_t::BITANGENT_VERTEX_TYPE, ls::draw::VERTEX_BITANGENT_NAME);
     }
     
     if (attribs & common_vertex_t::MODEL_MAT_VERTEX) {
-        const vertex_data_t cmp = vertex_data_t::MODEL_MAT_VERTEX_TYPE;
-        set_buffer_attrib(get_num_attrib_components(cmp), cmp, ls::draw::VERTEX_MODEL_MAT_NAME);
+        set_buffer_attrib(vertex_data_t::MODEL_MAT_VERTEX_TYPE, ls::draw::VERTEX_MODEL_MAT_NAME);
     }
     
     if (attribs & common_vertex_t::BONE_ID_VERTEX) {
-        const vertex_data_t cmp = vertex_data_t::BONE_ID_VERTEX_TYPE;
-        set_buffer_attrib(get_num_attrib_components(cmp), cmp, ls::draw::VERTEX_BONE_ID_NAME);
+        set_buffer_attrib(vertex_data_t::BONE_ID_VERTEX_TYPE, ls::draw::VERTEX_BONE_ID_NAME);
     }
     
     if (attribs & common_vertex_t::BONE_WEIGHT_VERTEX) {
-        const vertex_data_t cmp = vertex_data_t::BONE_WEIGHT_VERTEX_TYPE;
-        set_buffer_attrib(get_num_attrib_components(cmp), cmp, ls::draw::VERTEX_BONE_WEIGHT_NAME);
+        set_buffer_attrib(vertex_data_t::BONE_WEIGHT_VERTEX_TYPE, ls::draw::VERTEX_BONE_WEIGHT_NAME);
     }
     
     return true;
@@ -265,24 +261,27 @@ bool setup_vertex_buffer_attribs(BufferObject& buf, const common_vertex_t attrib
  * Dynamically create the indxe attributes required for a BufferObject.
 -------------------------------------*/
 bool setup_index_buffer_attribs(BufferObject& buf, const index_element_t indexType) {
-    buf.bufferType = ls::draw::VBO_BUFFER_ELEMENT;
-    utils::Pointer<VertexAttrib[]> pAttrib = nullptr;
+    VertexAttrib* pAttrib = nullptr;
     
+    // Index buffer objects should only have one attribute
     if (buf.numAttribs != 1) {
-        pAttrib.reset(new(std::nothrow) VertexAttrib[1]);
+        buf.pAttribs.reset(new(std::nothrow) VertexAttrib[1]);
         
-        if (!pAttrib) {
+        if (!buf.pAttribs) {
             return false;
         }
-        
-        buf.pAttribs.swap(pAttrib);
+        else {
+            buf.numAttribs = 1;
+        }
     }
+    
+    pAttrib = buf.pAttribs.get();
     
     pAttrib->index      = 0;
     pAttrib->components = get_num_attrib_components((vertex_data_t)indexType);
     pAttrib->type       = get_attrib_base_type((vertex_data_t)indexType);
     pAttrib->normalized = GL_FALSE;
-    pAttrib->stride     = get_num_attrib_bytes((vertex_data_t)indexType);
+    pAttrib->stride     = 0;
     pAttrib->offset     = 0;
     pAttrib->name       = "";
     

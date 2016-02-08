@@ -8,6 +8,7 @@
 #ifndef __LS_DRAW_SHADER_OBJECT_H__
 #define	__LS_DRAW_SHADER_OBJECT_H__
 
+#include <vector>
 #include <utility>
 
 #include "lightsky/draw/Setup.h"

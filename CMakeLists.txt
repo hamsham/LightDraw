@@ -58,6 +58,8 @@ set(
     lsmath
 )
 
+find_package(OpenGL REQUIRED)
+
 
 if(WIN32)
     set(
@@ -69,7 +71,7 @@ else()
     set(
         LS_DRAW_EXTERNAL_DEPS
         freetype
-        GL
+        ${OPENGL_LIBRARIES}
     )
 endif(WIN32)
 

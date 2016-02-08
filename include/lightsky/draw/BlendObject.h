@@ -296,10 +296,10 @@ class BlendObject {
          * The blending function for the destination alpha channel.
          */
         void set_blend_function(
-            blend_func_t srcFactorRgb = BLEND_FNC_ONE,
-            blend_func_t dstFactorRgb = BLEND_FNC_ZERO,
-            blend_func_t srcFactorAlpha = BLEND_FNC_ONE,
-            blend_func_t dstFactorAlpha = BLEND_FNC_ZERO
+            blend_func_t srcFactorRgb,
+            blend_func_t dstFactorRgb,
+            blend_func_t srcFactorAlpha,
+            blend_func_t dstFactorAlpha
         );
         
         /**

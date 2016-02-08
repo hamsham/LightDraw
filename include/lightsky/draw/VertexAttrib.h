@@ -9,7 +9,8 @@
 #define __LS_DRAW_VERTEX_ATTRIB_H__
 
 #include <string>
-#include <vector>
+
+#include "lightsky/utils/Assertions.h"
 
 #include "lightsky/math/Math.h"
 
@@ -45,7 +46,7 @@ struct VertexAttrib {
     vertex_data_t   type;
     GLboolean       normalized;
     GLsizei         stride;
-    GLvoid*         offset;
+    const GLvoid*   offset;
     std::string     name;
 };
 
@@ -208,7 +209,7 @@ inline VertexAttrib create_vertex_attrib(const vertex_data_t type) {
     return VertexAttrib{
         0,
         (int)get_num_attrib_components(type),
-        (vertex_data_t)get_attrib_base_type(type),
+        get_attrib_base_type(type),
         0,
         numComponents > 1 ? 0 : (int)get_num_attrib_bytes(type),
         nullptr,

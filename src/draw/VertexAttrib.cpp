@@ -19,71 +19,43 @@ unsigned get_num_attrib_bytes(const vertex_data_t type) {
         case VERTEX_DATA_UNKNOWN:
             return 0;
 
-        case VERTEX_DATA_BYTE:
-            return sizeof(unsigned char);
-        case VERTEX_DATA_INT:
-            return sizeof(int);
-        case VERTEX_DATA_USHORT:
-            return sizeof(unsigned short);
-        case VERTEX_DATA_UINT:
-            return sizeof(unsigned);
-        case VERTEX_DATA_FLOAT:
-            return sizeof(float);
-        case VERTEX_DATA_HALF_FLOAT:
-            return 16;
-            
-        case VERTEX_DATA_FIXED:
-        case VERTEX_DATA_2_10I:
-        case VERTEX_DATA_2_10U:
-            return 32;
+        case VERTEX_DATA_BYTE:      return sizeof(unsigned char);
+        case VERTEX_DATA_USHORT:    return sizeof(unsigned short);
+        case VERTEX_DATA_INT:       return sizeof(int);
+        case VERTEX_DATA_UINT:      return sizeof(unsigned);
+        case VERTEX_DATA_FLOAT:     return sizeof(float);
+        
+        case VERTEX_DATA_HALF_FLOAT:return sizeof(float)/2;
+        case VERTEX_DATA_FIXED:     return sizeof(int);    
+        case VERTEX_DATA_2_10I:     return sizeof(int32_t);
+        case VERTEX_DATA_2_10U:     return sizeof(uint32_t);
 
-        case VERTEX_DATA_VEC_2B:
-            return sizeof(math::vec2_t<unsigned char>);
-        case VERTEX_DATA_VEC_2I:
-            return sizeof(math::vec2f);
-        case VERTEX_DATA_VEC_2UI:
-            return sizeof(math::vec2f);
-        case VERTEX_DATA_VEC_2F:
-            return sizeof(math::vec2f);
+        case VERTEX_DATA_VEC_2B:    return sizeof(math::vec2_t<char>);
+        case VERTEX_DATA_VEC_2I:    return sizeof(math::vec2f);
+        case VERTEX_DATA_VEC_2UI:   return sizeof(math::vec2f);
+        case VERTEX_DATA_VEC_2F:    return sizeof(math::vec2f);
 
-        case VERTEX_DATA_VEC_3B:
-            return sizeof(math::vec3_t<unsigned char>);
-        case VERTEX_DATA_VEC_3I:
-            return sizeof(math::vec3i);
-        case VERTEX_DATA_VEC_3UI:
-            return sizeof(math::vec3ui);
-        case VERTEX_DATA_VEC_3F:
-            return sizeof(math::vec3f);
+        case VERTEX_DATA_VEC_3B:    return sizeof(math::vec3_t<char>);
+        case VERTEX_DATA_VEC_3I:    return sizeof(math::vec3i);
+        case VERTEX_DATA_VEC_3UI:   return sizeof(math::vec3ui);
+        case VERTEX_DATA_VEC_3F:    return sizeof(math::vec3f);
 
-        case VERTEX_DATA_VEC_4B:
-            return sizeof(math::vec4_t<unsigned char>);
-        case VERTEX_DATA_VEC_4I:
-            return sizeof(math::vec4i);
-        case VERTEX_DATA_VEC_4UI:
-            return sizeof(math::vec4ui);
-        case VERTEX_DATA_VEC_4F:
-            return sizeof(math::vec4f);
+        case VERTEX_DATA_VEC_4B:    return sizeof(math::vec4_t<char>);
+        case VERTEX_DATA_VEC_4I:    return sizeof(math::vec4i);
+        case VERTEX_DATA_VEC_4UI:   return sizeof(math::vec4ui);
+        case VERTEX_DATA_VEC_4F:    return sizeof(math::vec4f);
 
-        case VERTEX_DATA_MAT_2F:
-            return sizeof(math::mat2f);
-            
-        case VERTEX_DATA_MAT_2x3F:
-        case VERTEX_DATA_MAT_2x4F:
-            return 0;
+        case VERTEX_DATA_MAT_2F:    return sizeof(math::mat2f);
+        case VERTEX_DATA_MAT_2x3F:  return sizeof(math::vec2) * 3;
+        case VERTEX_DATA_MAT_2x4F:  return sizeof(math::vec2) * 4;
 
-        case VERTEX_DATA_MAT_3F:
-            return sizeof(math::mat3f);
-            
-        case VERTEX_DATA_MAT_3x2F:
-        case VERTEX_DATA_MAT_3x4F:
-            return 0;
+        case VERTEX_DATA_MAT_3F:    return sizeof(math::mat3f);
+        case VERTEX_DATA_MAT_3x2F:  return sizeof(math::vec3) * 2;
+        case VERTEX_DATA_MAT_3x4F:  return sizeof(math::vec3) * 4;
 
-        case VERTEX_DATA_MAT_4F:
-            return sizeof(math::mat4f);
-            
-        case VERTEX_DATA_MAT_4x2F:
-        case VERTEX_DATA_MAT_4x3F:
-            return 0;
+        case VERTEX_DATA_MAT_4F:    return sizeof(math::mat4f);
+        case VERTEX_DATA_MAT_4x2F:  return sizeof(math::vec4) * 2;
+        case VERTEX_DATA_MAT_4x3F:  return sizeof(math::vec4) * 3;
 
         case VERTEX_DATA_SAMPLER_2D:
         case VERTEX_DATA_SAMPLER_2DI:
@@ -122,8 +94,6 @@ unsigned get_num_attrib_components(const vertex_data_t type) {
         case VERTEX_DATA_FLOAT:
         case VERTEX_DATA_HALF_FLOAT:
         case VERTEX_DATA_FIXED:
-        case VERTEX_DATA_2_10I:
-        case VERTEX_DATA_2_10U:
             return 1;
 
         case VERTEX_DATA_VEC_2B:
@@ -142,6 +112,8 @@ unsigned get_num_attrib_components(const vertex_data_t type) {
         case VERTEX_DATA_VEC_4I:
         case VERTEX_DATA_VEC_4UI:
         case VERTEX_DATA_VEC_4F:
+        case VERTEX_DATA_2_10I:
+        case VERTEX_DATA_2_10U:
             return 4;
 
         case VERTEX_DATA_MAT_2F:
@@ -216,8 +188,6 @@ vertex_data_t get_attrib_base_type(const vertex_data_t type) {
         case VERTEX_DATA_USHORT:
         case VERTEX_DATA_HALF_FLOAT:
         case VERTEX_DATA_FIXED:
-        case VERTEX_DATA_2_10I:
-        case VERTEX_DATA_2_10U:
             return type;
 
         case VERTEX_DATA_BYTE:
@@ -230,12 +200,14 @@ vertex_data_t get_attrib_base_type(const vertex_data_t type) {
         case VERTEX_DATA_VEC_2I:
         case VERTEX_DATA_VEC_3I:
         case VERTEX_DATA_VEC_4I:
+        case VERTEX_DATA_2_10I:
             return VERTEX_DATA_INT;
             
         case VERTEX_DATA_UINT:
         case VERTEX_DATA_VEC_2UI:
         case VERTEX_DATA_VEC_3UI:
         case VERTEX_DATA_VEC_4UI:
+        case VERTEX_DATA_2_10U:
             return VERTEX_DATA_UINT;
             
         case VERTEX_DATA_FLOAT:

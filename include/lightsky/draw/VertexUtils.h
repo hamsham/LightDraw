@@ -48,26 +48,29 @@ enum common_vertex_t : unsigned {
 //    DIFFUSE_VERTEX      = 0x0080,
 //    ROUGHNESS_VERTEX    = 0x0001,
 //    METALLIC_VERTEX     = 0x0002
+    
+    
+    /**
+     * @brief A standard vertex is the most commonly supported collection of
+     * individual base types within the rendering framework.
+     */
+    STANDARD_VERTEX = (0
+        | POSITION_VERTEX
+        | TEXTURE_VERTEX
+        | NORMAL_VERTEX
+        | 0),
+    /**
+     * @brief A bone vertex allows for a single vertex type to contain enough
+     * information to perform skeletal animation/skinning.
+     */
+    BONE_VERTEX = (0
+        | BONE_ID_VERTEX
+        | BONE_WEIGHT_VERTEX
+        | 0),
 };
 
-/**
- * @brief A standard vertex is the most commonly supported collection of
- * individual base types within the rendering framework.
- */
-constexpr unsigned STANDARD_VERTEX = 0
-    | common_vertex_t::POSITION_VERTEX
-    | common_vertex_t::TEXTURE_VERTEX
-    | common_vertex_t::NORMAL_VERTEX
-    | 0;
 
-/**
- * @brief A bone vertex allows for a single vertex type to contain enough
- * information to perform skeletal animation/skinning.
- */
-constexpr unsigned BONE_VERTEX = 0
-    | common_vertex_t::BONE_ID_VERTEX
-    | common_vertex_t::BONE_WEIGHT_VERTEX
-    | 0;
+
 
 /*-----------------------------------------------------------------------------
  * Common Vertex Names

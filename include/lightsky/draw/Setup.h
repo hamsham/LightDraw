@@ -10,8 +10,6 @@
 
 #include "lightsky/setup/Setup.h"
 
-#include "lightsky/utils/Assertions.h"
-#include "lightsky/utils/Hash.h"
 #include "lightsky/utils/Log.h"
 
 #include "lightsky/math/Math.h"
@@ -34,7 +32,7 @@ int init_ls_draw();
  * Debugging Various Messages.
 -------------------------------------*/
 #ifdef LS_DEBUG
-    void printGlError(int line, const char* file);
+    void printGlError(const char* const func, const int line, const char* const file);
 #else
     inline void printGlError(int, const char*) {}
 #endif
@@ -47,7 +45,7 @@ int init_ls_draw();
 
 
 #ifndef LS_LOG_GL_ERR
-    #define LS_LOG_GL_ERR() ls::draw::printGlError(__LINE__, __FILE__)
+    #define LS_LOG_GL_ERR() ls::draw::printGlError(__func__, __LINE__, __FILE__)
 #endif
 
 
