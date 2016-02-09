@@ -236,7 +236,7 @@ void Camera::rotate_locked_y(const math::vec3& amount) {
 -------------------------------------*/
 void Camera::update() {
     if (viewMode == camera_mode_t::ARCBALL) {
-        viewTransform.apply_pre_transforms(math::translate(math::mat4{1.f}, -target));
+        viewTransform.apply_pre_transforms(math::translate(math::mat4{1.f}, target));
     }
     else {
         viewTransform.apply_transform(false);

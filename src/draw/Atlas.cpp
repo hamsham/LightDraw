@@ -170,7 +170,7 @@ bool Atlas::init(const FontResource& fr) {
             pEntry.uv[0] /= texResolution;
             pEntry.uv[1] /= texResolution;
 
-            // Add descriptor data for each glyoh.
+            // Add descriptor data for each glyph.
             pEntry.advance = (vec2)pGlyph.advance;
             pEntry.advance /= fDimension;
             
