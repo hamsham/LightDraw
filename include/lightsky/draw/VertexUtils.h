@@ -43,11 +43,11 @@ enum common_vertex_t : unsigned {
     BONE_ID_VERTEX      = 0x0800,
     BONE_WEIGHT_VERTEX  = 0x0010,
     
-//    AMBIENT_VERTEX      = 0x0020,
-//    SPECULAR_VERTEX     = 0x0040,
-//    DIFFUSE_VERTEX      = 0x0080,
-//    ROUGHNESS_VERTEX    = 0x0001,
-//    METALLIC_VERTEX     = 0x0002
+    AMBIENT_VERTEX      = 0x0020,
+    DIFFUSE_VERTEX      = 0x0040,
+    SPECULAR_VERTEX     = 0x0080,
+    ROUGHNESS_VERTEX    = 0x0001,
+    METALLIC_VERTEX     = 0x0002,
     
     
     /**
@@ -78,53 +78,96 @@ enum common_vertex_t : unsigned {
 /**
  * @brief Common name for a vertex attribute containing positional vertices.
  */
-constexpr char VERTEX_POSITION_NAME[] = "posAttrib";
+extern const std::string VERT_ATTRIB_NAME_POSITION;
 
 /**
  * @brief Common name for a vertex attribute containing UV coordinates.
  */
-constexpr char VERTEX_UV_NAME[] = "uvAttrib";
+extern const std::string VERT_ATTRIB_NAME_TEXTURE;
 
 /**
  * @brief Common name for a vertex attribute containing floating-point color
  * information.
  */
-constexpr char VERTEX_COLOR_NAME[] = "rgbaFAttrib";
+extern const std::string VERT_ATTRIB_NAME_COLOR;
 
 /**
  * @brief Common name for a vertex attribute containing vertex normals.
  */
-constexpr char VERTEX_NORMAL_NAME[] = "normAttrib";
+extern const std::string VERT_ATTRIB_NAME_NORMAL;
 
 /**
  * @brief Common name for a vertex attribute containing vertex tangents.
  */
-constexpr char VERTEX_TANGENT_NAME[] = "tangAttrib";
+extern const std::string VERT_ATTRIB_NAME_TANGENT;
 
 /**
  * @brief Common name for a vertex attribute containing vertex bi-tangents.
  */
-constexpr char VERTEX_BITANGENT_NAME[] = "bitangAttrib";
+extern const std::string VERT_ATTRIB_NAME_BITANGENT;
 
 /**
  * @brief Common name for a vertex attribute containing model matrices.
  */
-constexpr char VERTEX_MODEL_MAT_NAME[] = "modelMatAttrib";
+extern const std::string VERT_ATTRIB_NAME_MODEL_MATRIX;
 
 /**
  * @brief Common name for a vertex attribute containing skeletal bone weights.
  */
-constexpr char VERTEX_BONE_WEIGHT_NAME[] = "boneWeightAttrib";
+extern const std::string VERT_ATTRIB_NAME_BONE_WEIGHT;
 
 /**
  * @brief Common name for a vertex attribute containing skeletal bone IDs.
  */
-constexpr char VERTEX_BONE_ID_NAME[] = "boneIdAttrib";
+extern const std::string VERT_ATTRIB_NAME_BONE_ID;
 
 /**
- * @brief Common name for a vertex attribute containing index elements.
+ * @brief Common name for an ambient lighting vertex attribute.
  */
-constexpr char INDEX_VERTEX_NAME[] = "iboAttrib";
+extern const std::string VERT_ATTRIB_NAME_AMBIENT;
+
+/**
+ * @brief Common name for a diffuse lighting vertex attribute.
+ */
+extern const std::string VERT_ATTRIB_NAME_DIFFUSE;
+
+/**
+ * @brief Common name for a specular vertex component.
+ */
+extern const std::string VERT_ATTRIB_NAME_SPECULAR;
+
+/**
+ * @brief Common name for a roughness vertex component.
+ */
+extern const std::string VERT_ATTRIB_NAME_ROUGHNESS;
+
+/**
+ * @brief Common name for a metallic vertex component.
+ */
+extern const std::string VERT_ATTRIB_NAME_METALLIC;
+
+/**
+ * @brief Common name for a specular vertex component.
+ */
+extern const std::string VERT_ATTRIB_NAME_INDEX;
+
+/**------------------------------------
+ * @brief Retrieve the offset to a particular attribute within a vertex who's
+ * layout is described with the common_vertex_t enumeration. This function is
+ * essentially an 'offsetof()' replacement for flexible vertex formats.
+ * 
+ * @param vertFlags
+ * A bitmask of common_vertex_t flags, representing all of the vertex elements
+ * within a vertex buffer.
+ * 
+ * @param mask
+ * A single value from the common_vertex_t enumeration which identifies the
+ * particular vertex attribute which should be queried for a byte-offset.
+ * 
+ * @return A pointer representing the number of bytes that pad a vertex until
+ * a particular attribute is reached.
+-------------------------------------*/
+unsigned get_vertex_attrib_offset(const common_vertex_t vertFlags, const common_vertex_t mask);
 
 /**------------------------------------
  * @brief Determine the number of bytes required to store one or more vertices
@@ -136,7 +179,11 @@ constexpr char INDEX_VERTEX_NAME[] = "iboAttrib";
  * 
  * @return The size, in bytes, of a flexible-vertex-format.
 -------------------------------------*/
-unsigned get_vertex_byte_size(const common_vertex_t vertexTypes);
+inline unsigned get_vertex_byte_size(const common_vertex_t vertexTypes) {
+    return get_vertex_attrib_offset(vertexTypes, (common_vertex_t)0);
+}
+
+constexpr unsigned (*get_vertex_stride)(const common_vertex_t) = get_vertex_byte_size;
 
 /*-----------------------------------------------------------------------------
  * Vertex Index types and specifiers
