@@ -2,8 +2,19 @@
 # -------------------------------------
 # Project Setup
 # -------------------------------------
-project(LightGame CXX)
+project(LightDraw CXX)
 set(OUTPUT_NAME lsdraw)
+
+
+
+# -------------------------------------
+# Finders
+# -------------------------------------
+# Only using OpenGL for its libraries, not headers
+include(FindOpenGL)
+
+# FreeType requires special care
+include(FindFreetype)
 
 
 
@@ -12,9 +23,6 @@ set(OUTPUT_NAME lsdraw)
 # -------------------------------------
 include_directories("include")
 
-
-# Freetype requires special care
-include(FindFreetype)
 include_directories(${FREETYPE_INCLUDE_DIRS})
 
 
@@ -34,6 +42,7 @@ set(LS_DRAW_SOURCES
     "src/draw/FrameBuffer.cpp"
     "src/draw/GeometryUtils.cpp"
     "src/draw/ImageResource.cpp"
+    "src/draw/IndexBuffer.cpp"
     "src/draw/MatrixStack.cpp"
     "src/draw/RenderBuffer.cpp"
     "src/draw/Setup.cpp"
@@ -41,7 +50,9 @@ set(LS_DRAW_SOURCES
     "src/draw/ShaderProgram.cpp"
     "src/draw/Texture.cpp"
     "src/draw/Transform.cpp"
+    "src/draw/VAOAssembly.cpp"
     "src/draw/VertexArray.cpp"
+    "src/draw/VertexBuffer.cpp"
     "src/draw/VertexAttrib.cpp"
     "src/draw/VertexUtils.cpp"
 )
@@ -58,22 +69,11 @@ set(
     lsmath
 )
 
-find_package(OpenGL REQUIRED)
-
-
-if(WIN32)
-    set(
-        LS_DRAW_EXTERNAL_DEPS
-        freetype
-        opengl32
-    )
-else()
-    set(
-        LS_DRAW_EXTERNAL_DEPS
-        freetype
-        ${OPENGL_LIBRARIES}
-    )
-endif(WIN32)
+set(
+    LS_DRAW_EXTERNAL_DEPS
+    ${OPENGL_gl_LIBRARY}
+    ${FREETYPE_LIBRARIES}
+)
 
 
 

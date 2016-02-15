@@ -14,6 +14,7 @@
 #include "lightsky/draw/GeometryUtils.h"
 #include "lightsky/draw/GLSLCommon.h"
 #include "lightsky/draw/ImageResource.h"
+#include "lightsky/draw/IndexBuffer.h"
 #include "lightsky/draw/MatrixStack.h"
 #include "lightsky/draw/RenderBuffer.h"
 #include "lightsky/draw/ShaderObject.h"
@@ -21,8 +22,10 @@
 #include "lightsky/draw/ShaderUniform.h"
 #include "lightsky/draw/Texture.h"
 #include "lightsky/draw/Transform.h"
+#include "lightsky/draw/VAOAssembly.h"
 #include "lightsky/draw/Vertex.h"
 #include "lightsky/draw/VertexArray.h"
+#include "lightsky/draw/VertexBuffer.h"
 #include "lightsky/draw/VertexAttrib.h"
 #include "lightsky/draw/VertexUtils.h"
 

@@ -32,9 +32,9 @@ typedef std::vector<VertexAttrib> VertexDescriptor;
 enum common_vertex_t : unsigned {
     POSITION_VERTEX     = 0x1000,
     TEXTURE_VERTEX      = 0x2000,
-    NORMAL_VERTEX       = 0x4000,
-    COLOR_VERTEX        = 0x8000,
+    COLOR_VERTEX        = 0x4000,
     
+    NORMAL_VERTEX       = 0x8000,
     TANGENT_VERTEX      = 0x0100,
     BITANGENT_VERTEX    = 0x0200,
     
@@ -48,6 +48,8 @@ enum common_vertex_t : unsigned {
     SPECULAR_VERTEX     = 0x0080,
     ROUGHNESS_VERTEX    = 0x0001,
     METALLIC_VERTEX     = 0x0002,
+    
+    INDEX_VERTEX        = 0x0004,
     
     
     /**
@@ -68,6 +70,41 @@ enum common_vertex_t : unsigned {
         | BONE_WEIGHT_VERTEX
         | 0),
 };
+
+
+
+// The order of elements names in this array must match the order of the
+// "COMMON_VERTEX_TYPES_LIST" array in "VertexAttrib.h"
+constexpr common_vertex_t COMMON_VERTEX_FLAGS_LIST[] = {
+    common_vertex_t::POSITION_VERTEX,
+    common_vertex_t::TEXTURE_VERTEX,
+    common_vertex_t::COLOR_VERTEX,
+    
+    common_vertex_t::NORMAL_VERTEX,
+    common_vertex_t::TANGENT_VERTEX,
+    common_vertex_t::BITANGENT_VERTEX,
+    
+    common_vertex_t::MODEL_MAT_VERTEX,
+    
+    common_vertex_t::BONE_ID_VERTEX,
+    common_vertex_t::BONE_WEIGHT_VERTEX,
+    
+    common_vertex_t::AMBIENT_VERTEX,
+    common_vertex_t::DIFFUSE_VERTEX,
+    common_vertex_t::SPECULAR_VERTEX,
+    common_vertex_t::ROUGHNESS_VERTEX,
+    common_vertex_t::METALLIC_VERTEX,
+    
+    common_vertex_t::INDEX_VERTEX,
+};
+
+constexpr unsigned COMMON_VERTEX_FLAGS_COUNT = LS_ARRAY_SIZE(COMMON_VERTEX_FLAGS_LIST);
+
+// Because I don't trust myself...
+static_assert(
+    COMMON_VERTEX_FLAGS_COUNT == COMMON_VERTEX_TYPES_COUNT,
+    "Unable to match the commonly used vertex types to their attributes in VertexAttrib.h."
+);
 
 
 
@@ -112,14 +149,14 @@ extern const std::string VERT_ATTRIB_NAME_BITANGENT;
 extern const std::string VERT_ATTRIB_NAME_MODEL_MATRIX;
 
 /**
- * @brief Common name for a vertex attribute containing skeletal bone weights.
- */
-extern const std::string VERT_ATTRIB_NAME_BONE_WEIGHT;
-
-/**
  * @brief Common name for a vertex attribute containing skeletal bone IDs.
  */
 extern const std::string VERT_ATTRIB_NAME_BONE_ID;
+
+/**
+ * @brief Common name for a vertex attribute containing skeletal bone weights.
+ */
+extern const std::string VERT_ATTRIB_NAME_BONE_WEIGHT;
 
 /**
  * @brief Common name for an ambient lighting vertex attribute.
@@ -150,6 +187,26 @@ extern const std::string VERT_ATTRIB_NAME_METALLIC;
  * @brief Common name for a specular vertex component.
  */
 extern const std::string VERT_ATTRIB_NAME_INDEX;
+
+
+
+
+/**
+ * @Brief the COMMON_VERTEX_NAMES_LIST array helps to keep track of all vertex
+ * names and make iteration over them easier in client code.
+ */
+extern const std::string COMMON_VERTEX_NAMES_LIST[COMMON_VERTEX_TYPES_COUNT];
+
+constexpr unsigned COMMON_VERTEX_NAMES_COUNT = LS_ARRAY_SIZE(COMMON_VERTEX_NAMES_LIST);
+
+// Because I still don't trust myself...
+static_assert(
+    COMMON_VERTEX_NAMES_COUNT == COMMON_VERTEX_FLAGS_COUNT,
+    "Unable to match the commonly used vertex names to their attributes in VertexAttrib.h."
+);
+
+
+
 
 /**------------------------------------
  * @brief Retrieve the offset to a particular attribute within a vertex who's
@@ -185,8 +242,22 @@ inline unsigned get_vertex_byte_size(const common_vertex_t vertexTypes) {
 
 constexpr unsigned (*get_vertex_stride)(const common_vertex_t) = get_vertex_byte_size;
 
+/**------------------------------------
+ * @brief Convert a 3-dimensional vertex normal to a packed vertex normal,
+ * following the VERTEX_DATA_2_10I format or similar.
+ * 
+ * @param norm
+ * A constant reference to a normalized vector within the range of [-1, 1],
+ * inclusive,
+ * 
+ * @return A signed 32-bit integer containing a vertex normal with data in the
+ * range of [-2^10, 2^10].
+-------------------------------------*/
+int32_t pack_vertex_normal(const math::vec3& norm);
+
+
 /*-----------------------------------------------------------------------------
- * Vertex Index types and specifiers
+ * Index types and specifiers
 -----------------------------------------------------------------------------*/
 /**------------------------------------
  * Data type for the indices used during an indexed draw command.
@@ -199,12 +270,12 @@ typedef unsigned int draw_index_t;
  *      2. If a draw command should run use glDrawArrays() or glDrawElements().
 -------------------------------------*/
 enum index_element_t : int {
-    INDEX_TYPE_UBYTE = GL_UNSIGNED_BYTE,
-    INDEX_TYPE_USHORT = GL_UNSIGNED_SHORT,
-    INDEX_TYPE_UINT = GL_UNSIGNED_INT,
+    INDEX_TYPE_UBYTE    = GL_UNSIGNED_BYTE,
+    INDEX_TYPE_USHORT   = GL_UNSIGNED_SHORT,
+    INDEX_TYPE_UINT     = GL_UNSIGNED_INT,
     
-    INDEX_TYPE_DEFAULT = GL_UNSIGNED_INT,
-    INDEX_TYPE_NONE  = -1
+    INDEX_TYPE_DEFAULT  = GL_UNSIGNED_INT,
+    INDEX_TYPE_NONE     = -1
 };
 
 /**------------------------------------
@@ -378,6 +449,8 @@ index_element_t get_required_index_type(const unsigned numVertices);
  * @return The size, in bytes, of a flexible-index-format.
 -------------------------------------*/
 unsigned get_index_byte_size(const index_element_t indexType);
+
+
 
 } // end draw namespace
 } // end ls namespace

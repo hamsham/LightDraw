@@ -25,21 +25,25 @@ namespace draw {
 enum vertex_data_t : GLenum;
 class ShaderProgram;
 
-/**----------------------------------------------------------------------------
+
+
+/**
  * @brief Vertex Attrib Types
  * 
  * This type can be used to determine if an object is a vertex array attribute
  * or a shader uniform attribute.
------------------------------------------------------------------------------*/
+*/
 enum class vertex_attrib_t : int {
     UNIFORM_ATTRIB,
     VERTEX_ATTRIB
 };
 
-/**----------------------------------------------------------------------------
+
+
+/**
  * @brief The Vertex Attrib structure helps to provide a layer of introspection
  * between OpenGL client code and GLSL shader code.
------------------------------------------------------------------------------*/
+*/
 struct VertexAttrib {
     GLuint          index;
     GLint           components;
@@ -47,10 +51,13 @@ struct VertexAttrib {
     GLboolean       normalized;
     GLsizei         stride;
     const GLvoid*   offset;
+    unsigned        instanceRate;
     std::string     name;
 };
 
-/**----------------------------------------------------------------------------
+
+
+/**
  * @brief Determine the number of bytes which are used by a vertex attribute
  * type.
  * 
@@ -60,10 +67,10 @@ struct VertexAttrib {
  * 
  * @return The number of bytes used by a vertex attribute, or 0 if it is
  * undefined (such as for a texture sampler).
------------------------------------------------------------------------------*/
+*/
 unsigned get_num_attrib_bytes(const vertex_data_t type);
 
-/**----------------------------------------------------------------------------
+/**
  * @brief Retrieve the number of components per vertex attribute.
  * 
  * For valid vertex attribute types, this number should be 1, 2, 3, or 4.
@@ -77,10 +84,10 @@ unsigned get_num_attrib_bytes(const vertex_data_t type);
  * 
  * @return The number of components used by a vertex attribute, or 0 if it's
  * undefined (such as for a texture sampler).
------------------------------------------------------------------------------*/
+*/
 unsigned get_num_attrib_components(const vertex_data_t type);
 
-/**----------------------------------------------------------------------------
+/**
  * @brief Retrieve the number of shader layout slots that a single vertex
  * attribute requires.
  * 
@@ -95,10 +102,10 @@ unsigned get_num_attrib_components(const vertex_data_t type);
  * 
  * @return The number of attribute layout slots required to send a vertex
  * attribute to a shader.
------------------------------------------------------------------------------*/
+*/
 unsigned get_num_attrib_subcomponents(const vertex_data_t type);
 
-/**----------------------------------------------------------------------------
+/**
  * @brief Retrieve the base type of a component.
  * 
  * For example, passing VERTEX_DATA_VEC3F into this function will return
@@ -111,25 +118,41 @@ unsigned get_num_attrib_subcomponents(const vertex_data_t type);
  * 
  * @return An enumeration, containing the base data type which helps to create
  * a vertex attribute.
------------------------------------------------------------------------------*/
+*/
 vertex_data_t get_attrib_base_type(const vertex_data_t type);
 
-/**----------------------------------------------------------------------------
+/**
+ * @brief Determine if a vertex base type is one which should be normalized.
+ * 
+ * @param type
+ * Contains the meta-type of a vertex attribute.
+ * 
+ * @return GL_TRUE if the input parameter is one which requires normalization,
+ * GL_FALSE if not.
+*/
+GLboolean get_attrib_normalization(const vertex_data_t type);
+
+
+
+/**
  * @brief Vertex Attribute types.
------------------------------------------------------------------------------*/
+*/
 enum vertex_data_t : GLenum {
     VERTEX_DATA_UNKNOWN = GL_ZERO,
     
     VERTEX_DATA_BYTE = GL_BYTE,
+    VERTEX_DATA_UBYTE = GL_UNSIGNED_BYTE,
+    VERTEX_DATA_SHORT = GL_SHORT,
     VERTEX_DATA_USHORT = GL_UNSIGNED_SHORT,
     VERTEX_DATA_INT = GL_INT,
     VERTEX_DATA_UINT = GL_UNSIGNED_INT,
     VERTEX_DATA_FLOAT = GL_FLOAT,
+    VERTEX_DATA_DOUBLE = GL_DOUBLE,
     
     VERTEX_DATA_HALF_FLOAT = GL_HALF_FLOAT,
     VERTEX_DATA_FIXED = GL_FIXED,
-    VERTEX_DATA_2_10I = GL_UNSIGNED_INT_2_10_10_10_REV,
-    VERTEX_DATA_2_10U = GL_INT_2_10_10_10_REV,
+    VERTEX_DATA_2_10U = GL_UNSIGNED_INT_2_10_10_10_REV,
+    VERTEX_DATA_2_10I = GL_INT_2_10_10_10_REV,
         
     VERTEX_DATA_VEC_2B = GL_BOOL_VEC2,
     VERTEX_DATA_VEC_2I = GL_INT_VEC2,
@@ -183,11 +206,11 @@ enum vertex_data_t : GLenum {
     ---------------------------------*/
     POSITION_VERTEX_TYPE    = VERTEX_DATA_VEC_3F,
     TEXTURE_VERTEX_TYPE     = VERTEX_DATA_VEC_2F,
-    NORMAL_VERTEX_TYPE      = VERTEX_DATA_VEC_3F,
     COLOR_VERTEX_TYPE       = VERTEX_DATA_VEC_4F,
     
-    TANGENT_VERTEX_TYPE     = NORMAL_VERTEX_TYPE,
-    BITANGENT_VERTEX_TYPE   = NORMAL_VERTEX_TYPE,
+    NORMAL_VERTEX_TYPE      = VERTEX_DATA_2_10I,
+    TANGENT_VERTEX_TYPE     = VERTEX_DATA_2_10I,
+    BITANGENT_VERTEX_TYPE   = VERTEX_DATA_2_10I,
     
     MODEL_MAT_VERTEX_TYPE   = VERTEX_DATA_MAT_4F,
     
@@ -198,21 +221,55 @@ enum vertex_data_t : GLenum {
     DIFFUSE_VERTEX_TYPE     = COLOR_VERTEX_TYPE,
     SPECULAR_VERTEX_TYPE    = VERTEX_DATA_FLOAT,
     ROUGHNESS_VERTEX_TYPE   = VERTEX_DATA_FLOAT,
-    METALLIC_VERTEX_TYPE    = VERTEX_DATA_FLOAT
+    METALLIC_VERTEX_TYPE    = VERTEX_DATA_FLOAT,
+    
+    INDEX_VERTEX_TYPE    = VERTEX_DATA_UINT
 };
+
+
+
+// The order of elements names in this array must match the order of the
+// "COMMON_VERTEX_FLAGS_LIST" array in "VertexUtils.h"
+constexpr vertex_data_t COMMON_VERTEX_TYPES_LIST[] = {
+    vertex_data_t::POSITION_VERTEX_TYPE,
+    vertex_data_t::TEXTURE_VERTEX_TYPE,
+    vertex_data_t::COLOR_VERTEX_TYPE,
+    
+    vertex_data_t::NORMAL_VERTEX_TYPE,
+    vertex_data_t::TANGENT_VERTEX_TYPE,
+    vertex_data_t::BITANGENT_VERTEX_TYPE,
+    
+    vertex_data_t::MODEL_MAT_VERTEX_TYPE,
+    
+    vertex_data_t::BONE_ID_VERTEX_TYPE,
+    vertex_data_t::BONE_WEIGHT_VERTEX_TYPE,
+    
+    vertex_data_t::AMBIENT_VERTEX_TYPE,
+    vertex_data_t::DIFFUSE_VERTEX_TYPE,
+    vertex_data_t::SPECULAR_VERTEX_TYPE,
+    vertex_data_t::ROUGHNESS_VERTEX_TYPE,
+    
+    vertex_data_t::METALLIC_VERTEX_TYPE,
+    
+    vertex_data_t::INDEX_VERTEX_TYPE
+};
+
+constexpr unsigned COMMON_VERTEX_TYPES_COUNT LS_ARRAY_SIZE(COMMON_VERTEX_TYPES_LIST);
+
+
 
 /*-----------------------------------------------------------------------------
  * Vertex Attrib Layout Functions
 -----------------------------------------------------------------------------*/
 inline VertexAttrib create_vertex_attrib(const vertex_data_t type) {
-    const unsigned numComponents = get_num_attrib_subcomponents(type);
     return VertexAttrib{
         0,
         (int)get_num_attrib_components(type),
         get_attrib_base_type(type),
-        0,
-        numComponents > 1 ? 0 : (int)get_num_attrib_bytes(type),
+        get_attrib_normalization(type),
+        (GLsizei)get_num_attrib_components(type),
         nullptr,
+        0,
         ""
     };
 }
@@ -225,107 +282,132 @@ inline VertexAttrib create_vertex_attrib() {
         "Custom vertex attributes have not been implemented."
     );
     
-    return VertexAttrib{0, 0, VERTEX_DATA_UNKNOWN, 0, 0, nullptr, ""};
+    return VertexAttrib{0, 0, VERTEX_DATA_UNKNOWN, GL_FALSE, 0, nullptr, 0, ""};
+}
+
+template <>
+inline VertexAttrib create_vertex_attrib<VERTEX_DATA_FIXED>() {
+    return VertexAttrib{0, 1, VERTEX_DATA_FIXED, GL_TRUE, 0, nullptr, 0, ""};
+}
+
+template <>
+inline VertexAttrib create_vertex_attrib<VERTEX_DATA_2_10I>() {
+    return VertexAttrib{0, 4, VERTEX_DATA_2_10I, GL_TRUE, 0, nullptr, 0, ""};
+}
+
+template <>
+inline VertexAttrib create_vertex_attrib<VERTEX_DATA_2_10U>() {
+    return VertexAttrib{0, 4, VERTEX_DATA_2_10U, GL_TRUE, 0, nullptr, 0, ""};
 }
 
 template <>
 inline VertexAttrib create_vertex_attrib<VERTEX_DATA_BYTE>() {
-    return VertexAttrib{0, 1, VERTEX_DATA_BYTE, 0, 0, nullptr, ""};
+    return VertexAttrib{0, 1, VERTEX_DATA_BYTE, GL_FALSE, 0, nullptr, 0, ""};
+}
+
+template <>
+inline VertexAttrib create_vertex_attrib<VERTEX_DATA_UBYTE>() {
+    return VertexAttrib{0, 1, VERTEX_DATA_UBYTE, GL_FALSE, 0, nullptr, 0, ""};
+}
+
+template <>
+inline VertexAttrib create_vertex_attrib<VERTEX_DATA_SHORT>() {
+    return VertexAttrib{0, 1, VERTEX_DATA_SHORT, GL_FALSE, 0, nullptr, 0, ""};
 }
 
 template <>
 inline VertexAttrib create_vertex_attrib<VERTEX_DATA_USHORT>() {
-    return VertexAttrib{0, 1, VERTEX_DATA_USHORT, 0, 0, nullptr, ""};
+    return VertexAttrib{0, 1, VERTEX_DATA_USHORT, GL_FALSE, 0, nullptr, 0, ""};
 }
 
 template <>
 inline VertexAttrib create_vertex_attrib<VERTEX_DATA_INT>() {
-    return VertexAttrib{0, 1, VERTEX_DATA_INT, 0, 0, nullptr, ""};
+    return VertexAttrib{0, 1, VERTEX_DATA_INT, GL_FALSE, 0, nullptr, 0, ""};
 }
 
 template <>
 inline VertexAttrib create_vertex_attrib<VERTEX_DATA_UINT>() {
-    return VertexAttrib{0, 1, VERTEX_DATA_UINT, 0, 0, nullptr, ""};
+    return VertexAttrib{0, 1, VERTEX_DATA_UINT, GL_FALSE, 0, nullptr, 0, ""};
 }
 
 template <>
 inline VertexAttrib create_vertex_attrib<VERTEX_DATA_FLOAT>() {
-    return VertexAttrib{0, 1, VERTEX_DATA_FLOAT, 0, 0, nullptr, ""};
+    return VertexAttrib{0, 1, VERTEX_DATA_FLOAT, GL_FALSE, 0, nullptr, 0, ""};
 }
 
 template <>
 inline VertexAttrib create_vertex_attrib<VERTEX_DATA_VEC_2B>() {
-    return VertexAttrib{0, 2, VERTEX_DATA_VEC_2B, 0, 0, nullptr, ""};
+    return VertexAttrib{0, 2, VERTEX_DATA_BYTE, GL_FALSE, 0, nullptr, 0, ""};
 }
 
 template <>
 inline VertexAttrib create_vertex_attrib<VERTEX_DATA_VEC_2I>() {
-    return VertexAttrib{0, 2, VERTEX_DATA_VEC_2I, 0, 0, nullptr, ""};
+    return VertexAttrib{0, 2, VERTEX_DATA_INT, GL_FALSE, 0, nullptr, 0, ""};
 }
 
 template <>
 inline VertexAttrib create_vertex_attrib<VERTEX_DATA_VEC_2UI>() {
-    return VertexAttrib{0, 2, VERTEX_DATA_VEC_2UI, 0, 0, nullptr, ""};
+    return VertexAttrib{0, 2, VERTEX_DATA_UINT, GL_FALSE, 0, nullptr, 0, ""};
 }
 
 template <>
 inline VertexAttrib create_vertex_attrib<VERTEX_DATA_VEC_2F>() {
-    return VertexAttrib{0, 2, VERTEX_DATA_VEC_2F, 0, 0, nullptr, ""};
+    return VertexAttrib{0, 2, VERTEX_DATA_FLOAT, GL_FALSE, 0, nullptr, 0, ""};
 }
 
 template <>
 inline VertexAttrib create_vertex_attrib<VERTEX_DATA_VEC_3B>() {
-    return VertexAttrib{0, 3, VERTEX_DATA_VEC_3B, 0, 0, nullptr, ""};
+    return VertexAttrib{0, 3, VERTEX_DATA_BYTE, GL_FALSE, 0, nullptr, 0, ""};
 }
 
 template <>
 inline VertexAttrib create_vertex_attrib<VERTEX_DATA_VEC_3I>() {
-    return VertexAttrib{0, 3, VERTEX_DATA_VEC_3I, 0, 0, nullptr, ""};
+    return VertexAttrib{0, 3, VERTEX_DATA_INT, GL_FALSE, 0, nullptr, 0, ""};
 }
 
 template <>
 inline VertexAttrib create_vertex_attrib<VERTEX_DATA_VEC_3UI>() {
-    return VertexAttrib{0, 3, VERTEX_DATA_VEC_3UI, 0, 0, nullptr, ""};
+    return VertexAttrib{0, 3, VERTEX_DATA_UINT, GL_FALSE, 0, nullptr, 0, ""};
 }
 
 template <>
 inline VertexAttrib create_vertex_attrib<VERTEX_DATA_VEC_3F>() {
-    return VertexAttrib{0, 3, VERTEX_DATA_VEC_3F, 0, 0, nullptr, ""};
+    return VertexAttrib{0, 3, VERTEX_DATA_FLOAT, GL_FALSE, 0, nullptr, 0, ""};
 }
 
 template <>
 inline VertexAttrib create_vertex_attrib<VERTEX_DATA_VEC_4B>() {
-    return VertexAttrib{0, 4, VERTEX_DATA_VEC_4B, 0, 0, nullptr, ""};
+    return VertexAttrib{0, 4, VERTEX_DATA_BYTE, GL_FALSE, 0, nullptr, 0, ""};
 }
 
 template <>
 inline VertexAttrib create_vertex_attrib<VERTEX_DATA_VEC_4I>() {
-    return VertexAttrib{0, 4, VERTEX_DATA_VEC_4I, 0, 0, nullptr, ""};
+    return VertexAttrib{0, 4, VERTEX_DATA_INT, GL_FALSE, 0, nullptr, 0, ""};
 }
 
 template <>
 inline VertexAttrib create_vertex_attrib<VERTEX_DATA_VEC_4UI>() {
-    return VertexAttrib{0, 4, VERTEX_DATA_VEC_4UI, 0, 0, nullptr, ""};
+    return VertexAttrib{0, 4, VERTEX_DATA_UINT, GL_FALSE, 0, nullptr, 0, ""};
 }
 
 template <>
 inline VertexAttrib create_vertex_attrib<VERTEX_DATA_VEC_4F>() {
-    return VertexAttrib{0, 4, VERTEX_DATA_VEC_4F, 0, 0, nullptr, ""};
+    return VertexAttrib{0, 4, VERTEX_DATA_FLOAT, GL_FALSE, 0, nullptr, 0, ""};
 }
 
 template <>
 inline VertexAttrib create_vertex_attrib<VERTEX_DATA_MAT_2F>() {
-    return VertexAttrib{0, 2, VERTEX_DATA_MAT_2F, 0, 0, nullptr, ""};
+    return VertexAttrib{0, 2, VERTEX_DATA_FLOAT, GL_FALSE, 0, nullptr, 0, ""};
 }
 
 template <>
 inline VertexAttrib create_vertex_attrib<VERTEX_DATA_MAT_3F>() {
-    return VertexAttrib{0, 3, VERTEX_DATA_MAT_3F, 0, 0, nullptr, ""};
+    return VertexAttrib{0, 3, VERTEX_DATA_FLOAT, GL_FALSE, 0, nullptr, 0, ""};
 }
 
 template <>
 inline VertexAttrib create_vertex_attrib<VERTEX_DATA_MAT_4F>() {
-    return VertexAttrib{0, 4, VERTEX_DATA_MAT_4F, 0, 0, nullptr, ""};
+    return VertexAttrib{0, 4, VERTEX_DATA_FLOAT, GL_FALSE, 0, nullptr, 0, ""};
 }
 
 } // end draw namespace

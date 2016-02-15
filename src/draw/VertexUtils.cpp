@@ -44,6 +44,29 @@ const std::string draw::VERT_ATTRIB_NAME_METALLIC = "metalAttrib";
 
 const std::string draw::VERT_ATTRIB_NAME_INDEX = "indexAttrib";
 
+const std::string draw::COMMON_VERTEX_NAMES_LIST[] = {
+    draw::VERT_ATTRIB_NAME_POSITION,
+    draw::VERT_ATTRIB_NAME_TEXTURE,
+    draw::VERT_ATTRIB_NAME_COLOR,
+    
+    draw::VERT_ATTRIB_NAME_NORMAL,
+    draw::VERT_ATTRIB_NAME_TANGENT,
+    draw::VERT_ATTRIB_NAME_BITANGENT,
+    
+    draw::VERT_ATTRIB_NAME_MODEL_MATRIX,
+    
+    draw::VERT_ATTRIB_NAME_BONE_ID,
+    draw::VERT_ATTRIB_NAME_BONE_WEIGHT,
+    
+    draw::VERT_ATTRIB_NAME_AMBIENT,
+    draw::VERT_ATTRIB_NAME_DIFFUSE,
+    draw::VERT_ATTRIB_NAME_SPECULAR,
+    draw::VERT_ATTRIB_NAME_ROUGHNESS,
+    draw::VERT_ATTRIB_NAME_METALLIC,
+    
+    draw::VERT_ATTRIB_NAME_INDEX
+};
+
 
 
 /*-------------------------------------
@@ -52,54 +75,37 @@ const std::string draw::VERT_ATTRIB_NAME_INDEX = "indexAttrib";
 unsigned draw::get_vertex_attrib_offset(const common_vertex_t vertexTypes, const common_vertex_t mask) {
     unsigned numBytes = 0;
     
-    constexpr common_vertex_t flags[] = {
-        common_vertex_t::POSITION_VERTEX,
-        common_vertex_t::TEXTURE_VERTEX,
-        common_vertex_t::NORMAL_VERTEX,
-        common_vertex_t::COLOR_VERTEX,
-        common_vertex_t::TANGENT_VERTEX,
-        common_vertex_t::BITANGENT_VERTEX,
-        common_vertex_t::MODEL_MAT_VERTEX,
-        common_vertex_t::BONE_ID_VERTEX,
-        common_vertex_t::BONE_WEIGHT_VERTEX,
-        common_vertex_t::AMBIENT_VERTEX,
-        common_vertex_t::DIFFUSE_VERTEX,
-        common_vertex_t::SPECULAR_VERTEX,
-        common_vertex_t::ROUGHNESS_VERTEX,
-        common_vertex_t::METALLIC_VERTEX
-    };
-    constexpr vertex_data_t types[] = {
-        vertex_data_t::POSITION_VERTEX_TYPE,
-        vertex_data_t::TEXTURE_VERTEX_TYPE,
-        vertex_data_t::NORMAL_VERTEX_TYPE,
-        vertex_data_t::COLOR_VERTEX_TYPE,
-        vertex_data_t::TANGENT_VERTEX_TYPE,
-        vertex_data_t::BITANGENT_VERTEX_TYPE,
-        vertex_data_t::MODEL_MAT_VERTEX_TYPE,
-        vertex_data_t::BONE_ID_VERTEX_TYPE,
-        vertex_data_t::BONE_WEIGHT_VERTEX_TYPE,
-        vertex_data_t::AMBIENT_VERTEX_TYPE,
-        vertex_data_t::DIFFUSE_VERTEX_TYPE,
-        vertex_data_t::SPECULAR_VERTEX_TYPE,
-        vertex_data_t::ROUGHNESS_VERTEX_TYPE,
-        vertex_data_t::METALLIC_VERTEX_TYPE
-    };
-    
-    constexpr unsigned numFlags = LS_ARRAY_SIZE(flags);
-    static_assert(numFlags == LS_ARRAY_SIZE(types), "Non-matching vertex type array lengths!");
+    constexpr unsigned numFlags = LS_ARRAY_SIZE(COMMON_VERTEX_FLAGS_LIST);
+    static_assert(numFlags == LS_ARRAY_SIZE(COMMON_VERTEX_TYPES_LIST), "Non-matching vertex type array lengths!");
     
     for (unsigned i = 0; i < numFlags; ++i) {
-        if (vertexTypes & flags[i]) {
+        if (vertexTypes & COMMON_VERTEX_FLAGS_LIST[i]) {
             if (vertexTypes & mask) {
                 break;
             }
             else {
-                numBytes += get_num_attrib_bytes(types[i]);
+                numBytes += get_num_attrib_bytes(COMMON_VERTEX_TYPES_LIST[i]);
             }
         }
     }
     
     return numBytes;
+}
+
+
+
+/**------------------------------------
+ * @brief Convert a 3D vertex normal into a VERTEX_DATA_2_10I format.
+-------------------------------------*/
+int32_t draw::pack_vertex_normal(const math::vec3& norm) {
+    const int32_t x = math::scale_num_to_range<float, int32_t>(norm[0], -1.f, 1.f, -1024, 1024);
+    const int32_t y = math::scale_num_to_range<float, int32_t>(norm[1], -1.f, 1.f, -1024, 1024);
+    const int32_t z = math::scale_num_to_range<float, int32_t>(norm[2], -1.f, 1.f, -1024, 1024);
+    
+    return 0
+        | (x << 20)
+        | (y << 10)
+        | (z << 0);
 }
 
 

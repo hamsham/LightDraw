@@ -138,7 +138,7 @@ bool Atlas::init(const FontResource& fr) {
     if (!this->atlasTex.init(0, COLOR_FMT_R_8, maxGlyphSize*dimensions, COLOR_LAYOUT_R, COLOR_TYPE_UNSIGNED_BYTE, nullptr)) {
         LS_LOG_GL_ERR();
         LS_LOG_ERR("\tAn error occurred while allocating space for a font atlas.\n");
-        this->pEntries.release();
+        this->pEntries.reset();
         return false;
     }
     
@@ -220,7 +220,7 @@ bool Atlas::init(const FontResource& fr) {
 void Atlas::terminate() {
     this->pixelRatio = 1.f;
     this->numEntries = 0;
-    this->pEntries.release();
+    this->pEntries.reset();
     this->atlasTex.terminate();
 }
 

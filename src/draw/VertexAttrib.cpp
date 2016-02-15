@@ -9,21 +9,23 @@
 #include "lightsky/draw/VertexAttrib.h"
 
 namespace ls {
-namespace draw {
 
 /*-------------------------------------
  * Get the number of bytes occupied by an attribute
 -------------------------------------*/
-unsigned get_num_attrib_bytes(const vertex_data_t type) {
+unsigned draw::get_num_attrib_bytes(const vertex_data_t type) {
     switch (type) {
         case VERTEX_DATA_UNKNOWN:
             return 0;
 
-        case VERTEX_DATA_BYTE:      return sizeof(unsigned char);
+        case VERTEX_DATA_BYTE:      return sizeof(char);
+        case VERTEX_DATA_UBYTE:     return sizeof(unsigned char);
+        case VERTEX_DATA_SHORT:     return sizeof(short);
         case VERTEX_DATA_USHORT:    return sizeof(unsigned short);
         case VERTEX_DATA_INT:       return sizeof(int);
         case VERTEX_DATA_UINT:      return sizeof(unsigned);
         case VERTEX_DATA_FLOAT:     return sizeof(float);
+        case VERTEX_DATA_DOUBLE:    return sizeof(double);
         
         case VERTEX_DATA_HALF_FLOAT:return sizeof(float)/2;
         case VERTEX_DATA_FIXED:     return sizeof(int);    
@@ -82,17 +84,20 @@ unsigned get_num_attrib_bytes(const vertex_data_t type) {
 /*-------------------------------------
  * Get the number of components used by an attribute
 -------------------------------------*/
-unsigned get_num_attrib_components(const vertex_data_t type) {
+unsigned draw::get_num_attrib_components(const vertex_data_t type) {
     switch (type) {
         case VERTEX_DATA_UNKNOWN:
             return 0;
 
         case VERTEX_DATA_BYTE:
+        case VERTEX_DATA_UBYTE:
+        case VERTEX_DATA_SHORT:
         case VERTEX_DATA_USHORT:
         case VERTEX_DATA_INT:
         case VERTEX_DATA_UINT:
-        case VERTEX_DATA_FLOAT:
         case VERTEX_DATA_HALF_FLOAT:
+        case VERTEX_DATA_FLOAT:
+        case VERTEX_DATA_DOUBLE:
         case VERTEX_DATA_FIXED:
             return 1;
 
@@ -156,7 +161,7 @@ unsigned get_num_attrib_components(const vertex_data_t type) {
 /*-------------------------------------
  * Get the number of sub-components used by an attribute
 -------------------------------------*/
-unsigned get_num_attrib_subcomponents(const vertex_data_t type) {
+unsigned draw::get_num_attrib_subcomponents(const vertex_data_t type) {
     switch (type) {
         case VERTEX_DATA_MAT_2F:
         case VERTEX_DATA_MAT_2x3F:
@@ -183,34 +188,36 @@ unsigned get_num_attrib_subcomponents(const vertex_data_t type) {
 /*-------------------------------------
  * Convert a component meta type into a base type.
 -------------------------------------*/
-vertex_data_t get_attrib_base_type(const vertex_data_t type) {
+draw::vertex_data_t draw::get_attrib_base_type(const vertex_data_t type) {
     switch(type) {
+        case VERTEX_DATA_BYTE:
+        case VERTEX_DATA_UBYTE:
+        case VERTEX_DATA_SHORT:
         case VERTEX_DATA_USHORT:
+        case VERTEX_DATA_INT:
+        case VERTEX_DATA_UINT:
         case VERTEX_DATA_HALF_FLOAT:
-        case VERTEX_DATA_FIXED:
+        case VERTEX_DATA_FLOAT:
+        case VERTEX_DATA_DOUBLE:
+        case VERTEX_DATA_2_10I:
+        case VERTEX_DATA_2_10U:
             return type;
 
-        case VERTEX_DATA_BYTE:
         case VERTEX_DATA_VEC_2B:
         case VERTEX_DATA_VEC_3B:
         case VERTEX_DATA_VEC_4B:
             return VERTEX_DATA_BYTE;
             
-        case VERTEX_DATA_INT:
         case VERTEX_DATA_VEC_2I:
         case VERTEX_DATA_VEC_3I:
         case VERTEX_DATA_VEC_4I:
-        case VERTEX_DATA_2_10I:
             return VERTEX_DATA_INT;
             
-        case VERTEX_DATA_UINT:
         case VERTEX_DATA_VEC_2UI:
         case VERTEX_DATA_VEC_3UI:
         case VERTEX_DATA_VEC_4UI:
-        case VERTEX_DATA_2_10U:
             return VERTEX_DATA_UINT;
             
-        case VERTEX_DATA_FLOAT:
         case VERTEX_DATA_VEC_2F:
         case VERTEX_DATA_VEC_3F:
         case VERTEX_DATA_VEC_4F:
@@ -229,8 +236,19 @@ vertex_data_t get_attrib_base_type(const vertex_data_t type) {
             break;
     }
     
+    // GL_FIXED has no apparent base type
     return VERTEX_DATA_UNKNOWN;
 }
 
-} // end draw namespace
+/*-------------------------------------
+ * Determine if a vertex base type is one which should be normalized.
+-------------------------------------*/
+GLboolean draw::get_attrib_normalization(const vertex_data_t type) {
+    return (type == vertex_data_t::VERTEX_DATA_FIXED
+        || type == vertex_data_t::VERTEX_DATA_2_10U
+        || type == vertex_data_t::VERTEX_DATA_2_10I)
+    ? GL_TRUE
+    : GL_FALSE;
+}
+
 } // end ls namespace
