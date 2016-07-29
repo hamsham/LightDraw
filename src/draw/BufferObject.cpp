@@ -1,15 +1,18 @@
-/* 
+/*
  * File:   draw/BufferObject.cpp
  * Author: Miles Lacey
- * 
+ *
  * Created on March 31, 2014, 8:00 PM
  */
 
 #include <algorithm>
 #include <new>
 
-#include "lightsky/draw/BufferObject.h"
-#include "lightsky/draw/VertexUtils.h"
+#include "ls/utils/Assertions.h"
+#include "ls/utils/Log.h"
+
+#include "ls/draw/BufferObject.h"
+#include "ls/draw/VertexUtils.h"
 
 namespace ls {
 namespace draw {
@@ -27,21 +30,21 @@ BufferObject::~BufferObject() noexcept {
  * Constructor
 -------------------------------------*/
 BufferObject::BufferObject() noexcept :
-    gpuId{0}
+    gpuId {0}
 {}
 
 /*-------------------------------------
  * Copy Constructor
 -------------------------------------*/
 BufferObject::BufferObject(const BufferObject& b) noexcept :
-    gpuId{b.gpuId}
+    gpuId {b.gpuId}
 {}
 
 /*-------------------------------------
  * Move Constructor
 -------------------------------------*/
 BufferObject::BufferObject(BufferObject&& b) noexcept :
-    gpuId{b.gpuId}
+gpuId {b.gpuId}
 {
     b.gpuId = 0;
 }
@@ -49,48 +52,32 @@ BufferObject::BufferObject(BufferObject&& b) noexcept :
 /*-------------------------------------
  * Copy Operator
 -------------------------------------*/
-BufferObject& BufferObject::operator=(const BufferObject& b) noexcept {
+BufferObject& BufferObject::operator =(const BufferObject& b) noexcept {
     this->gpuId = b.gpuId;
-    
+
     return *this;
 }
 
 /*-------------------------------------
  * Move Operator
 -------------------------------------*/
-BufferObject& BufferObject::operator=(BufferObject&& b) noexcept {
+BufferObject& BufferObject::operator =(BufferObject&& b) noexcept {
     this->gpuId = b.gpuId;
     b.gpuId = 0;
-    
+
     return *this;
 }
 
-/*-----------------------------------------------------------------------------
- * Buffer Object Loose Functions
------------------------------------------------------------------------------*/
 /*-------------------------------------
  * Buffer initialization
 -------------------------------------*/
 bool BufferObject::init() noexcept {
+    LS_DEBUG_ASSERT(this->is_valid() == false); // insurance
+    
     if (!gpuId) {
         glGenBuffers(1, &gpuId);
     }
-    
-    return gpuId != 0;
-}
 
-/*-------------------------------------
- * Buffer initialization & preallocation
--------------------------------------*/
-bool BufferObject::init(
-    const ptrdiff_t         size,
-    const void* const       pData,
-    const buffer_access_t   usage
-) noexcept {
-    if (init()) {
-        set_data(size, pData, usage);
-    }
-    
     return gpuId != 0;
 }
 
@@ -102,8 +89,44 @@ void BufferObject::terminate() noexcept {
         glDeleteBuffers(1, &gpuId);
         gpuId = 0;
     }
-    
+
     terminate_attribs();
+}
+
+/*-------------------------------------
+    Determine if *this Buffer Object is currently active.
+-------------------------------------*/
+bool BufferObject::is_bound() const noexcept {
+    GLint typeToCheck = 0;
+
+    switch (get_type()) {
+        case buffer_use_t::VBO_BUFFER_ARRAY:
+            typeToCheck = GL_ARRAY_BUFFER_BINDING;
+            break;
+
+        case buffer_use_t::VBO_BUFFER_ELEMENT:
+            typeToCheck = GL_ELEMENT_ARRAY_BUFFER_BINDING;
+            break;
+
+        case buffer_use_t::VBO_BUFFER_TRANSFORM_FEEDBACK:
+            typeToCheck = GL_TRANSFORM_FEEDBACK_BUFFER_BINDING;
+            break;
+
+        case buffer_use_t::VBO_BUFFER_UNIFORM_BUFFER:
+            typeToCheck = GL_UNIFORM_BUFFER_BINDING;
+            break;
+
+        default:
+            LS_LOG_ERR("Forgot to implement an enumeration for the current buffer type!");
+            break;
+    }
+
+    // just fail, no room for debug statements here.
+    LS_ASSERT(typeToCheck != 0);
+
+    GLint currentBuffer = 0;
+    glGetIntegerv(typeToCheck, &currentBuffer);
+    return currentBuffer == (GLint)this->gpuId;
 }
 
 /*-------------------------------------
@@ -111,35 +134,37 @@ void BufferObject::terminate() noexcept {
 -------------------------------------*/
 bool BufferObject::copy_data(const BufferObject& from) noexcept {
     LS_DEBUG_ASSERT(from.gpuId != this->gpuId);
+    LS_DEBUG_ASSERT(this->is_valid());
+    LS_DEBUG_ASSERT(from.is_valid());
     LS_DEBUG_ASSERT(from.get_type() == this->get_type());
-    
+
     // bind the buffers to OGL's read/write targets to prevent a pipeline stall.
     glBindBuffer(VBO_COPY_READ, from.gpuId);
-    
+
     GLint numBytes = 0;
     buffer_access_t usage = buffer_access_t::VBO_STATIC_DRAW;
-    
+
     glGetBufferParameteriv(VBO_COPY_READ, GL_BUFFER_SIZE, &numBytes);
-    glGetBufferParameteriv(VBO_COPY_READ, GL_BUFFER_USAGE, (GLint*)&usage);
-    
+    glGetBufferParameteriv(VBO_COPY_READ, GL_BUFFER_USAGE, (GLint*) & usage);
+
     if (numBytes != 0 && !this->gpuId) {
         if (!init()) {
             terminate();
             return false;
         }
     }
-    
+
     glBindBuffer(VBO_COPY_WRITE, this->gpuId);
     glBufferData(VBO_COPY_WRITE, numBytes, nullptr, usage);
-    
+
     glCopyBufferSubData(VBO_COPY_READ, VBO_COPY_WRITE, 0, 0, numBytes);
-    
+
     // better safe than sorry
     glBindBuffer(VBO_COPY_READ, 0);
     glBindBuffer(VBO_COPY_WRITE, 0);
-    
+
     copy_attribs(from);
-    
+
     return true;
 }
 
@@ -150,6 +175,7 @@ bool BufferObject::copy_data(const BufferObject& from) noexcept {
  * Loose utility functions to run with BufferObjects. All of these functions
  * rely on the currently active buffer.
 -----------------------------------------------------------------------------*/
+
 /*-------------------------------------
  * Get the read/write access pattern of a buffer.
 -------------------------------------*/

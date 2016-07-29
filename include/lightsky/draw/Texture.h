@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   draw/texture.h
  * Author: Miles Lacey
  *
@@ -6,525 +6,466 @@
  */
 
 #ifndef __LS_DRAW_TEXTURE_H__
-#define	__LS_DRAW_TEXTURE_H__
+#define __LS_DRAW_TEXTURE_H__
 
-#include "lightsky/draw/Setup.h"
-#include "lightsky/draw/Color.h"
-#include "lightsky/draw/ImageResource.h"
+#include "ls/utils/Assertions.h"
+
+#include "ls/draw/Setup.h"
+#include "ls/draw/Color.h"
+#include "ls/draw/GLQuery.h"
+#include "ls/draw/ImageResource.h"
+#include "ls/draw/TextureAttrib.h"
 
 namespace ls {
 namespace draw {
 
-enum tex_slot_t : int {
-    TEXTURE_SLOT_0 = GL_TEXTURE0,
-    TEXTURE_SLOT_1 = GL_TEXTURE1,
-    TEXTURE_SLOT_2 = GL_TEXTURE2,
-    TEXTURE_SLOT_3 = GL_TEXTURE3,
-    TEXTURE_SLOT_4 = GL_TEXTURE4,
-    TEXTURE_SLOT_5 = GL_TEXTURE5,
-    TEXTURE_SLOT_6 = GL_TEXTURE6,
-    TEXTURE_SLOT_7 = GL_TEXTURE7,
-    TEXTURE_SLOT_8 = GL_TEXTURE8,
-    TEXTURE_SLOT_9 = GL_TEXTURE9,
-    
-    TEXTURE_SLOT_10 = GL_TEXTURE10,
-    TEXTURE_SLOT_11 = GL_TEXTURE11,
-    TEXTURE_SLOT_12 = GL_TEXTURE12,
-    TEXTURE_SLOT_13 = GL_TEXTURE13,
-    TEXTURE_SLOT_14 = GL_TEXTURE14,
-    TEXTURE_SLOT_15 = GL_TEXTURE15,
-    TEXTURE_SLOT_16 = GL_TEXTURE16,
-    TEXTURE_SLOT_17 = GL_TEXTURE17,
-    TEXTURE_SLOT_18 = GL_TEXTURE18,
-    TEXTURE_SLOT_19 = GL_TEXTURE19,
-    
-    TEXTURE_SLOT_20 = GL_TEXTURE20,
-    TEXTURE_SLOT_21 = GL_TEXTURE21,
-    TEXTURE_SLOT_22 = GL_TEXTURE22,
-    TEXTURE_SLOT_23 = GL_TEXTURE23,
-    TEXTURE_SLOT_24 = GL_TEXTURE24,
-    TEXTURE_SLOT_25 = GL_TEXTURE25,
-    TEXTURE_SLOT_26 = GL_TEXTURE26,
-    TEXTURE_SLOT_27 = GL_TEXTURE27,
-    TEXTURE_SLOT_28 = GL_TEXTURE28,
-    TEXTURE_SLOT_29 = GL_TEXTURE29,
-    
-    TEXTURE_SLOT_30 = GL_TEXTURE30,
-    TEXTURE_SLOT_31 = GL_TEXTURE31,
-    
-    TEXTURE_SLOT_DEFAULT = GL_TEXTURE0,
-    
-    TEXTURE_SLOT_DIFFUSE = GL_TEXTURE0,
-    TEXTURE_SLOT_AMBIENT = GL_TEXTURE1,
-    TEXTURE_SLOT_NORMAL = GL_TEXTURE2,
-    TEXTURE_SLOT_SPECULAR = GL_TEXTURE3
-};
+
 
 /**----------------------------------------------------------------------------
- * Parameters for creating or modifying texture objects.
+ * Forward Declarations
 -----------------------------------------------------------------------------*/
-enum tex_param_t : int {
-    TEX_PARAM_INVALID       = -1,
+class TextureAssembly;
+class PixelBuffer;
 
-    TEX_PARAM_MIN_FILTER    = GL_TEXTURE_MIN_FILTER,
-    TEX_PARAM_MAG_FILTER    = GL_TEXTURE_MAG_FILTER,
-    
-    TEX_PARAM_MIN_LOD       = GL_TEXTURE_MIN_LOD,
-    TEX_PARAM_MAX_LOD       = GL_TEXTURE_MAX_LOD,
-    
-    TEX_PARAM_SWIZZLE_R     = GL_TEXTURE_SWIZZLE_R,
-    TEX_PARAM_SWIZZLE_G     = GL_TEXTURE_SWIZZLE_G,
-    TEX_PARAM_SWIZZLE_B     = GL_TEXTURE_SWIZZLE_B,
-    TEX_PARAM_SWIZZLE_A     = GL_TEXTURE_SWIZZLE_A,
 
-    TEX_PARAM_WRAP_S        = GL_TEXTURE_WRAP_S,
-    TEX_PARAM_WRAP_T        = GL_TEXTURE_WRAP_T,
-    TEX_PARAM_WRAP_R        = GL_TEXTURE_WRAP_R,
-    
-    TEX_PARAM_CLAMP_EDGE    = GL_CLAMP_TO_EDGE,
-    TEX_PARAM_REPEAT        = GL_REPEAT,
+
+/*-----------------------------------------------------------------------------
+ * Texture Bindings
+-----------------------------------------------------------------------------*/
+enum active_texture_t {
+    ACTIVE_TEXURE0 = 0x01,
+    ACTIVE_TEXURE1 = 0x02,
+    ACTIVE_TEXURE2 = 0x04,
+    ACTIVE_TEXURE3 = 0x08,
+    ACTIVE_TEXURE4 = 0x10,
+    ACTIVE_TEXURE5 = 0x20,
+    ACTIVE_TEXURE6 = 0x40,
+    ACTIVE_TEXURE7 = 0x80,
+
+    ACTIVE_TEXURE_NONE = 0x00,
+
+    MAX_ACTIVE_TEXTURES = 8
 };
 
-/**----------------------------------------------------------------------------
- * Parameters for Manipulating Texture Channels
------------------------------------------------------------------------------*/
-enum tex_channel_t : int {
-    TEX_CHANNEL_RED     = GL_RED,
-    TEX_CHANNEL_GREEN   = GL_GREEN,
-    TEX_CHANNEL_BLUE    = GL_BLUE,
-    TEX_CHANNEL_ALPHA   = GL_ALPHA
-};
 
-/**----------------------------------------------------------------------------
- * Framebuffer filtering specifiers
------------------------------------------------------------------------------*/
-enum tex_filter_t : int {
-    TEX_FILTER_NEAREST           = GL_NEAREST,
-    TEX_FILTER_LINEAR            = GL_LINEAR,
-    
-    TEX_FILTER_NEAREST_NEAREST   = GL_NEAREST_MIPMAP_NEAREST,
-    TEX_FILTER_NEAREST_LINEAR    = GL_NEAREST_MIPMAP_LINEAR,
-            
-    TEX_FILTER_LINEAR_NEAREST    = GL_LINEAR_MIPMAP_NEAREST,
-    TEX_FILTER_LINEAR_LINEAR     = GL_LINEAR_MIPMAP_LINEAR
-};
-
-/**----------------------------------------------------------------------------
- * Descriptors for different texture types
------------------------------------------------------------------------------*/
-enum tex_desc_t : int {
-    TEX_DESC_2D         = GL_TEXTURE_2D,
-    TEX_DESC_2D_ARRAY   = GL_TEXTURE_2D_ARRAY,
-    TEX_DESC_3D         = GL_TEXTURE_3D,
-    TEX_DESC_CUBE       = GL_TEXTURE_CUBE_MAP,
-};
 
 /**----------------------------------------------------------------------------
  * Texture Objects
 -----------------------------------------------------------------------------*/
 class Texture {
-    private:
-        /**
-         * Dimension is a constant which is initialized upon construction of
-         * a texture object. This provides information to the GPU in order to
-         * determine if *this is a 1D, 2D, 3D texture, and so on.
-         */
-        tex_desc_t dimensions;
-        
-        /**
-         * Texture ID
-         * The handle to the current texture used by OpenGL.
-         */
-        unsigned gpuId = 0;
-        
-        /**
-         * Current texture slot *this objects will be bound to during drawing
-         * operations.
-         */
-        tex_slot_t slot = tex_slot_t::TEXTURE_SLOT_DEFAULT;
-        
-    public:
-        /**
-         * @brief Constructor
-         */
-        Texture(tex_desc_t td = TEX_DESC_2D);
-        
-        /**
-         * @brief Copy Constructor -- DELETED
-         */
-        Texture(const Texture&);
-        
-        /**
-         * @brief Move Constructor
-         * 
-         * Reassigns the texture ID at *this to the one referenced by the
-         * source operand. Resets the source operand to 0.
-         * 
-         * @param t
-         * An r-value reference to another texture object.
-         */
-        Texture(Texture&& t);
-        
-        /**
-         * @brief Destructor
-         * 
-         * Releases all memory referenced by texId
-         */
-        ~Texture();
-        
-        /**
-         * @brief Copy Operator -- DELETED
-         */
-        Texture& operator=(const Texture&);
-        
-        /**
-         * @brief Move Operator -- DELETED
-         */
-        Texture& operator=(Texture&& t);
-        
-        /**
-         * Get the GPU-Assigned ID used by *this.
-         * 
-         * @return An unsigned integral type that correlates to a texture on
-         * the GPU.
-         */
-        unsigned gpu_id() const;
-        
-        /**
-         * @brief Determine if *this is able to be used for rendering.
-         * 
-         * @return TRUE if *this contains a valid texture ID, FALSE if not.
-         */
-        bool is_valid() const;
-        
-        /**
-         * Bind the current texture to OpenGL
-         */
-        void bind() const;
-        
-        /**
-         * Unbind the current texture to OpenGL
-         */
-        void unbind() const;
-        
-        /**
-         * @brief Set the texture slot which *this will be bound to when a
-         * call to "bind()" is made.
-         * 
-         * @param activeSlot
-         * An enumeration of the tex_slot_t type.
-         */
-        void set_texture_slot(tex_slot_t activeSlot);
-        
-        /**
-         * @brief Get the texture slot which *this will be bound to when a
-         * call to "bind()" is made.
-         * 
-         * @return An enumeration of the tex_slot_t type.
-         */
-        tex_slot_t get_texture_slot() const;
-        
-        /**
-         * Set a integer texture parameter.
-         * Make sure that "bind()" has been called before using this method.
-         * 
-         * @param paramName
-         * The name/type of texture parameter which should be modified on the
-         * GPU.
-         * 
-         * @param param
-         * The particular texture setting to use for *this.
-         */
-        void set_parameter(int paramName, int param) const;
-        
-        /**
-         * @brief Set a float texture parameter.
-         * 
-         * Make sure that "bind()" has been called before using this method.
-         * 
-         * @param paramName
-         * The name/type of texture parameter which should be modified on the
-         * GPU.
-         * 
-         * @param param
-         * The particular texture setting to use for *this.
-         */
-        void set_parameter(int paramName, float param) const;
-        
-        /**
-         * @brief Create an OpenGL texture with no data.
-         * 
-         * @return true if the operation was successful. False if otherwise.
-         */
-        bool init();
+    friend class TextureAssembly;
 
-        /**
-         * @brief Create a 1D OpenGL texture in a similar manner as a
-         * renderbuffer.
-         *
-         * This function delegates texture initialization by filling in default
-         * parameters required by other functions.
-         *
-         * @return true if the operation was successful. False if otherwise.
-         */
-        bool init(pixel_format_t internalFormat, int size);
+  private:
+    /**
+     * The handle to the current texture used by OpenGL.
+     */
+    unsigned gpuId;
 
-        /**
-         * @brief Create a 1D OpenGL texture in a similar manner as a
-         * renderbuffer.
-         *
-         * This function delegates texture initialization by filling in default
-         * parameters required by other functions.
-         *
-         * @return true if the operation was successful. False if otherwise.
-         */
-        bool init(pixel_format_t internalFormat, const math::vec2i& size);
+    /**
+     * Enumeration to determine what type of texture this is.
+     */
+    tex_type_t texType;
 
-        /**
-         * @brief Create a 3D OpenGL texture in a similar manner as a
-         * renderbuffer.
-         *
-         * This function delegates texture initialization by filling in default
-         * parameters required by other functions.
-         *
-         * @return true if the operation was successful. False if otherwise.
-         */
-        bool init(pixel_format_t internalFormat, const math::vec3i& size);
-        
-        /**
-         * Create an OpenGL texture by using preexisting image data.
-         * 
-         * @see OpenGL's documentation for glTexImage()
-         * 
-         * @return true if the operation was successful. False if otherwise.
-         */
-        bool init(
-            int             mipmapLevel,
-            pixel_format_t  internalFormat,
-            int             size,
-            pixel_layout_t  format,
-            color_type_t    dataType,
-            void* const     data
-        );
-        
-        /**
-         * Create an OpenGL texture by using preexisting image data.
-         * 
-         * @see OpenGL's documentation for glTexImage()
-         * 
-         * @return true if the operation was successful. False if otherwise.
-         */
-        bool init(
-            int             mipmapLevel,
-            pixel_format_t  internalFormat,
-            const math::vec2i& size,
-            pixel_layout_t  format,
-            color_type_t    dataType,
-            void* const     data
-        );
-        
-        /**
-         * Create an OpenGL texture by using preexisting image data.
-         * 
-         * @see OpenGL's documentation for glTexImage()
-         * 
-         * @return true if the operation was successful. False if otherwise.
-         */
-        bool init(
-            int              mipmapLevel,
-            pixel_format_t   internalFormat,
-            const math::vec3i& size,
-            pixel_layout_t   format,
-            color_type_t     dataType,
-            void* const      data
-        );
-        
-        /**
-         * Create a 2D OpenGL texture by using preexisting image data.
-         * 
-         * @param resource
-         * A constant reference to an imageResource object containing pixel
-         * data to load into *this.
-         * 
-         * @return true if the operation was successful. False if otherwise.
-         */
-        bool init(const ImageResource& resource, int mipmapLevel = 0);
-        
-        /**
-         * Modify the internal data of a texture.
-         * 
-         * @see OpenGL's documentation for glTexImage()
-         */
-        void modify(int offset, int size, int format, int dataType, void* data);
-        
-        /**
-         * Modify the internal data of a texture.
-         */
-        void modify(const math::vec2i& offset, const math::vec2i& size, int format, int dataType, void* data);
-        
-        /**
-         * Modify the internal data of a texture.
-         */
-        void modify(const math::vec3i& offset, const math::vec3i& size, int format, int dataType, void* data);
-        
-        /**
-         * Release all memory referenced by *this.
-         */
-        void terminate();
-        
-        /**
-         * Get the texture type of that this texture uses in OpenGL.
-         * 
-         * @return the GPU-descriptor that's used to apply *this texture object
-         * onto polygons.
-         */
-        tex_desc_t get_texture_type() const;
-        
-        /**
-         * Get the maximum texture size supported by OpenGL.
-         * 
-         * @return an integral type which can be used to determine the maximum
-         * byte size of a texture supported by the GPU.
-         */
-        static int get_max_texture_size();
+    /**
+     * Member to hold the width, height, and depth of a texture stored on the
+     * GPU.
+     */
+    math::vec3i size;
+
+    /**
+     * CPU-Side descriptors of GPU texture parameters.
+     */
+    TextureAttrib attribs;
+
+  public:
+    /**
+     * @brief Destructor
+     *
+     * Releases all CPU-side memory referenced by texId. The destructor does
+     * not release any GPU-side memory unless a call to "this->terminate()" has
+     * been called.
+     */
+    ~Texture() noexcept;
+
+    /**
+     * @brief Constructor
+     */
+    Texture() noexcept;
+
+    /**
+     * @brief Copy Constructor
+     *
+     * Copies all data from the input parameter into *this. No GPU-side copies
+     * are performed.
+     *
+     * @param tex
+     * A constant reference to a Texture object who's data is to be copied
+     * into *this.
+     */
+    Texture(const Texture&) noexcept;
+
+    /**
+     * @brief Move Constructor
+     *
+     * Reassigns the texture ID at *this to the one referenced by the
+     * source operand. Resets the source operand to 0.
+     *
+     * @param t
+     * An r-value reference to another texture object.
+     */
+    Texture(Texture&& t) noexcept;
+
+    /**
+     * @brief Copy Operator
+     *
+     * Copies all data from the input parameter into *this. No GPU-side copies
+     * are performed.
+     *
+     * @param tex
+     * A constant reference to a Texture object who's data is to be copied
+     * into *this.
+     *
+     * @return A reference to *this.
+     */
+    Texture& operator=(const Texture&) noexcept;
+
+    /**
+     * @brief Move Operator
+     *
+     * Reassigns the texture ID at *this to the one referenced by the
+     * source operand. Resets the source operand to 0.
+     *
+     * @param t
+     * An r-value reference to another texture object.
+     *
+     * @return A reference to *this.
+     */
+    Texture& operator=(Texture&& t) noexcept;
+
+    /**
+     * Get the GPU-Assigned ID used by *this.
+     *
+     * @return An unsigned integral type that correlates to a texture on
+     * the GPU.
+     */
+    unsigned gpu_id() const noexcept;
+
+    /**
+     * @brief Determine if *this is able to be used for rendering.
+     *
+     * @return TRUE if *this contains a valid texture ID, FALSE if not.
+     */
+    bool is_valid() const noexcept;
+
+    /**
+     * Bind the current texture to OpenGL
+     */
+    void bind() const noexcept;
+
+    /**
+     * Unbind the current texture to OpenGL
+     */
+    void unbind() const noexcept;
+
+    /**
+     * Retrieve all current attributes to *this.
+     *
+     * @return A constant reference to a constant TextureAttrib object,
+     * containing cached values of the current texture object's attributes.
+     */
+    const TextureAttrib& get_attribs() const noexcept;
+
+    /**
+     * Retrieve the current texture's size.
+     *
+     * @return A constant reference to a 3D integer vector containing the
+     * dimensions of the current texture object.
+     */
+    const math::vec3i& get_size() const noexcept;
+
+    /**
+     * Modify the internal data of a texture.
+     *
+     * @param type
+     * A value from either the tex_2d_type_t or tex_3d_type_t enumeration which
+     * will tell OpenGL what type of data is held within a subset of *this
+     * texture object.
+     *
+     * @param offset
+     * A linear offset into the current texture being modified.
+     *
+     * @param modifySize
+     * The number of bytes which are to be modified.
+     *
+     * @param pData
+     * A constant pointer to a data store which contains data that's to be
+     * copied into *this texture.
+     *
+     * @param level
+     * Determines the mipmap level to be modified/retrieved.
+     */
+    void modify(
+        const GLenum type,
+        const int offset,
+        const int modifySize,
+        const void* const data,
+        const int level = 0
+        ) noexcept;
+
+    /**
+     * Modify the internal data of a texture using a PBO.
+     *
+     * @param type
+     * A value from either the tex_2d_type_t or tex_3d_type_t enumeration which
+     * will tell OpenGL what type of data is held within a subset of *this
+     * texture object.
+     *
+     * @param offset
+     * A linear offset into the current texture being modified.
+     *
+     * @param modifySize
+     * The number of bytes which are to be modified.
+     *
+     * @param pbo
+     * A constant reference to a currently bound pixel buffer object which
+     * contains data that's to be copied into/out of *this texture.
+     *
+     * @param level
+     * Determines the mipmap level to be modified/retrieved.
+     */
+    void modify(
+        const GLenum type,
+        const int offset,
+        const int modifySize,
+        const PixelBuffer& pbo,
+        const int level = 0
+        ) noexcept;
+
+    /**
+     * Modify the internal data of a texture.
+     *
+     * @param type
+     * A value from either the tex_2d_type_t or tex_3d_type_t enumeration which
+     * will tell OpenGL what type of data is held within a subset of *this
+     * texture object.
+     *
+     * @param offset
+     * A linear 2D offset into the current texture being modified.
+     *
+     * @param modifySize
+     * The number of pixels in two dimensions which are to be modified.
+     *
+     * @param pData
+     * A constant pointer to a data store which contains data that's to be
+     * copied into *this texture.
+     *
+     * @param level
+     * Determines the mipmap level to be modified/retrieved.
+     */
+    void modify(
+        const tex_2d_type_t type,
+        const math::vec2i& offset,
+        const math::vec2i& modifySize,
+        const void* const data,
+        const int level = 0
+        ) noexcept;
+
+    /**
+     * Modify the internal data of a texture.
+     *
+     * @param type
+     * A value from either the tex_2d_type_t or tex_3d_type_t enumeration which
+     * will tell OpenGL what type of data is held within a subset of *this
+     * texture object.
+     *
+     * @param offset
+     * A linear 2D offset into the current texture being modified.
+     *
+     * @param modifySize
+     * The number of pixels in two dimensions which are to be modified.
+     *
+     * @param pbo
+     * A constant reference to a currently bound pixel buffer object which
+     * contains data that's to be copied into/out of *this texture.
+     *
+     * @param level
+     * Determines the mipmap level to be modified/retrieved.
+     */
+    void modify(
+        const tex_2d_type_t type,
+        const math::vec2i& offset,
+        const math::vec2i& modifySize,
+        const PixelBuffer& pbo,
+        const int level = 0
+        ) noexcept;
+
+    /**
+     * Modify the internal data of a texture.
+     *
+     * @param type
+     * A value from either the tex_2d_type_t or tex_3d_type_t enumeration which
+     * will tell OpenGL what type of data is held within a subset of *this
+     * texture object.
+     *
+     * @param offset
+     * A linear 3D offset into the current texture being modified.
+     *
+     * @param modifySize
+     * The number of pixels in three dimensions which are to be modified.
+     *
+     * @param pData
+     * A constant pointer to a data store which contains data that's to be
+     * copied into *this texture.
+     *
+     * @param level
+     * Determines the mipmap level to be modified/retrieved.
+     */
+    void modify(
+        const tex_3d_type_t type,
+        const math::vec3i& offset,
+        const math::vec3i& modifySize,
+        const void* const data,
+        const int level = 0
+        ) noexcept;
+
+    /**
+     * Modify the internal data of a texture.
+     *
+     * @param type
+     * A value from either the tex_2d_type_t or tex_3d_type_t enumeration which
+     * will tell OpenGL what type of data is held within a subset of *this
+     * texture object.
+     *
+     * @param offset
+     * A linear 3D offset into the current texture being modified.
+     *
+     * @param modifySize
+     * The number of pixels in three dimensions which are to be modified.
+     *
+     * @param pbo
+     * A constant reference to a currently bound pixel buffer object which
+     * contains data that's to be copied into/out of *this texture.
+     *
+     * @param level
+     * Determines the mipmap level to be modified/retrieved.
+     */
+    void modify(
+        const tex_3d_type_t type,
+        const math::vec3i& offset,
+        const math::vec3i& modifySize,
+        const PixelBuffer& pbo,
+        const int level = 0
+        ) noexcept;
+
+    /**
+     * Release all memory referenced by *this.
+     */
+    void terminate() noexcept;
+
+    /**
+     * Get the texture type of that this texture uses in OpenGL.
+     *
+     * @return A value from the tex_type_t enumeration which determines the
+     * main 2D or 3D texture type describing *this.
+     */
+    tex_type_t get_texture_type() const noexcept;
 };
+
+/*-----------------------------------------------------------------------------
+ * Texture Object member functions
+-----------------------------------------------------------------------------*/
 
 /*-------------------------------------
     Get the GPU-Assigned ID used by *this.
 -------------------------------------*/
-inline unsigned Texture::gpu_id() const {
+inline unsigned Texture::gpu_id() const noexcept {
     return gpuId;
 }
 
 /*-------------------------------------
  Determine if *this can be used during rendering operations.
 -------------------------------------*/
-inline bool Texture::is_valid() const {
-    return gpuId != 0;
+inline bool Texture::is_valid() const noexcept {
+    return gpu_id() != 0;
 }
 
 /*-------------------------------------
     Bind the current texture to OpenGL
 -------------------------------------*/
-inline void Texture::bind() const {
-    glActiveTexture(slot);
-    glBindTexture(dimensions, gpuId);
+inline void Texture::bind() const noexcept {
+    glBindTexture(texType, gpu_id());
 }
 
 /*-------------------------------------
     Unbind the current texture to OpenGL
 -------------------------------------*/
-inline void Texture::unbind() const {
-    glActiveTexture(slot);
-    glBindTexture(dimensions, 0);
+inline void Texture::unbind() const noexcept {
+    glBindTexture(texType, 0);
 }
 
 /*-------------------------------------
- * Set the active texture slot.
+ Get the current texture's attribtues
 -------------------------------------*/
-inline void Texture::set_texture_slot(tex_slot_t activeSlot) {
-    slot = activeSlot;
+inline const TextureAttrib& Texture::get_attribs() const noexcept {
+    return attribs;
 }
 
 /*-------------------------------------
- * Get the active texture slot.
+ Get the current texture's size
 -------------------------------------*/
-inline tex_slot_t Texture::get_texture_slot() const {
-    return slot;
-}
-
-/*-------------------------------------
-    Set a integer texture parameter.
-    Make sure that "bind() const" has been called before using this method.
--------------------------------------*/
-inline void Texture::set_parameter(int paramName, int param) const {
-    glTexParameteri(dimensions, paramName, param);
-}
-
-/*-------------------------------------
-    Set a float texture parameter.
-    Make sure that "bind() const" has been called before using this method.
--------------------------------------*/
-inline void Texture::set_parameter(int paramName, float param) const {
-    glTexParameterf(dimensions, paramName, param);
-}
-
-/*-------------------------------------
-    Create an OpenGL texture by using preexisting image data.
--------------------------------------*/
-inline bool Texture::init(const ImageResource& resource, int mipmapLevel) {
-    return init(
-        mipmapLevel,
-        resource.get_internal_format(),
-        resource.get_pixel_size(),
-        resource.get_external_format(),
-        resource.get_pixel_type(),
-        resource.get_data()
-    );
-}
-
-/*-------------------------------------
-    Modify the internal data of a texture.
--------------------------------------*/
-inline void Texture::modify(int offset, int size, int format, int dataType, void* data) {
-    glTexSubImage2D(get_texture_type(), 0, offset, 0, size, 0, format, dataType, data);
-    LS_LOG_GL_ERR();
-}
-
-/*-------------------------------------
-    Modify the internal data of a texture.
--------------------------------------*/
-inline void Texture::modify(
-    const math::vec2i& offset,
-    const math::vec2i& size,
-    int format,
-    int dataType,
-    void* data
-) {
-    glTexSubImage2D(get_texture_type(), 0, offset[0], offset[1], size[0], size[1], format, dataType, data);
-    LS_LOG_GL_ERR();
-}
-
-/*-------------------------------------
-    Modify the internal data of a texture.
--------------------------------------*/
-inline void Texture::modify(
-    const math::vec3i& offset,
-    const math::vec3i& size,
-    int format,
-    int dataType,
-    void* data
-) {
-    glTexSubImage3D(get_texture_type(), 0, offset[0], offset[1], offset[2], size[0], size[1], size[2], format, dataType, data);
-    LS_LOG_GL_ERR();
-}
-
-/*-------------------------------------
-    Release all memory referenced by *this.
--------------------------------------*/
-inline void Texture::terminate() {
-    glDeleteTextures(1, &gpuId);
-    gpuId = 0;
-    slot = tex_slot_t::TEXTURE_SLOT_DEFAULT;
+inline const math::vec3i& Texture::get_size() const noexcept {
+    return size;
 }
 
 /*-------------------------------------
     Get the texture type of that this texture uses in OpenGL
 -------------------------------------*/
-inline tex_desc_t Texture::get_texture_type() const {
-    return dimensions;
+inline tex_type_t Texture::get_texture_type() const noexcept {
+    return texType;
 }
 
-/*-------------------------------------
-    Get the maximum texture size supported by OpenGL
+
+
+/*-----------------------------------------------------------------------------
+ * Texture Object Utility functions
+-----------------------------------------------------------------------------*/
+
+/**------------------------------------
+ * Get the maximum texture size supported by OpenGL.
+ *
+ * @return an integral type which can be used to determine the maximum
+ * byte size of a texture supported by the GPU.
 -------------------------------------*/
-inline int Texture::get_max_texture_size() {
-    int maxTexSize;
-    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTexSize);
-    return maxTexSize;
+inline int get_max_texture_size() noexcept {
+    return get_gl_int(GL_MAX_TEXTURE_SIZE);
+}
+
+/**
+ * Retrieve the GPU-side ID of the texture currently bound as a specific
+ * texture type.
+ *
+ * @param texType A value from the texture_type_t enumeration.
+ *
+ * @return The GPU handle to the texture type currently bound to as a 2D or
+ * 3D texture type.
+ */
+inline GLuint get_active_texture_id(const tex_type_t texType) noexcept {
+    return get_gl_uint((GLenum) texType);
+}
+
+/**
+ * Retrieve the currently bound texture unit.
+ *
+ * This can help provide information to client code when using multitexturing.
+ *
+ * @return The currently bound multi-texture target. The initial value is
+ * GL_TEXTURE0.
+ */
+inline tex_slot_t get_active_texture_unit() noexcept {
+    return (tex_slot_t) get_gl_int(GL_ACTIVE_TEXTURE);
 }
 
 } // end draw namespace
 } // end ls namespace
 
-#endif	/* __LS_DRAW_TEXTURE_H__ */
+#endif  /* __LS_DRAW_TEXTURE_H__ */

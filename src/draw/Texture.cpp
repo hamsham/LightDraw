@@ -1,198 +1,184 @@
-/* 
+/*
  * File:   draw/texture.cpp
  * Author: Miles Lacey
- * 
+ *
  * Created on January 27, 2014, 8:35 PM
  */
 
-#include "lightsky/utils/Assertions.h"
+#include "ls/utils/Assertions.h"
 
-#include "lightsky/draw/Texture.h"
+#include "ls/draw/Texture.h"
+#include "ls/draw/PixelBuffer.h"
 
 namespace ls {
 namespace draw {
-        
+
 /*-------------------------------------*
     Destructor
 -------------------------------------*/
-Texture::~Texture() {
-    terminate();
+Texture::~Texture() noexcept {
 }
 
 /*-------------------------------------
     Constructor
 -------------------------------------*/
-Texture::Texture(tex_desc_t td) :
-    dimensions{td},
-    gpuId{0},
-    slot{tex_slot_t::TEXTURE_SLOT_DEFAULT}
+Texture::Texture() noexcept :
+    gpuId {0},
+    texType {tex_type_t::TEX_TYPE_2D},
+    size {0},
+    attribs {}
 {}
 
 /*-------------------------------------
     Copy Constructor
 -------------------------------------*/
-Texture::Texture(const Texture& t) :
-    dimensions{t.dimensions},
-    gpuId{t.gpuId},
-    slot{t.slot}
+Texture::Texture(const Texture& t) noexcept :
+    gpuId {t.gpuId},
+    texType {t.texType},
+    size {t.size},
+    attribs {t.attribs}
 {}
 
 /*-------------------------------------
     Move Constructor
 -------------------------------------*/
-Texture::Texture(Texture&& t) :
-    dimensions{t.dimensions},
-    gpuId{t.gpuId},
-    slot{t.slot}
+Texture::Texture(Texture&& t) noexcept :
+    gpuId {t.gpuId},
+    texType {t.texType},
+    size {t.size},
+    attribs {std::move(t.attribs)}
 {
     t.gpuId = 0;
-    t.slot = tex_slot_t::TEXTURE_SLOT_DEFAULT;
+    t.texType = tex_type_t::TEX_TYPE_2D;
+    t.size = 0;
 }
 
 /*-------------------------------------
     Move Operator
 -------------------------------------*/
-Texture& Texture::operator=(const Texture& t) {
-    dimensions = t.dimensions;
+Texture& Texture::operator =(const Texture& t) noexcept {
     gpuId = t.gpuId;
-    slot = t.slot;
-    
+    texType = t.texType;
+    size = t.size;
+    attribs = t.attribs;
+
     return *this;
 }
 
 /*-------------------------------------
     Move Operator
 -------------------------------------*/
-Texture& Texture::operator=(Texture&& t) {
-    LS_DEBUG_ASSERT(t.dimensions == dimensions);
-    
+Texture& Texture::operator =(Texture&& t) noexcept {
     gpuId = t.gpuId;
     t.gpuId = 0;
-    
-    slot = t.slot;
-    t.slot = tex_slot_t::TEXTURE_SLOT_DEFAULT;
-    
+
+    texType = t.texType;
+    t.texType = tex_type_t::TEX_TYPE_2D;
+
+    size = t.size;
+    t.size = 0;
+
+    attribs = std::move(t.attribs);
+
     return *this;
 }
 
 /*-------------------------------------
-    Create an OpenGL texture with no data.
+    Modify the internal data of a texture.
 -------------------------------------*/
-bool Texture::init() {
-    if (!gpuId) {
-        glGenTextures(1, &gpuId);
-        LS_LOG_GL_ERR();
-        
-        if (gpuId == 0) {
-            LS_LOG_ERR("Unable to generate a texture object");
-            return false;
-        }
-    }
-    
-    return true;
+void Texture::modify(
+    const GLenum type,
+    const int offset,
+    const int modifySize,
+    const void* const data,
+    const int level
+    ) noexcept {
+    const GLenum format = attribs.get_basic_format();
+    const GLenum dataType = attribs.get_color_type();
+    glTexSubImage2D(type, level, offset, 0, modifySize, 0, format, dataType, data);
+    LS_LOG_GL_ERR();
 }
 
 /*-------------------------------------
-    Load 1D Textures
+    Modify the internal data of a texture using a PBO
 -------------------------------------*/
-bool Texture::init(pixel_format_t internalFormat, int size) {
-    const pixel_layout_t layout = get_color_layout(internalFormat);
-    return init(0, internalFormat, size, layout, color_type_t::COLOR_TYPE_DEFAULT, nullptr);
+void Texture::modify(
+    const GLenum type,
+    const int offset,
+    const int modifySize,
+    const PixelBuffer& pbo,
+    const int level
+    ) noexcept {
+    modify(type, offset, modifySize, (void*)draw::get_buffer_map_offset(pbo.get_type()), level);
 }
 
 /*-------------------------------------
-    Load 2D Textures
+    Modify the internal data of a texture.
 -------------------------------------*/
-bool Texture::init(pixel_format_t internalFormat, const math::vec2i& size) {
-    const pixel_layout_t layout = get_color_layout(internalFormat);
-    return init(0, internalFormat, size, layout, color_type_t::COLOR_TYPE_DEFAULT, nullptr);
+void Texture::modify(
+    const tex_2d_type_t type,
+    const math::vec2i& offset,
+    const math::vec2i& modifySize,
+    const void* const data,
+    const int level
+    ) noexcept {
+    const GLenum format = attribs.get_basic_format();
+    const GLenum dataType = attribs.get_color_type();
+    glTexSubImage2D(type, level, offset[0], offset[1], modifySize[0], modifySize[1], format, dataType, data);
+    LS_LOG_GL_ERR();
 }
 
 /*-------------------------------------
-    Load 3D Textures
+    Modify the internal data of a texture using a PBO
 -------------------------------------*/
-bool Texture::init(pixel_format_t internalFormat, const math::vec3i& size) {
-    const pixel_layout_t layout = get_color_layout(internalFormat);
-    return init(0, internalFormat, size, layout, color_type_t::COLOR_TYPE_DEFAULT, nullptr);
+void Texture::modify(
+    const tex_2d_type_t type,
+    const math::vec2i& offset,
+    const math::vec2i& modifySize,
+    const PixelBuffer& pbo,
+    const int level
+    ) noexcept {
+    modify(type, offset, modifySize, (void*)draw::get_buffer_map_offset(pbo.get_type()), level);
 }
 
 /*-------------------------------------
-    Load 1D Textures
+    Modify the internal data of a texture.
 -------------------------------------*/
-bool Texture::init(
-    int             mipmapLevel,
-    pixel_format_t  internalFormat,
-    int             size,
-    pixel_layout_t  format,
-    color_type_t    dataType,
-    void* const     data
-) {
-    if (!init()) {
-        return false;
-    }
-    
-    glBindTexture(dimensions, gpuId);
+void Texture::modify(
+    const tex_3d_type_t type,
+    const math::vec3i& offset,
+    const math::vec3i& modifySize,
+    const void* const data,
+    const int level
+    ) noexcept {
+    const GLenum format = attribs.get_basic_format();
+    const GLenum dataType = attribs.get_color_type();
+    glTexSubImage3D(type, level, offset[0], offset[1], offset[2], modifySize[0], modifySize[1], modifySize[2], format, dataType, data);
     LS_LOG_GL_ERR();
-    
-    glTexImage2D(dimensions, mipmapLevel, internalFormat, size, 1, 0, format, dataType, data);
-    LS_LOG_GL_ERR();
-    
-    return true;
 }
 
 /*-------------------------------------
-    Load 2D Textures
+    Modify the internal data of a texture using a PBO
 -------------------------------------*/
-bool Texture::init(
-    int              mipmapLevel,
-    pixel_format_t   internalFormat,
-    const math::vec2i& size,
-    pixel_layout_t   format,
-    color_type_t     dataType,
-    void* const      data
-) {
-    if (!init()) {
-        return false;
-    }
-    
-    glBindTexture(dimensions, gpuId);
-    LS_LOG_GL_ERR();
-    
-    glTexImage2D(
-        dimensions, mipmapLevel, internalFormat,
-        size[0], size[1], 0, format, dataType, data
-    );
-    LS_LOG_GL_ERR();
-    
-    return true;
+void Texture::modify(
+    const tex_3d_type_t type,
+    const math::vec3i& offset,
+    const math::vec3i& modifySize,
+    const PixelBuffer& pbo,
+    const int level
+    ) noexcept {
+    modify(type, offset, modifySize, (void*)draw::get_buffer_map_offset(pbo.get_type()), level);
 }
 
 /*-------------------------------------
-    Load 3D Textures
+    Release all memory referenced by *this.
 -------------------------------------*/
-bool Texture::init(
-    int              mipmapLevel,
-    pixel_format_t   internalFormat,
-    const math::vec3i& size,
-    pixel_layout_t   format,
-    color_type_t     dataType,
-    void* const      data
-) {
-    if (!init()) {
-        return false;
-    }
-    
-    glBindTexture(dimensions, gpuId);
-    LS_LOG_GL_ERR();
-    
-    glTexImage3D(
-        dimensions, mipmapLevel, internalFormat,
-        size[0], size[1], size[2], 0, format, dataType,
-        data
-    );
-    LS_LOG_GL_ERR();
-    
-    return true;
+void Texture::terminate() noexcept {
+    glDeleteTextures(1, &gpuId);
+    gpuId = 0;
+    texType = tex_type_t::TEX_TYPE_2D;
+    size = 0;
+    attribs.reset_attribs();
 }
 
 } // end draw namespace

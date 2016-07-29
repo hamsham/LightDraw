@@ -5,7 +5,7 @@
  * Created on August 3, 2014, 6:53 PM
  */
 
-#include "lightsky/draw/BlendObject.h"
+#include "ls/draw/BlendObject.h"
 
 namespace ls {
 namespace draw {
@@ -33,15 +33,15 @@ void BlendObject::bind() const {
  */
 void BlendObject::unbind() const {
     // the default constructor already has default OpenGL params.
-    BlendObject blender{};
+    BlendObject blender {};
     blender.bind();
 }
 
 /*
  * Reset all members to their default values.
  */
-void BlendObject::reset() {
-    *this = BlendObject{};
+void BlendObject::terminate() {
+    *this = BlendObject {};
 }
 
 } // end draw namespace

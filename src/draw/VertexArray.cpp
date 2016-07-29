@@ -1,78 +1,110 @@
-/* 
+/*
  * File:   vertexArray.cpp
  * Author: Miles Lacey
- * 
+ *
  * Created on February 7, 2014, 8:01 PM
  */
 
-#include "lightsky/draw/VertexArray.h"
+#include <utility> // std::move()
+
+#include "ls/draw/VertexArray.h"
+#include "ls/draw/VAOAssembly.h"
 
 namespace ls {
 namespace draw {
 
 /*-------------------------------------
+ * Destructor
+-------------------------------------*/
+VertexArray::~VertexArray() noexcept {
+}
+
+/*-------------------------------------
  * Constructor
 -------------------------------------*/
-VertexArray::VertexArray() {
+VertexArray::VertexArray() noexcept :
+gpuId {
+    0
+},
+attribs {}
+{
+}
+
+/*-------------------------------------
+ * Copy Constructor
+-------------------------------------*/
+VertexArray::VertexArray(const VertexArray& va) noexcept :
+gpuId {
+    va.gpuId
+},
+attribs {va.attribs}
+{
 }
 
 /*-------------------------------------
  * Move Constructor
 -------------------------------------*/
-VertexArray::VertexArray(VertexArray&& va) :
-    vaoId{va.vaoId}
+VertexArray::VertexArray(VertexArray&& va) noexcept :
+gpuId {
+    va.gpuId
+},
+attribs {std::move(va.attribs)}
 {
-    va.vaoId = 0;
+    va.gpuId = 0;
 }
 
 /*-------------------------------------
- * Destructor
+ * Copy Operator
 -------------------------------------*/
-VertexArray::~VertexArray() {
-    terminate();
+VertexArray& VertexArray::operator =(const VertexArray& va) noexcept {
+    gpuId = va.gpuId;
+    attribs = va.attribs;
+    return *this;
 }
 
 /*-------------------------------------
  * Move Operator
 -------------------------------------*/
-VertexArray& VertexArray::operator=(VertexArray&& va) {
-    vaoId = va.vaoId;
-    va.vaoId = 0;
+VertexArray& VertexArray::operator =(VertexArray&& va) noexcept {
+    gpuId = va.gpuId;
+    va.gpuId = 0;
+
+    attribs = std::move(va.attribs);
+
     return *this;
 }
 
 /*-------------------------------------
- * Array initialization.
+ Determine if an attrib is active or not within OpenGL.
 -------------------------------------*/
-bool VertexArray::init() {
-    if (vaoId != 0) {
-        terminate();
-    }
+GLboolean VertexArray::is_attrib_enabled(const unsigned index) const noexcept {
+    // State management error checking.
+    LS_DEBUG_ASSERT(this->is_bound() == true);
 
-    glGenVertexArrays(1, &vaoId);
-    return vaoId != 0;
+    GLint isEnabled = GL_FALSE;
+    glGetVertexAttribiv(index, GL_VERTEX_ATTRIB_ARRAY_ENABLED, &isEnabled);
+    return isEnabled == GL_TRUE;
 }
 
 /*-------------------------------------
  * Set the memory layout/offset of an attribute in the vertex array.
 -------------------------------------*/
-void VertexArray::set_attrib_offsets(
-    const VertexAttrib* const pAttribs,
-    const unsigned numAttribs,
-    const unsigned vertStride
-) {
-    for (unsigned i = 0; i < numAttribs; ++i) {
-        const VertexAttrib& attrib = pAttribs[i];
-        
-        this->set_attrib_offset(
-            i,
-            attrib.components,
-            attrib.type,
-            attrib.normalized,
-            vertStride,
-            attrib.offset
-        );
+bool VertexArray::setup_attrib(const unsigned index, const VBOAttrib& attrib) noexcept {
+    enable_attrib(index);
+    glVertexAttribPointer(
+        index,
+        attrib.get_num_components(),
+        attrib.get_base_type(),
+        attrib.is_normalized(),
+        attrib.get_byte_stride(),
+        attrib.get_offset()
+    );
+
+    if (attrib.get_instance_rate() > 0) {
+        glVertexAttribDivisor(index, attrib.get_instance_rate());
     }
+
+    return true;
 }
 
 } // end draw namespace

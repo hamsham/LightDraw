@@ -1,11 +1,11 @@
-/* 
+/*
  * File:   depthObject.cpp
  * Author: Miles Lacey
- * 
+ *
  * Created on August 4, 2014, 8:29 PM
  */
 
-#include "lightsky/draw/DepthObject.h"
+#include "ls/draw/DepthObject.h"
 
 namespace ls {
 namespace draw {
@@ -20,7 +20,7 @@ void DepthObject::bind() const {
     else {
         glDisable(GL_DEPTH_TEST);
     }
-    
+
     glClearDepthf(depthClearVal);
     glDepthFunc(depthFunc);
     glDepthMask(depthMask);
@@ -32,15 +32,15 @@ void DepthObject::bind() const {
 -------------------------------------*/
 void DepthObject::unbind() const {
     // the default constructor already has default OpenGL params.
-    const DepthObject depthObj{};
+    const DepthObject depthObj {};
     depthObj.bind();
 }
 
 /*-------------------------------------
     Reset all members to their default values.
 -------------------------------------*/
-void DepthObject::reset() {
-    *this = DepthObject{};
+void DepthObject::terminate() {
+    *this = DepthObject {};
 }
 
 } // end draw namespace

@@ -1,193 +1,192 @@
-/* 
+/*
  * File:   draw/shaderProgram.cpp
  * Author: Miles Lacey
- * 
+ *
  * Created on January 21, 2014, 6:54 PM
  */
 
-#include <utility>
-#include <memory>
+#include <memory> // std::nothrow
+#include <utility> // std::move, std::forward
 
-#include "lightsky/draw/ShaderProgram.h"
-#include "lightsky/draw/VertexAttrib.h"
+#include "ls/utils/Log.h"
+#include "ls/utils/Assertions.h"
+
+#include "ls/draw/ShaderObject.h"
+#include "ls/draw/ShaderProgram.h"
+#include "ls/draw/ShaderAttrib.h"
+#include "ls/draw/VertexUtils.h"
 
 namespace ls {
 namespace draw {
 
 /*-------------------------------------
+    Destructor
+-------------------------------------*/
+ShaderProgram::~ShaderProgram() noexcept {
+}
+
+/*-------------------------------------
     Constructor
 -------------------------------------*/
-ShaderProgram::ShaderProgram() :
-    gpuId{0}
+ShaderProgram::ShaderProgram() noexcept :
+    gpuId{0},
+    numUniformBlocks{0},
+    uniformBlocks{nullptr},
+    uniforms{},
+    vertAttribs{},
+    fragAttribs{}
 {}
+
+/*-------------------------------------
+    Copy Constructor
+-------------------------------------*/
+ShaderProgram::ShaderProgram(const ShaderProgram& sp) noexcept {
+    *this = sp;
+}
 
 /*-------------------------------------
     Move Constructor
 -------------------------------------*/
-ShaderProgram::ShaderProgram(ShaderProgram&& sp) :
-    gpuId{sp.gpuId}
-{
-    sp.gpuId = 0;
+ShaderProgram::ShaderProgram(ShaderProgram&& sp) noexcept {
+    *this = std::move(sp);
 }
 
 /*-------------------------------------
-    Destructor
+    Copy Operator
 -------------------------------------*/
-ShaderProgram::~ShaderProgram() {
-    terminate();
+ShaderProgram& ShaderProgram::operator =(const ShaderProgram& sp) noexcept {
+    gpuId = sp.gpuId;
+    numUniformBlocks = sp.numUniformBlocks;
+    
+    if (numUniformBlocks) {
+        uniformBlocks.reset(new(std::nothrow) ShaderBlockAttrib[numUniformBlocks]);
+        for (unsigned i = 0; i < numUniformBlocks; ++i) {
+            uniformBlocks[i] = sp.uniformBlocks[i];
+        }
+    }
+    else {
+        uniformBlocks.reset();
+    }
+    
+    uniforms = sp.uniforms;
+    vertAttribs = sp.vertAttribs;
+    fragAttribs = sp.fragAttribs;
+
+    return *this;
 }
 
 /*-------------------------------------
     Move Operator
 -------------------------------------*/
-ShaderProgram& ShaderProgram::operator=(ShaderProgram&& sp) {
+ShaderProgram& ShaderProgram::operator =(ShaderProgram&& sp) noexcept {
     gpuId = sp.gpuId;
     sp.gpuId = 0;
+    
+    numUniformBlocks = sp.numUniformBlocks;
+    sp.numUniformBlocks = 0;
+    
+    uniformBlocks = std::move(sp.uniformBlocks);
+    uniforms = std::move(sp.uniforms);
+    vertAttribs = std::move(sp.vertAttribs);
+    fragAttribs = std::move(sp.fragAttribs);
+
     return *this;
 }
 
 /*-------------------------------------
     Termination
 -------------------------------------*/
-void ShaderProgram::terminate() {
+void ShaderProgram::terminate() noexcept {
     glDeleteProgram(gpuId);
     gpuId = 0;
+    numUniformBlocks = 0;
+    uniformBlocks.reset();
+    uniforms.reset_num_attribs(0);
+    vertAttribs.reset_num_attribs(0);
+    fragAttribs.reset_num_attribs(0);
 }
 
 /*-------------------------------------
-    Attaching Shaders
+ * Retrieve an attached shader object ID
 -------------------------------------*/
-bool ShaderProgram::init(
-    const vertexShader& vs,
-    const fragmentShader& fs
-) {
-    if (gpuId != 0) {
-        glDeleteProgram(gpuId);
+GLuint ShaderProgram::get_attached_shader_id(const shader_stage_t shaderType) const noexcept {
+    if (!gpu_id()) {
+        return 0;
     }
-    else {
-        gpuId = glCreateProgram();
-        if (gpuId == 0) {
-            LS_LOG_ERR("Unable to create a GLSL Program Handle.\n");
-            return false;
+
+#ifdef LS_DRAW_BACKEND_GL
+    LS_DEBUG_ASSERT(
+        shaderType == shader_stage_t::SHADER_STAGE_VERTEX ||
+        shaderType == shader_stage_t::SHADER_STAGE_GEOMETRY ||
+        shaderType == shader_stage_t::SHADER_STAGE_FRAGMENT
+    );
+#else
+    LS_DEBUG_ASSERT(
+        shaderType == shader_stage_t::SHADER_STAGE_VERTEX ||
+        shaderType == shader_stage_t::SHADER_STAGE_FRAGMENT
+    );
+#endif
+
+    GLint maxNumShaders = 0;
+    GLint numShaders = 0;
+    GLuint allShaders[shader_stage_t::SHADER_STAGE_MAX] = {0};
+
+    glGetProgramiv(gpu_id(), GL_ATTACHED_SHADERS, &maxNumShaders);
+    LS_LOG_GL_ERR();
+    if (maxNumShaders == 0) {
+        return 0;
+    }
+
+    glGetAttachedShaders(gpu_id(), maxNumShaders, &numShaders, allShaders);
+    if (numShaders == 0) {
+        return 0;
+    }
+
+    while (numShaders--) {
+        GLint typeQuery = 0;
+        glGetShaderiv(allShaders[numShaders], GL_SHADER_TYPE, &typeQuery);
+        LS_LOG_GL_ERR();
+
+        if (typeQuery == shaderType) {
+            return allShaders[numShaders];
+        }
+    }
+
+    return 0;
+}
+
+/*-------------------------------------
+ * Retrieve the index of a CPU-Side shader block attribute (C-String)
+-------------------------------------*/
+int ShaderProgram::get_matching_uniform_block_index(const char* const blockName) const noexcept {
+    if (!numUniformBlocks || !blockName) {
+        return -1;
+    }
+    
+    for (unsigned i = 0; i < numUniformBlocks; ++i) {
+        if (uniformBlocks[i].get_block_name() == blockName) {
+            return (int)i;
         }
     }
     
-    glAttachShader(gpuId, vs.gpuId);
-    glAttachShader(gpuId, fs.gpuId);
-    
-    return true;
+    return -1;
 }
 
 /*-------------------------------------
-    Linking
+ * Retrieve the index of a CPU-Side shader block attribute
 -------------------------------------*/
-bool ShaderProgram::link() {
-    GLint linkResult = 0;
-    
-    glLinkProgram(gpuId);
-    glGetProgramiv(gpuId, GL_LINK_STATUS, &linkResult);
-    
-    if (linkResult != GL_TRUE) {
-        GLint logLength = 0;
-        glGetProgramiv(gpuId, GL_INFO_LOG_LENGTH, &logLength);
-        
-        std::unique_ptr<GLchar[]> logData{new GLchar[logLength+1]};
-        logData[logLength] = '\0';
-
-        glGetProgramInfoLog(gpuId, logLength, nullptr, logData.get());
-        LS_LOG_ERR("Program linkage error:\n", logData.get(), '\n');
-
-        terminate();
-        
-        return false;
+int ShaderProgram::get_matching_uniform_block_index(const std::string& blockName) const noexcept {
+    if (!numUniformBlocks) {
+        return -1;
     }
     
-    return true;
-}
-
-/*-------------------------------------
- * Shader Uniform information
--------------------------------------*/
-std::string ShaderProgram::get_attrib_name(
-    const GLint index,
-    GLint* const outVarSize,
-    GLenum* const outVarType
-) const {
-    GLint maxVarNameLen = 0;
-    
-    glGetProgramiv(gpuId, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &maxVarNameLen);
-    
-    if (maxVarNameLen < 1) {
-        return std::string{};
+    for (unsigned i = 0; i < numUniformBlocks; ++i) {
+        if (uniformBlocks[i].get_block_name() == blockName) {
+            return (int)i;
+        }
     }
     
-    std::string varName;
-    GLsizei varNameLen = 0;
-    varName.resize(maxVarNameLen);
-    glGetActiveAttrib(gpuId, index, maxVarNameLen, &varNameLen, outVarSize, outVarType, &varName[0]);
-    
-    varName.resize(varNameLen);
-    return varName;
-}
-
-/*-------------------------------------
- * Get all shader attrib/uniform names
--------------------------------------*/
-std::vector<VertexAttrib> ShaderProgram::get_attribs_impl(const vertex_attrib_t attribType) const {
-    GLenum paramType;
-    std::string (ShaderProgram::* pNameGrabFunc)(const GLint, GLint* const, GLenum* const) const;
-    GLint (*pIndexGrabFunc)(GLuint, const GLchar*);
-    
-    if (attribType == vertex_attrib_t::UNIFORM_ATTRIB) {
-        paramType = GL_ACTIVE_UNIFORMS;
-        pNameGrabFunc = &ShaderProgram::get_uniform_name;
-        pIndexGrabFunc = glGetUniformLocation;
-    }
-    else {
-        paramType = GL_ACTIVE_ATTRIBUTES;
-        pNameGrabFunc = &ShaderProgram::get_attrib_name;
-        pIndexGrabFunc = glGetAttribLocation;
-    }
-    
-    GLint total = 0;
-    glGetProgramiv(gpuId, paramType, &total);
-    
-    std::vector<VertexAttrib> ret{(unsigned)total};
-    
-    
-    for (int i = 0; i < total; ++i) {
-        VertexAttrib& attrib = ret[i];
-        
-        attrib.name = std::move((this->*pNameGrabFunc)(i, &attrib.components, (GLenum*)&attrib.type));
-        attrib.index = pIndexGrabFunc(gpuId, attrib.name.c_str());
-    }
-    
-    return ret;
-}
-
-/*-------------------------------------
-    Uniform information
--------------------------------------*/
-std::string ShaderProgram::get_uniform_name(
-    const int index,
-    GLint* const outVarSize,
-    GLenum* const outVarType
-) const {
-    GLint maxVarNameLen = 0;
-    
-    glGetProgramiv(gpuId, GL_ACTIVE_UNIFORM_MAX_LENGTH, &maxVarNameLen);
-    
-    if (maxVarNameLen < 1) {
-        return std::string{};
-    }
-    
-    std::string varName;
-    GLsizei varNameLen = 0;
-    varName.resize(maxVarNameLen);
-    glGetActiveUniform(gpuId, index, maxVarNameLen, &varNameLen, outVarSize, outVarType, &varName[0]);
-    
-    varName.resize(varNameLen);
-    return varName;
+    return -1;
 }
 
 } // end draw namespace

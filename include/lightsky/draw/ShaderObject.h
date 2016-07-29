@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   draw/shaderObject.h
  * Author: Miles Lacey
  *
@@ -6,252 +6,359 @@
  */
 
 #ifndef __LS_DRAW_SHADER_OBJECT_H__
-#define	__LS_DRAW_SHADER_OBJECT_H__
+#define __LS_DRAW_SHADER_OBJECT_H__
 
-#include <vector>
-#include <utility>
+#include <string>
 
-#include "lightsky/draw/Setup.h"
+#include "ls/utils/Pointer.h"
+
+#include "ls/draw/Setup.h"
+#include "ls/draw/ShaderAttribArray.h"
 
 namespace ls {
 namespace draw {
 
+
+/*-----------------------------------------------------------------------------
+ * Forward declarations & Typedefs
+-----------------------------------------------------------------------------*/
+enum vertex_data_t : GLenum;
+class ShaderProgram;
+
+
+
 /**----------------------------------------------------------------------------
  * Enumeration to determine the type of shader that should be created on the GPU
 -----------------------------------------------------------------------------*/
-enum shader_stage_t : unsigned {
-    SHADER_STAGE_VERTEX     = GL_VERTEX_SHADER,
-    SHADER_STAGE_FRAGMENT   = GL_FRAGMENT_SHADER
+enum shader_stage_t : GLint {
+    SHADER_STAGE_INVALID = 0,
+    
+#if defined(LS_DRAW_BACKEND_GLES)
+    SHADER_STAGE_VERTEX = GL_VERTEX_SHADER,
+    SHADER_STAGE_FRAGMENT = GL_FRAGMENT_SHADER,
+    SHADER_STAGE_MAX = 2
+    
+#else
+    SHADER_STAGE_VERTEX = GL_VERTEX_SHADER,
+    SHADER_STAGE_GEOMETRY = GL_GEOMETRY_SHADER,
+    SHADER_STAGE_FRAGMENT = GL_FRAGMENT_SHADER,
+    SHADER_STAGE_MAX = 3
+#endif
 };
+
+
+
+enum shader_string_t : GLenum {
+    SHADER_STRING_LOG = GL_INFO_LOG_LENGTH,
+    SHADER_STRING_SOURCE = GL_SHADER_SOURCE_LENGTH,
+};
+
+
 
 /**----------------------------------------------------------------------------
  * Shader Object Base Class
- * 
+ *
  * Shader objects are attached to programs in order to manipulate rendering on
  * the GPU
 -----------------------------------------------------------------------------*/
-template <shader_stage_t shaderType>
 class ShaderObject {
-    friend class ShaderProgram;
-    
-    private:
-        /**
-         * Handle to the GPU-side shader object.
-         */
-        GLuint gpuId = 0;
-        
-    public:
-        /**
-         * @brief Constructor
-         * 
-         * Initializes all members within *this.
-         */
-        ShaderObject();
-        
-        /**
-         * @brief Copy Constructor -- Deleted
-         */
-        ShaderObject(const ShaderObject&) = delete;
-        
-        /**
-         * @brief Move Constructor
-         * 
-         * Copy the handle to the shader object owned by the input argument,
-         * reset the moved object's shader handle to 0.
-         */
-        ShaderObject(ShaderObject&& so);
-        
-        /**
-         * @brief Copy Operator -- Deleted
-         */
-        ShaderObject& operator=(const ShaderObject&) = delete;
-        
-        /**
-         * @brief Move Operator
-         * 
-         * Move the values of the input argument and reset the moved object's
-         * values to 0.
-         * 
-         * @param so
-         * A shaderProgram to move into *this.
-         * 
-         * @return A reference to *this
-         */
-        ShaderObject& operator=(ShaderObject&& so);
-        
-        /**
-         * Destroy this object and free any GPU memory it uses.
-         */
-        ~ShaderObject();
-        
-        /**
-         * Free all memory used by this shader object.
-         */
-        void terminate();
-        
-        /**
-         * Compile a shader and put it into GPU memory.
-         * 
-         * @param data A pointer to a string which contains the shader's textual
-         * content.
-         * 
-         * @param size
-         * the size, in bytes, of the shader's text data. Let this remain zero
-         * if you are sure that the data string is null-terminated.
-         * 
-         * @return TRUE if the shader was successfully compiled, FALSE if
-         * otherwise.
-         */
-        bool init(const char* data, int size = 0);
+  private:
+    /**
+     * Handle to the GPU-side shader object.
+     */
+    GLuint gpuId;
 
-        /**
-         * Compile a set of shader strings and put them into GPU memory.
-         *
-         * @param numStrings
-         * The number of shader strings which are to be passed to the GPU for
-         * compilation.
-         *
-         * @param data
-         * A pointer to an array of strings which contain the shader's textual
-         * content.
-         *
-         * @param sizes
-         * An array of integers, specifying the sizes, in bytes, of each
-         * shader's textual data. Set this to NULL if you are sure that the
-         * data in each string is null-terminated.
-         *
-         * @return TRUE if the shader was successfully compiled, FALSE if
-         * otherwise.
-         */
-        bool init(const unsigned numStrings, const char* const* data, const int* sizes = nullptr);
-        
-        /**
-         * Get a shader's GPU-assigned ID
-         */
-        GLuint gpu_id() const;
+    /**
+     * Determines the type of shader to instantiate.
+     */
+    shader_stage_t shaderStage;
+
+    /**
+     * Member to hold all meta-info for the vertex shader inputs.
+     */
+    ShaderAttribArray attribs;
+
+    /**
+     * Query OpenGL for some string information about a particular shader.
+     *
+     * @param shaderId
+     * A GPU-provided handle to an OpenGL shader object.
+     *
+     * @param stringType
+     * A value from the shader_string_t enumeration which determines the
+     * type of string data which will be returned from OpenGL.
+     *
+     * @return A unique pointer to a C-style string which contains the
+     * requested string data from OpenGL.
+     */
+    static utils::Pointer<GLchar[]> get_shader_string(
+        const GLuint shaderId,
+        const shader_string_t stringType
+        ) noexcept;
+
+    /**
+     * Perform some introspection on the shader source code and retrieve a
+     * list of attributes associated with it.
+     */
+    bool introspect_attributes() noexcept;
+
+  public:
+    /**
+     * Destroy this object and free any CPU memory it uses.
+     *
+     * The destructor does not delete any handles to OpenGL data as
+     * multiple ShaderObject instances can have handles to the same data.
+     */
+    ~ShaderObject() noexcept;
+
+    /**
+     * @brief Constructor
+     *
+     * Initializes all members within *this.
+     */
+    ShaderObject() noexcept;
+
+    /**
+     * @brief Copy Constructor
+     *
+     * Copies all data from the input parameter into *this.
+     *
+     * @param s
+     * A constant reference to another ShaderObject who's data is to be
+     * copied into *this.
+     */
+    ShaderObject(const ShaderObject& s) noexcept;
+
+    /**
+     * @brief Move Constructor
+     *
+     * Copy the handle to the shader object owned by the input argument,
+     * reset the moved object's shader handle to 0.
+     */
+    ShaderObject(ShaderObject&& s) noexcept;
+
+    /**
+     * @brief Copy Operator
+     *
+     * Copies all data from the input parameter into *this.
+     *
+     * @param s
+     * A constant reference to another ShaderObject who's data is to be
+     * copied into *this.
+     *
+     * @return A reference to *this.
+     */
+    ShaderObject& operator=(const ShaderObject& s) noexcept;
+
+    /**
+     * @brief Move Operator
+     *
+     * Move the values of the input argument and reset the moved object's
+     * values to 0.
+     *
+     * @param s
+     * A shaderProgram to move into *this.
+     *
+     * @return A reference to *this
+     */
+    ShaderObject& operator=(ShaderObject&& so) noexcept;
+
+    /**
+     * Free all memory used by this shader object.
+     */
+    void terminate() noexcept;
+
+    /**
+     * Compile a shader and put it into GPU memory.
+     *
+     * Initializing a shader does not delete the previous OpenGL handle if
+     * one exists.
+     *
+     * @param shaderSourceType
+     * A value from the "shader_stage_t" enumeration which determines if
+     * the input source code is for a vertxe, fragment, or any other type
+     * of shader.
+     *
+     * @param data A pointer to a string which contains the shader's
+     * textual content.
+     *
+     * @param size
+     * the size, in bytes, of the shader's text data. Let this remain zero
+     * if you are sure that the data string is null-terminated.
+     *
+     * @return TRUE if the shader was successfully compiled, FALSE if
+     * otherwise.
+     */
+    bool init(
+        const shader_stage_t shaderSourceType,
+        const char* const data,
+        const int size
+    ) noexcept;
+
+    /**
+     * Compile a set of shader strings and put them into GPU memory.
+     *
+     * Initializing a shader does not delete the previous OpenGL handle if
+     * one exists.
+     *
+     * @param shaderSourceType
+     * A value from the "shader_stage_t" enumeration which determines if
+     * the input source code is for a vertxe, fragment, or any other type
+     * of shader.
+     *
+     * @param numStrings
+     * The number of shader strings which are to be passed to the GPU for
+     * compilation.
+     *
+     * @param data
+     * A pointer to an array of strings which contain the shader's textual
+     * content.
+     *
+     * @param sizes
+     * An array of integers, specifying the sizes, in bytes, of each
+     * shader's textual data. Set this to NULL if you are sure that the
+     * data in each string is null-terminated.
+     *
+     * @return TRUE if the shader was successfully compiled, FALSE if
+     * otherwise.
+     */
+    bool init(
+        const shader_stage_t shaderSourceType,
+        const unsigned numStrings,
+        const char* const* data,
+        const int* const sizes
+    ) noexcept;
+
+    /**
+     * Get a shader's GPU-assigned ID
+     *
+     * @return An unsigned integer which contains a handle to the shader
+     * that *this object references on the GPU. A value of 0 is returned
+     * if *this object does not contain a handle to a valid OpenGL shader.
+     */
+    GLuint gpu_id() const noexcept;
+
+    /**
+     * Retrieve the type of shader object which *this represents.
+     *
+     * @return A value from the "shader_stage_t" enumeration which can be
+     * used to determine if *this object represents a vertex, fragment, or
+     * any other type of shader.
+     */
+    shader_stage_t get_shader_type() const noexcept;
+
+    /**
+     * Retrieve the log data of a shader.
+     *
+     * This usually returns nothing unless a shader object failed to
+     * compile.
+     *
+     * @return A unique pointer to a C-style string which contains the
+     * information log about a shader object's compilation.
+     */
+    utils::Pointer<GLchar[]> get_shader_info_log() const noexcept;
+
+    /**
+     * Retrieve the source code for a shader object.
+     *
+     * @return A unique pointer to a C-style string containing the source code
+     * of a shader object, or an empty string if the shader failed to compile.
+     */
+    utils::Pointer<GLchar[]> get_shader_source() const noexcept;
+
+    /**
+     * Determine if this is a valid shader which has been validated through
+     * compilation.
+     *
+     * @return TRUE if this is a valid shader which has been compiled and
+     * can be attached to a ShaderProgram or queried for data, FALSE if
+     * otherwise.
+     */
+    bool is_valid() const noexcept;
+
+    /**
+     * Retrieve a list of Shader Attributes which were found after a
+     * successful compilation.
+     *
+     * This array will represent input attributes for a vertex shader and
+     * output attributes for a fragment shader.
+     *
+     * @return A constant reference to a ShaderAttribArray object which
+     * contains either input vertex attribute information or output
+     * fragment attribute information.
+     */
+    const ShaderAttribArray& get_attribs() const noexcept;
+
+    /**
+     * Attempt to recreate a ShaderObject from a vertex or fragment shader
+     * ID.
+     *
+     * @param shaderId
+     * An unsigned integer provided by OpenGL which is being used as a
+     * handle to a shader object on the GPU.
+     *
+     * @return TRUE if *this ShaderObject and all attrib information could
+     * successfully be regenerated by querying OpenGL, FALSE if not.
+     */
+    bool recreate_from_id(const GLuint shaderId) noexcept;
 };
-
-/*-----------------------------------------------------------------------------
-    Typedefs and external templates
------------------------------------------------------------------------------*/
-LS_DECLARE_CLASS_TYPE(vertexShader, ShaderObject, SHADER_STAGE_VERTEX);
-LS_DECLARE_CLASS_TYPE(fragmentShader, ShaderObject, SHADER_STAGE_FRAGMENT);
-
-/*-------------------------------------
-    Constructor
--------------------------------------*/
-template <shader_stage_t shaderType>
-ShaderObject<shaderType>::ShaderObject() {
-}
-
-/*-------------------------------------
-    Move Constructor
--------------------------------------*/
-template <shader_stage_t shaderType>
-ShaderObject<shaderType>::ShaderObject(ShaderObject&& tempShader) :
-    gpuId{tempShader.gpuId}
-{
-    tempShader.gpuId = 0;
-}
-    
-/*-------------------------------------
-    Destructor
--------------------------------------*/
-template <shader_stage_t shaderType>
-ShaderObject<shaderType>::~ShaderObject() {
-    terminate();
-}
-        
-/*-------------------------------------
-    Move the values of the input argument and reset the moved object's values
-    to 0.
--------------------------------------*/
-template <shader_stage_t shaderType>
-ShaderObject<shaderType>& ShaderObject<shaderType>::operator=(
-    ShaderObject&& tempShader
-) {
-    gpuId = tempShader.gpuId;
-    tempShader.gpuId = 0;
-    return *this;
-}
-
-/*-------------------------------------
-    Free all memory used by this shader object.
--------------------------------------*/
-template <shader_stage_t shaderType>
-inline void ShaderObject<shaderType>::terminate() {
-    glDeleteShader(gpuId);
-    gpuId = 0;
-}
 
 /*-------------------------------------
     Shader Loading (single shader).
 -------------------------------------*/
-template <shader_stage_t shaderType>
-inline bool ShaderObject<shaderType>::init(const char* data, int size) {
-    // If the size is zero, opengl will just look for null-termination in the data
-    const int* pSize = (size == 0) ? nullptr : &size;
-    return init(1, &data, pSize);
-}
-
-/*-------------------------------------
-    Shader Loading (multiple shaders).
--------------------------------------*/
-template <shader_stage_t shaderType>
-bool ShaderObject<shaderType>::init(
-    const unsigned numStrings,
-    const char* const* data,
-    const int* sizes
-) {
-    LS_LOG_MSG("Attempting to load a shader object.");
-
-    terminate();
-
-    GLuint shaderId;
-    shaderId = glCreateShader(shaderType);
-
-    // If the size is zero, opengl will just look for null-termination in the data
-    glShaderSource(shaderId, numStrings, const_cast<const char**>(data), sizes);
-    glCompileShader(shaderId);
-
-    GLint shaderStatus;
-    glGetShaderiv(shaderId, GL_COMPILE_STATUS, &shaderStatus);
-
-    // get the log information for the loaded shader
-    if (shaderStatus != GL_TRUE) {
-        GLint infoLogLength = 0;
-        std::vector<GLchar> infoLogData;
-
-        // Get the length of the shader's error log
-        glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &infoLogLength);
-
-        // Allocate some memory to temporarilt store the log data
-        infoLogData.resize(infoLogLength+1); // +1 for null-termination
-        infoLogData[infoLogLength] = '\0';
-
-        glGetShaderInfoLog(shaderId, infoLogLength, nullptr, &infoLogData[0]);
-        LS_LOG_ERR("\tShader Compilation error:\n", infoLogData.data(), '\n');
-
-        glDeleteShader(shaderId);
-        return false;
-    }
-
-    gpuId = shaderId;
-
-    LS_LOG_MSG("\tSuccessfully loaded a shader object.\n");
-    return true;
+inline bool ShaderObject::init(
+    const shader_stage_t shaderSourceType,
+    const char* const data,
+    const int size
+) noexcept {
+    return init(shaderSourceType, 1, &data, size ? &size : nullptr);
 }
 
 /*-------------------------------------
     Get a shader's GPU-assigned ID
 -------------------------------------*/
-template <shader_stage_t shaderType>
-inline GLuint ShaderObject<shaderType>::gpu_id() const {
+inline GLuint ShaderObject::gpu_id() const noexcept {
     return gpuId;
 }
+
+/*-------------------------------------
+    Get a shader's type
+-------------------------------------*/
+inline shader_stage_t ShaderObject::get_shader_type() const noexcept {
+    return shaderStage;
+}
+
+/*-------------------------------------
+    Get a shader's log data
+-------------------------------------*/
+inline utils::Pointer<GLchar[]> ShaderObject::get_shader_info_log() const noexcept {
+    return get_shader_string(gpu_id(), shader_string_t::SHADER_STRING_LOG);
+}
+
+/*-------------------------------------
+    Get a shader's source code
+-------------------------------------*/
+inline utils::Pointer<GLchar[]> ShaderObject::get_shader_source() const noexcept {
+    return get_shader_string(gpu_id(), shader_string_t::SHADER_STRING_SOURCE);
+}
+
+/*-------------------------------------
+ Determine if *this is a valid shader
+-------------------------------------*/
+inline bool ShaderObject::is_valid() const noexcept {
+    return gpu_id() != 0;
+}
+
+/*-------------------------------------
+ Retrieve information about the current shader's attributes.
+-------------------------------------*/
+inline const ShaderAttribArray& ShaderObject::get_attribs() const noexcept {
+    return attribs;
+}
+
+
 
 } // end draw namespace
 } // end ls namespace
 
-#endif	/* __LS_DRAW_SHADER_OBJECT_H__ */
-
+#endif  /* __LS_DRAW_SHADER_OBJECT_H__ */
