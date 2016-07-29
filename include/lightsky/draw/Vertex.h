@@ -12,8 +12,8 @@
 #ifndef __LS_DRAW_VERTEX_H__
 #define __LS_DRAW_VERTEX_H__
 
-#include "ls/setup/Macros.h" // LS_ARRAY_SIZE()
-#include "ls/draw/Setup.h"
+#include "lightsky/setup/Macros.h" // LS_ARRAY_SIZE()
+#include "lightsky/draw/Setup.h"
 
 
 

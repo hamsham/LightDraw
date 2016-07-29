@@ -7,16 +7,16 @@
 
 #include <utility>
 
-#include "ls/utils/Copy.h"
+#include "lightsky/utils/Copy.h"
 
-#include "ls/draw/BoundingBox.h"
-#include "ls/draw/Camera.h"
-#include "ls/draw/SceneGraph.h"
-#include "ls/draw/SceneMesh.h"
-#include "ls/draw/SceneMaterial.h"
-#include "ls/draw/SceneNode.h"
-#include "ls/draw/Transform.h"
-#include "ls/draw/VertexBuffer.h"
+#include "lightsky/draw/BoundingBox.h"
+#include "lightsky/draw/Camera.h"
+#include "lightsky/draw/SceneGraph.h"
+#include "lightsky/draw/SceneMesh.h"
+#include "lightsky/draw/SceneMaterial.h"
+#include "lightsky/draw/SceneNode.h"
+#include "lightsky/draw/Transform.h"
+#include "lightsky/draw/VertexBuffer.h"
 
 
 

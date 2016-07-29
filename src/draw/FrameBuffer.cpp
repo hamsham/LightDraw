@@ -8,12 +8,12 @@
 #include <new>
 #include <utility>
 
-#include "ls/utils/Assertions.h"
+#include "lightsky/utils/Assertions.h"
 
-#include "ls/draw/Setup.h"
-#include "ls/draw/RenderBuffer.h"
-#include "ls/draw/Texture.h"
-#include "ls/draw/FrameBuffer.h"
+#include "lightsky/draw/Setup.h"
+#include "lightsky/draw/RenderBuffer.h"
+#include "lightsky/draw/Texture.h"
+#include "lightsky/draw/FrameBuffer.h"
 
 namespace ls {
 namespace draw {

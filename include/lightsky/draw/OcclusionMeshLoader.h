@@ -9,9 +9,9 @@
 #ifndef __LS_DRAW_OCCLUSION_MESH_LOADER_H__
 #define __LS_DRAW_OCCLUSION_MESH_LOADER_H__
 
-#include "ls/draw/BufferObject.h" // buffer_map_t
-#include "ls/draw/SceneMesh.h"
-#include "ls/draw/SceneGraph.h"
+#include "lightsky/draw/BufferObject.h" // buffer_map_t
+#include "lightsky/draw/SceneMesh.h"
+#include "lightsky/draw/SceneGraph.h"
 
 namespace ls {
 namespace draw {

@@ -8,9 +8,9 @@
 #ifndef __LS_DRAW_SHADER_UNIFORM_H__
 #define __LS_DRAW_SHADER_UNIFORM_H__
 
-#include "ls/draw/Setup.h"
-#include "ls/draw/VAOAttrib.h"
-#include "ls/draw/ShaderAttrib.h"
+#include "lightsky/draw/Setup.h"
+#include "lightsky/draw/VAOAttrib.h"
+#include "lightsky/draw/ShaderAttrib.h"
 
 namespace ls {
 namespace draw {

@@ -11,13 +11,13 @@
 #include <utility> // std::forward
 #include <string>
 
-#include "ls/utils/Assertions.h"
-#include "ls/utils/Pointer.h"
+#include "lightsky/utils/Assertions.h"
+#include "lightsky/utils/Pointer.h"
 
-#include "ls/math/Math.h"
+#include "lightsky/math/Math.h"
 
-#include "ls/draw/Setup.h"
-#include "ls/draw/Vertex.h"
+#include "lightsky/draw/Setup.h"
+#include "lightsky/draw/Vertex.h"
 
 namespace ls {
 namespace draw {

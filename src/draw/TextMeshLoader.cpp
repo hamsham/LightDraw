@@ -9,23 +9,23 @@
 #include <cctype> // isgraph(...)
 #include <new> // std::nothrow
 
-#include "ls/setup/Macros.h"
+#include "lightsky/setup/Macros.h"
 
-#include "ls/utils/Assertions.h"
-#include "ls/utils/Log.h"
+#include "lightsky/utils/Assertions.h"
+#include "lightsky/utils/Log.h"
 
-#include "ls/math/vec2.h"
-#include "ls/math/vec3.h"
+#include "lightsky/math/vec2.h"
+#include "lightsky/math/vec3.h"
 
-#include "ls/draw/Atlas.h"
-#include "ls/draw/VertexBuffer.h"
-#include "ls/draw/IndexBuffer.h"
-#include "ls/draw/PackedVertex.h"
-#include "ls/draw/VAOAttrib.h"
-#include "ls/draw/VAOAssembly.h"
-#include "ls/draw/GLContext.h"
-#include "ls/draw/TextMeshLoader.h"
-#include "ls/draw/VertexArray.h"
+#include "lightsky/draw/Atlas.h"
+#include "lightsky/draw/VertexBuffer.h"
+#include "lightsky/draw/IndexBuffer.h"
+#include "lightsky/draw/PackedVertex.h"
+#include "lightsky/draw/VAOAttrib.h"
+#include "lightsky/draw/VAOAssembly.h"
+#include "lightsky/draw/GLContext.h"
+#include "lightsky/draw/TextMeshLoader.h"
+#include "lightsky/draw/VertexArray.h"
 
 
 namespace ls {

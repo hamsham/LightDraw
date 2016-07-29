@@ -8,13 +8,13 @@
 
 #include <utility> // std::move()
 
-#include "ls/setup/Macros.h"
+#include "lightsky/setup/Macros.h"
 
-#include "ls/utils/Log.h"
-#include "ls/utils/Assertions.h"
+#include "lightsky/utils/Log.h"
+#include "lightsky/utils/Assertions.h"
 
-#include "ls/draw/TextureAssembly.h"
-#include "ls/draw/Texture.h"
+#include "lightsky/draw/TextureAssembly.h"
+#include "lightsky/draw/Texture.h"
 
 namespace ls {
 namespace draw {

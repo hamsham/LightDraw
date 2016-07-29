@@ -5,9 +5,9 @@
  * Created on June 10, 2015, 8:52 PM
  */
 
-#include "ls/utils/Assertions.h"
+#include "lightsky/utils/Assertions.h"
 
-#include "ls/draw/Vertex.h"
+#include "lightsky/draw/Vertex.h"
 
 namespace ls {
 

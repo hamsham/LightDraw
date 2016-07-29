@@ -8,8 +8,8 @@
 #ifndef __LS_DRAW_DEPTH_OBJECT_H__
 #define __LS_DRAW_DEPTH_OBJECT_H__
 
-#include "ls/draw/Setup.h"
-#include "ls/draw/Color.h"
+#include "lightsky/draw/Setup.h"
+#include "lightsky/draw/Color.h"
 
 namespace ls {
 namespace draw {

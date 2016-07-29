@@ -4,7 +4,7 @@
 
 #include <vector>
 
-#include "ls/draw/DrawParams.h"
+#include "lightsky/draw/DrawParams.h"
 
 namespace ls {
 namespace draw {

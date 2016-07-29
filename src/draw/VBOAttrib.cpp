@@ -6,9 +6,9 @@
  * Created on March 9, 2016, 11:06 AM
  */
 
-#include "ls/draw/VAOAttrib.h" // draw::get_attrib_base_type()
-#include "ls/draw/VBOAttrib.h"
-#include "ls/draw/VertexUtils.h"
+#include "lightsky/draw/VAOAttrib.h" // draw::get_attrib_base_type()
+#include "lightsky/draw/VBOAttrib.h"
+#include "lightsky/draw/VertexUtils.h"
 
 namespace ls {
 namespace draw {

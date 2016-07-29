@@ -12,13 +12,13 @@
 #include <utility> // std::pair
 #include <unordered_map>
 
-#include "ls/utils/Pointer.h"
+#include "lightsky/utils/Pointer.h"
 
-#include "ls/draw/Camera.h"
-#include "ls/draw/SceneGraph.h"
-#include "ls/draw/SceneMesh.h"
-#include "ls/draw/SceneNode.h"
-#include "ls/draw/SceneRenderData.h"
+#include "lightsky/draw/Camera.h"
+#include "lightsky/draw/SceneGraph.h"
+#include "lightsky/draw/SceneMesh.h"
+#include "lightsky/draw/SceneNode.h"
+#include "lightsky/draw/SceneRenderData.h"
 
 
 

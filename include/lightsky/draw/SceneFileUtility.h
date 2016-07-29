@@ -8,8 +8,8 @@
 #include <assimp/postprocess.h>
 #include <assimp/cimport.h>
 
-#include "ls/draw/PackedVertex.h"
-#include "ls/draw/SceneFileLoader.h"
+#include "lightsky/draw/PackedVertex.h"
+#include "lightsky/draw/SceneFileLoader.h"
 
 
 

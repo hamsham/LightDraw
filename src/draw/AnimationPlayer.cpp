@@ -1,8 +1,8 @@
 
-#include "ls/utils/Assertions.h"
+#include "lightsky/utils/Assertions.h"
 
-#include "ls/draw/AnimationPlayer.h"
-#include "ls/draw/SceneGraph.h"
+#include "lightsky/draw/AnimationPlayer.h"
+#include "lightsky/draw/SceneGraph.h"
 
 namespace ls {
 namespace draw {

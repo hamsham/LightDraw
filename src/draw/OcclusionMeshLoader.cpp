@@ -9,10 +9,10 @@
 #include <algorithm>
 #include <utility>
 
-#include "ls/draw/OcclusionMeshLoader.h"
-#include "ls/draw/VAOAssembly.h"
-#include "ls/draw/VertexArray.h"
-#include "ls/draw/VertexUtils.h"
+#include "lightsky/draw/OcclusionMeshLoader.h"
+#include "lightsky/draw/VAOAssembly.h"
+#include "lightsky/draw/VertexArray.h"
+#include "lightsky/draw/VertexUtils.h"
 
 namespace ls {
 namespace draw {

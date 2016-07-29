@@ -4,15 +4,15 @@
 
 #include <string>
 
-#include "ls/utils/Pointer.h"
+#include "lightsky/utils/Pointer.h"
 
 #ifdef LS_DEBUG
-    #include "ls/utils/Assertions.h"
+    #include "lightsky/utils/Assertions.h"
 #endif
 
-#include "ls/draw/Setup.h"
-#include "ls/draw/BufferObject.h"
-#include "ls/draw/Vertex.h" // get_num_vertex_bytes(), get_vertex_base_type()
+#include "lightsky/draw/Setup.h"
+#include "lightsky/draw/BufferObject.h"
+#include "lightsky/draw/Vertex.h" // get_num_vertex_bytes(), get_vertex_base_type()
 
 
 

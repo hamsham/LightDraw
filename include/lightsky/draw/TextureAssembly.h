@@ -11,9 +11,9 @@
 
 
 
-#include "ls/draw/Setup.h"
-#include "ls/draw/Color.h"
-#include "ls/draw/TextureAttrib.h"
+#include "lightsky/draw/Setup.h"
+#include "lightsky/draw/Color.h"
+#include "lightsky/draw/TextureAttrib.h"
 
 
 

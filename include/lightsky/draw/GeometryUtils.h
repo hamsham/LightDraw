@@ -8,7 +8,7 @@
 #ifndef __LS_DRAW_GEOMETRY_UTILS_H__
 #define __LS_DRAW_GEOMETRY_UTILS_H__
 
-#include "ls/draw/Setup.h"
+#include "lightsky/draw/Setup.h"
 
 namespace ls {
 namespace draw {

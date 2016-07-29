@@ -9,7 +9,7 @@
 #ifndef __LS_DRAW_VBO_ATTRIB_H__
 #define __LS_DRAW_VBO_ATTRIB_H__
 
-#include "ls/draw/Setup.h"
+#include "lightsky/draw/Setup.h"
 
 
 

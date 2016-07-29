@@ -2,14 +2,14 @@
 #include <functional>
 #include <utility>
 
-#include "ls/math/Math.h"
+#include "lightsky/math/Math.h"
 
-#include "ls/utils/Assertions.h"
+#include "lightsky/utils/Assertions.h"
 
-#include "ls/draw/Animation.h"
-#include "ls/draw/SceneGraph.h"
-#include "ls/draw/SceneNode.h"
-#include "ls/draw/Transform.h"
+#include "lightsky/draw/Animation.h"
+#include "lightsky/draw/SceneGraph.h"
+#include "lightsky/draw/SceneNode.h"
+#include "lightsky/draw/Transform.h"
 
 namespace ls {
 namespace draw {

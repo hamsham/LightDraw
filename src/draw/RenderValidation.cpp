@@ -6,14 +6,14 @@
  * Created on February 22, 2016, 2:47 PM
  */
 
-#include "ls/utils/Assertions.h"
-#include "ls/utils/Log.h"
+#include "lightsky/utils/Assertions.h"
+#include "lightsky/utils/Log.h"
 
-#include "ls/draw/RenderValidation.h"
-#include "ls/draw/VertexArray.h"
-#include "ls/draw/VertexBuffer.h"
-#include "ls/draw/ShaderProgram.h"
-#include "ls/draw/UniformBuffer.h"
+#include "lightsky/draw/RenderValidation.h"
+#include "lightsky/draw/VertexArray.h"
+#include "lightsky/draw/VertexBuffer.h"
+#include "lightsky/draw/ShaderProgram.h"
+#include "lightsky/draw/UniformBuffer.h"
 
 namespace ls {
 

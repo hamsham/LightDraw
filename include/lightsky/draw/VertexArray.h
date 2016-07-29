@@ -8,10 +8,10 @@
 #ifndef __LS_DRAW_VERTEX_ARRAY_H__
 #define __LS_DRAW_VERTEX_ARRAY_H__
 
-#include "ls/utils/Pointer.h"
+#include "lightsky/utils/Pointer.h"
 
-#include "ls/draw/Setup.h"
-#include "ls/draw/VAOAttrib.h"
+#include "lightsky/draw/Setup.h"
+#include "lightsky/draw/VAOAttrib.h"
 #include "VertexBuffer.h"
 
 namespace ls {

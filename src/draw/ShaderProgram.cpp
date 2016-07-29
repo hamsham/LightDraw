@@ -8,13 +8,13 @@
 #include <memory> // std::nothrow
 #include <utility> // std::move, std::forward
 
-#include "ls/utils/Log.h"
-#include "ls/utils/Assertions.h"
+#include "lightsky/utils/Log.h"
+#include "lightsky/utils/Assertions.h"
 
-#include "ls/draw/ShaderObject.h"
-#include "ls/draw/ShaderProgram.h"
-#include "ls/draw/ShaderAttrib.h"
-#include "ls/draw/VertexUtils.h"
+#include "lightsky/draw/ShaderObject.h"
+#include "lightsky/draw/ShaderProgram.h"
+#include "lightsky/draw/ShaderAttrib.h"
+#include "lightsky/draw/VertexUtils.h"
 
 namespace ls {
 namespace draw {

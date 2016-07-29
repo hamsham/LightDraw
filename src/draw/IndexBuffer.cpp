@@ -6,8 +6,8 @@
  * Created on February 13, 2016, 3:19 PM
  */
 
-#include "ls/draw/VertexUtils.h"
-#include "ls/draw/IndexBuffer.h"
+#include "lightsky/draw/VertexUtils.h"
+#include "lightsky/draw/IndexBuffer.h"
 
 
 

@@ -5,7 +5,7 @@
  * Created on August 4, 2014, 8:29 PM
  */
 
-#include "ls/draw/DepthObject.h"
+#include "lightsky/draw/DepthObject.h"
 
 namespace ls {
 namespace draw {

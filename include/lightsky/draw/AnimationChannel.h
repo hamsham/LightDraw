@@ -2,13 +2,13 @@
 #ifndef __LS_DRAW_ANIMATION_REEL_H__
 #define __LS_DRAW_ANIMATION_REEL_H__
 
-#include "ls/utils/Pointer.h"
+#include "lightsky/utils/Pointer.h"
 
-#include "ls/math/vec3.h"
-#include "ls/math/quat.h"
+#include "lightsky/math/vec3.h"
+#include "lightsky/math/quat.h"
 
-#include "ls/draw/AnimationProperty.h"
-#include "ls/draw/AnimationKeyList.h"
+#include "lightsky/draw/AnimationProperty.h"
+#include "lightsky/draw/AnimationKeyList.h"
 
 namespace ls {
 namespace draw {

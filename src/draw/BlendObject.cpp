@@ -5,7 +5,7 @@
  * Created on August 3, 2014, 6:53 PM
  */
 
-#include "ls/draw/BlendObject.h"
+#include "lightsky/draw/BlendObject.h"
 
 namespace ls {
 namespace draw {

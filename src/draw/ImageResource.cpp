@@ -8,8 +8,8 @@
 #include <utility> // std::move
 #include <string>
 
-#include "ls/draw/Color.h"
-#include "ls/draw/ImageResource.h"
+#include "lightsky/draw/Color.h"
+#include "lightsky/draw/ImageResource.h"
 
 #include <FreeImage.h>
 

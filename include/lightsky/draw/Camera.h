@@ -2,9 +2,9 @@
 #ifndef __LS_DRAW_CAMERA_H__
 #define __LS_DRAW_CAMERA_H__
 
-#include "ls/math/vec2.h"
-#include "ls/math/vec3.h"
-#include "ls/math/mat4.h"
+#include "lightsky/math/vec2.h"
+#include "lightsky/math/vec3.h"
+#include "lightsky/math/mat4.h"
 
 namespace ls {
 namespace draw {

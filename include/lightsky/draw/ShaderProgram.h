@@ -11,10 +11,10 @@
 #include <string>
 #include <vector>
 
-#include "ls/draw/Setup.h"
-#include "ls/draw/VAOAttrib.h" // vertex_attrib_t
-#include "ls/draw/ShaderBlockAttrib.h"
-#include "ls/draw/ShaderAttribArray.h"
+#include "lightsky/draw/Setup.h"
+#include "lightsky/draw/VAOAttrib.h" // vertex_attrib_t
+#include "lightsky/draw/ShaderBlockAttrib.h"
+#include "lightsky/draw/ShaderAttribArray.h"
 
 
 

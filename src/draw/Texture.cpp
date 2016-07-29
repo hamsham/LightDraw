@@ -5,10 +5,10 @@
  * Created on January 27, 2014, 8:35 PM
  */
 
-#include "ls/utils/Assertions.h"
+#include "lightsky/utils/Assertions.h"
 
-#include "ls/draw/Texture.h"
-#include "ls/draw/PixelBuffer.h"
+#include "lightsky/draw/Texture.h"
+#include "lightsky/draw/PixelBuffer.h"
 
 namespace ls {
 namespace draw {

@@ -10,9 +10,9 @@
 
 #include <string>
 
-#include "ls/draw/Setup.h"
-#include "ls/utils/Resource.h"
-#include "ls/utils/StringUtils.h"
+#include "lightsky/draw/Setup.h"
+#include "lightsky/utils/Resource.h"
+#include "lightsky/utils/StringUtils.h"
 
 /*-----------------------------------------------------------------------------
     Forward Declarations

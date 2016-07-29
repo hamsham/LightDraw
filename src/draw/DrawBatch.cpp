@@ -1,9 +1,9 @@
 
 #include <utility> // std::move
 
-#include "ls/utils/Copy.h"
+#include "lightsky/utils/Copy.h"
 
-#include "ls/draw/DrawBatch.h"
+#include "lightsky/draw/DrawBatch.h"
 
 namespace ls {
 namespace draw {

@@ -9,7 +9,7 @@
 #include <utility> // std::move
 #include <string>
 
-#include "ls/setup/OS.h"
+#include "lightsky/setup/OS.h"
 
 #ifdef LS_OS_WINDOWS
     #include <freetype2/ft2build.h>
@@ -40,7 +40,7 @@ const struct {
     // empty function to keep IntelliSense from going crazy.
 }
 
-#include "ls/draw/FontResource.h"
+#include "lightsky/draw/FontResource.h"
 
 using ls::utils::Resource;
 

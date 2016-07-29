@@ -11,7 +11,7 @@
 
 
 
-#include "ls/draw/BufferObject.h"
+#include "lightsky/draw/BufferObject.h"
 
 
 namespace ls {

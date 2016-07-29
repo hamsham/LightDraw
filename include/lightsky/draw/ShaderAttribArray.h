@@ -9,9 +9,9 @@
 #ifndef __LS_DRAW_SHADER_ATTRIB_ARRAY_H__
 #define __LS_DRAW_SHADER_ATTRIB_ARRAY_H__
 
-#include "ls/utils/Assertions.h"
+#include "lightsky/utils/Assertions.h"
 
-#include "ls/draw/ShaderAttrib.h"
+#include "lightsky/draw/ShaderAttrib.h"
 
 
 

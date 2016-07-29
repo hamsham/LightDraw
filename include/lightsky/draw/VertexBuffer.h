@@ -11,10 +11,10 @@
 
 
 
-#include "ls/utils/Pointer.h"
+#include "lightsky/utils/Pointer.h"
 
-#include "ls/draw/BufferObject.h"
-#include "ls/draw/VBOAttrib.h"
+#include "lightsky/draw/BufferObject.h"
+#include "lightsky/draw/VBOAttrib.h"
 
 
 namespace ls {

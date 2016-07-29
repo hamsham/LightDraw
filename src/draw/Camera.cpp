@@ -1,12 +1,12 @@
 
-#include "ls/utils/Assertions.h"
-#include "ls/utils/Log.h"
+#include "lightsky/utils/Assertions.h"
+#include "lightsky/utils/Log.h"
 
-#include "ls/math/vec4.h"
-#include "ls/math/mat_utils.h" // perspective transformation functions
+#include "lightsky/math/vec4.h"
+#include "lightsky/math/mat_utils.h" // perspective transformation functions
 
-#include "ls/draw/BoundingBox.h"
-#include "ls/draw/Camera.h"
+#include "lightsky/draw/BoundingBox.h"
+#include "lightsky/draw/Camera.h"
 
 namespace math = ls::math;
 

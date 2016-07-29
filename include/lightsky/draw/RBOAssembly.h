@@ -9,9 +9,9 @@
 #ifndef __LS_DRAW_RBO_ASSEMBLY_H__
 #define __LS_DRAW_RBO_ASSEMBLY_H__
 
-#include "ls/draw/Setup.h"
-#include "ls/draw/Color.h"
-#include "ls/draw/RenderBuffer.h"
+#include "lightsky/draw/Setup.h"
+#include "lightsky/draw/Color.h"
+#include "lightsky/draw/RenderBuffer.h"
 
 
 

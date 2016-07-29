@@ -8,9 +8,9 @@
 #ifndef __LS_DRAW_ATLAS_H__
 #define __LS_DRAW_ATLAS_H__
 
-#include "ls/utils/Pointer.h"
+#include "lightsky/utils/Pointer.h"
 
-#include "ls/draw/Texture.h"
+#include "lightsky/draw/Texture.h"
 
 namespace ls {
 namespace draw {

@@ -10,12 +10,12 @@
 
 #include <string>
 
-#include "ls/utils/Pointer.h"
+#include "lightsky/utils/Pointer.h"
 
-#include "ls/draw/VertexUtils.h"
-#include "ls/draw/BoundingBox.h"
-#include "ls/draw/SceneGraph.h"
-#include "ls/draw/SceneMesh.h"
+#include "lightsky/draw/VertexUtils.h"
+#include "lightsky/draw/BoundingBox.h"
+#include "lightsky/draw/SceneGraph.h"
+#include "lightsky/draw/SceneMesh.h"
 
 /*-----------------------------------------------------------------------------
  * Forward Declarations

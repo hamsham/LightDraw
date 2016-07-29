@@ -9,7 +9,7 @@
 #ifndef __LS_DRAW_PIXEL_BUFFER_H__
 #define __LS_DRAW_PIXEL_BUFFER_H__
 
-#include "ls/draw/BufferObject.h"
+#include "lightsky/draw/BufferObject.h"
 
 
 

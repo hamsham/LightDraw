@@ -8,9 +8,9 @@
 
 #include <algorithm>
 
-#include "ls/utils/Assertions.h"
+#include "lightsky/utils/Assertions.h"
 
-#include "ls/draw/TextureAttrib.h"
+#include "lightsky/draw/TextureAttrib.h"
 
 namespace ls {
 namespace draw {

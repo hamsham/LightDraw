@@ -9,11 +9,11 @@
 #ifndef __LS_DRAW_MATERIAL_H__
 #define __LS_DRAW_MATERIAL_H__
 
-#include "ls/draw/Setup.h" // GLuint
-#include "ls/draw/BlendObject.h" // for materials with blending
-#include "ls/draw/Color.h" // Material coloring
-#include "ls/draw/ShaderAttrib.h" // shader_limits_t
-#include "ls/draw/Texture.h" // active_texture_t
+#include "lightsky/draw/Setup.h" // GLuint
+#include "lightsky/draw/BlendObject.h" // for materials with blending
+#include "lightsky/draw/Color.h" // Material coloring
+#include "lightsky/draw/ShaderAttrib.h" // shader_limits_t
+#include "lightsky/draw/Texture.h" // active_texture_t
 
 
 namespace ls {

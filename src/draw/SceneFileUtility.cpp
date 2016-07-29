@@ -1,10 +1,10 @@
 ﻿
 #include <type_traits>
 
-#include "ls/math/Math.h"
+#include "lightsky/math/Math.h"
 
-#include "ls/draw/Setup.h"
-#include "ls/draw/SceneFileUtility.h"
+#include "lightsky/draw/Setup.h"
+#include "lightsky/draw/SceneFileUtility.h"
 
 namespace math = ls::math;
 namespace draw = ls::draw;

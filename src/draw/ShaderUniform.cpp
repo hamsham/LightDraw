@@ -8,11 +8,11 @@
 #include <cstring> // strlen
 #include <utility> // std::move()
 
-#include "ls//utils/Assertions.h"
-#include "ls//utils/Copy.h"
-#include "ls//utils/Hash.h"
+#include "lightsky//utils/Assertions.h"
+#include "lightsky//utils/Copy.h"
+#include "lightsky//utils/Hash.h"
 
-#include "ls/draw/ShaderUniform.h"
+#include "lightsky/draw/ShaderUniform.h"
 
 namespace ls {
 namespace draw {

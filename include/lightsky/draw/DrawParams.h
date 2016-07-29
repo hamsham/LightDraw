@@ -4,8 +4,8 @@
 
 #include <cstdint> // uint32_t
 
-#include "ls/draw/Setup.h"
-#include "ls/draw/VertexUtils.h"
+#include "lightsky/draw/Setup.h"
+#include "lightsky/draw/VertexUtils.h"
 
 
 

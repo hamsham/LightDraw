@@ -6,10 +6,10 @@
  * @date June 30, 2016 4:38 PM
  */
 
-#include "ls/draw/ShaderAttribArray.h"
-#include "ls/draw/ShaderObject.h" // shader_stage_t
-#include "ls/draw/ShaderProgram.h"
-#include "ls/draw/VAOAttrib.h" // vertex_attrib_t
+#include "lightsky/draw/ShaderAttribArray.h"
+#include "lightsky/draw/ShaderObject.h" // shader_stage_t
+#include "lightsky/draw/ShaderProgram.h"
+#include "lightsky/draw/VAOAttrib.h" // vertex_attrib_t
 
 namespace ls {
 namespace draw {

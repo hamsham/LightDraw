@@ -5,8 +5,8 @@
 #include <vector>
 #include <string>
 
-#include "ls/draw/AnimationProperty.h"
-#include "ls/draw/AnimationChannel.h"
+#include "lightsky/draw/AnimationProperty.h"
+#include "lightsky/draw/AnimationChannel.h"
 
 
 

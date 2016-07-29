@@ -1,5 +1,5 @@
 
-#include "ls/draw/GLQuery.h"
+#include "lightsky/draw/GLQuery.h"
 
 
 

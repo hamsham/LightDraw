@@ -8,13 +8,13 @@
 #ifndef __LS_DRAW_TEXTURE_H__
 #define __LS_DRAW_TEXTURE_H__
 
-#include "ls/utils/Assertions.h"
+#include "lightsky/utils/Assertions.h"
 
-#include "ls/draw/Setup.h"
-#include "ls/draw/Color.h"
-#include "ls/draw/GLQuery.h"
-#include "ls/draw/ImageResource.h"
-#include "ls/draw/TextureAttrib.h"
+#include "lightsky/draw/Setup.h"
+#include "lightsky/draw/Color.h"
+#include "lightsky/draw/GLQuery.h"
+#include "lightsky/draw/ImageResource.h"
+#include "lightsky/draw/TextureAttrib.h"
 
 namespace ls {
 namespace draw {

@@ -16,8 +16,8 @@
 #include <cstdint> // uint32_t
 #include <vector>
 
-#include "ls/draw/Setup.h"
-#include "ls/draw/VAOAttrib.h"
+#include "lightsky/draw/Setup.h"
+#include "lightsky/draw/VAOAttrib.h"
 
 namespace ls {
 namespace draw {

@@ -8,11 +8,11 @@
 #ifndef __LS_DRAW_SHADERATTRIB_H__
 #define __LS_DRAW_SHADERATTRIB_H__
 
-#include "ls/utils/Assertions.h"
-#include "ls/utils/Pointer.h"
+#include "lightsky/utils/Assertions.h"
+#include "lightsky/utils/Pointer.h"
 
-#include "ls/draw/Setup.h"
-#include "ls/draw/Vertex.h"
+#include "lightsky/draw/Setup.h"
+#include "lightsky/draw/Vertex.h"
 
 namespace ls {
 namespace draw {

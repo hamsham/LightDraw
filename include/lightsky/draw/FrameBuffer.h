@@ -8,13 +8,13 @@
 #ifndef __LS_DRAW_FRAMEBUFFER_H__
 #define __LS_DRAW_FRAMEBUFFER_H__
 
-#include "ls/utils/Pointer.h"
+#include "lightsky/utils/Pointer.h"
 
-#include "ls/draw/Setup.h"
-#include "ls/draw/Color.h"
-#include "ls/draw/GLQuery.h"
-#include "ls/draw/TextureAttrib.h"
-#include "ls/draw/FBOAttrib.h"
+#include "lightsky/draw/Setup.h"
+#include "lightsky/draw/Color.h"
+#include "lightsky/draw/GLQuery.h"
+#include "lightsky/draw/TextureAttrib.h"
+#include "lightsky/draw/FBOAttrib.h"
 
 namespace ls {
 namespace draw {

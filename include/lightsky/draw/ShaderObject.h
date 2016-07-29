@@ -10,10 +10,10 @@
 
 #include <string>
 
-#include "ls/utils/Pointer.h"
+#include "lightsky/utils/Pointer.h"
 
-#include "ls/draw/Setup.h"
-#include "ls/draw/ShaderAttribArray.h"
+#include "lightsky/draw/Setup.h"
+#include "lightsky/draw/ShaderAttribArray.h"
 
 namespace ls {
 namespace draw {

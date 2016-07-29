@@ -2,7 +2,7 @@
 #ifndef __LS_DRAW_PACKED_VERTEX_H__
 #define __LS_DRAW_PACKED_VERTEX_H__
 
-#include "ls/utils/Endian.h"
+#include "lightsky/utils/Endian.h"
 
 namespace ls {
 namespace draw {

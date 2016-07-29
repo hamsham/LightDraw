@@ -4,15 +4,15 @@
 
 #include <utility> // std::move
 
-#include "ls/setup/Macros.h" // LS_DECLARE_CLASS_TYPE
+#include "lightsky/setup/Macros.h" // LS_DECLARE_CLASS_TYPE
 
-#include "ls/math/scalar_utils.h" // floor()
+#include "lightsky/math/scalar_utils.h" // floor()
 
-#include "ls/utils/Assertions.h"
-#include "ls/utils/Copy.h"
-#include "ls/utils/Pointer.h"
+#include "lightsky/utils/Assertions.h"
+#include "lightsky/utils/Copy.h"
+#include "lightsky/utils/Pointer.h"
 
-#include "ls/draw/AnimationProperty.h"
+#include "lightsky/draw/AnimationProperty.h"
 
 
 

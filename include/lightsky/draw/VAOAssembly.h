@@ -13,10 +13,10 @@
 #include <string>
 #include <utility> // std::forward
 
-#include "ls/utils/Assertions.h"
+#include "lightsky/utils/Assertions.h"
 
-#include "ls/draw/VertexBuffer.h"
-#include "ls/draw/IndexBuffer.h"
+#include "lightsky/draw/VertexBuffer.h"
+#include "lightsky/draw/IndexBuffer.h"
 
 namespace ls {
 namespace draw {

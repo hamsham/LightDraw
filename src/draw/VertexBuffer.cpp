@@ -8,8 +8,8 @@
 
 #include <utility> // std::move()
 
-#include "ls/draw/VertexBuffer.h"
-#include "ls/draw/VertexUtils.h"
+#include "lightsky/draw/VertexBuffer.h"
+#include "lightsky/draw/VertexUtils.h"
 
 namespace ls {
 namespace draw {

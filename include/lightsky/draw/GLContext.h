@@ -12,25 +12,25 @@
 #include <utility> // std::move
 #include <vector>
 
-#include "ls/setup/Macros.h"
+#include "lightsky/setup/Macros.h"
 
-#include "ls/utils/Assertions.h"
-#include "ls/utils/Pointer.h"
+#include "lightsky/utils/Assertions.h"
+#include "lightsky/utils/Pointer.h"
 
-#include "ls/draw/BlendObject.h"
-#include "ls/draw/DepthObject.h"
+#include "lightsky/draw/BlendObject.h"
+#include "lightsky/draw/DepthObject.h"
 
-#include "ls/draw/BufferObject.h"
-#include "ls/draw/FrameBuffer.h"
-#include "ls/draw/IndexBuffer.h"
-#include "ls/draw/PixelBuffer.h"
-#include "ls/draw/RenderBuffer.h"
-#include "ls/draw/ShaderObject.h"
-#include "ls/draw/ShaderProgram.h"
-#include "ls/draw/Texture.h"
-#include "ls/draw/UniformBuffer.h"
-#include "ls/draw/VertexArray.h"
-#include "ls/draw/VertexBuffer.h"
+#include "lightsky/draw/BufferObject.h"
+#include "lightsky/draw/FrameBuffer.h"
+#include "lightsky/draw/IndexBuffer.h"
+#include "lightsky/draw/PixelBuffer.h"
+#include "lightsky/draw/RenderBuffer.h"
+#include "lightsky/draw/ShaderObject.h"
+#include "lightsky/draw/ShaderProgram.h"
+#include "lightsky/draw/Texture.h"
+#include "lightsky/draw/UniformBuffer.h"
+#include "lightsky/draw/VertexArray.h"
+#include "lightsky/draw/VertexBuffer.h"
 
 
 

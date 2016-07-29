@@ -8,9 +8,9 @@
 
 #include <utility>
 
-#include "ls/utils/Assertions.h"
+#include "lightsky/utils/Assertions.h"
 
-#include "ls/draw/PixelBuffer.h"
+#include "lightsky/draw/PixelBuffer.h"
 
 namespace ls {
 namespace draw {

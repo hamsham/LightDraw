@@ -6,7 +6,7 @@
  * Created on March 8, 2016, 3:12 PM
  */
 
-#include "ls/draw/GLContext.h"
+#include "lightsky/draw/GLContext.h"
 
 
 

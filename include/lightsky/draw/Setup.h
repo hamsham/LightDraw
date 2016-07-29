@@ -8,11 +8,11 @@
 #ifndef __LS_DRAW_SETUP_H__
 #define __LS_DRAW_SETUP_H__
 
-#include "ls/setup/Setup.h"
+#include "lightsky/setup/Setup.h"
 
-#include "ls/utils/Log.h"
+#include "lightsky/utils/Log.h"
 
-#include "ls/math/Math.h"
+#include "lightsky/math/Math.h"
 
 
 /*-------------------------------------

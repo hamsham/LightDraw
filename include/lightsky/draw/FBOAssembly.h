@@ -9,9 +9,9 @@
 #ifndef __LS_DRAW_FBO_ASSEMBLY_H__
 #define __LS_DRAW_FBO_ASSEMBLY_H__
 
-#include "ls/utils/Pointer.h"
+#include "lightsky/utils/Pointer.h"
 
-#include "ls/draw/FBOAttrib.h"
+#include "lightsky/draw/FBOAttrib.h"
 
 namespace ls {
 namespace draw {

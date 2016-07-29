@@ -10,10 +10,10 @@
 
 #include <cstddef> // ptrdiff_t
 
-#include "ls/utils/Assertions.h"
-#include "ls/utils/Pointer.h"
+#include "lightsky/utils/Assertions.h"
+#include "lightsky/utils/Pointer.h"
 
-#include "ls/draw/Setup.h"
+#include "lightsky/draw/Setup.h"
 
 namespace ls {
 namespace draw {

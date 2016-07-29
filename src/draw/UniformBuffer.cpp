@@ -1,10 +1,10 @@
 
 #include <utility> // std::move
 
-#include "ls/utils/Assertions.h"
+#include "lightsky/utils/Assertions.h"
 
-#include "ls/draw/ShaderProgram.h"
-#include "ls/draw/UniformBuffer.h"
+#include "lightsky/draw/ShaderProgram.h"
+#include "lightsky/draw/UniformBuffer.h"
 
 
 

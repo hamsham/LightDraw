@@ -10,14 +10,14 @@
 #include <utility> // std::move
 #include <new> // std::nothrow
 
-#include "ls/utils/Copy.h"
-#include "ls/utils/Hash.h"
-#include "ls/utils/Log.h"
+#include "lightsky/utils/Copy.h"
+#include "lightsky/utils/Hash.h"
+#include "lightsky/utils/Log.h"
 
-#include "ls/draw/Vertex.h"
-#include "ls/draw/ShaderAttrib.h"
-#include "ls/draw/ShaderObject.h"
-#include "ls/draw/ShaderProgram.h"
+#include "lightsky/draw/Vertex.h"
+#include "lightsky/draw/ShaderAttrib.h"
+#include "lightsky/draw/ShaderObject.h"
+#include "lightsky/draw/ShaderProgram.h"
 
 namespace ls {
 namespace draw {

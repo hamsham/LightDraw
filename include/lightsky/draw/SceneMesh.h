@@ -4,10 +4,10 @@
 
 #include <vector>
 
-#include "ls/draw/Setup.h"
-#include "ls/draw/BoundingBox.h"
-#include "ls/draw/DrawParams.h"
-#include "ls/draw/SceneMaterial.h"
+#include "lightsky/draw/Setup.h"
+#include "lightsky/draw/BoundingBox.h"
+#include "lightsky/draw/DrawParams.h"
+#include "lightsky/draw/SceneMaterial.h"
 
 
 

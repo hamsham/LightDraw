@@ -4,21 +4,21 @@
 #include <string>
 #include <cstring> // strcmp()
 
-#include "ls/draw/Camera.h"
-#include "ls/draw/Color.h"
-#include "ls/draw/ImageResource.h"
-#include "ls/draw/IndexBuffer.h"
-#include "ls/draw/PackedVertex.h"
-#include "ls/draw/SceneFileLoader.h"
-#include "ls/draw/SceneFileUtility.h"
-#include "ls/draw/SceneMaterial.h"
-#include "ls/draw/TextureAssembly.h"
-#include "ls/draw/Transform.h"
-#include "ls/draw/VAOAssembly.h"
-#include "ls/draw/VAOAttrib.h"
-#include "ls/draw/VertexArray.h"
-#include "ls/draw/VertexBuffer.h"
-#include "ls/draw/VertexUtils.h"
+#include "lightsky/draw/Camera.h"
+#include "lightsky/draw/Color.h"
+#include "lightsky/draw/ImageResource.h"
+#include "lightsky/draw/IndexBuffer.h"
+#include "lightsky/draw/PackedVertex.h"
+#include "lightsky/draw/SceneFileLoader.h"
+#include "lightsky/draw/SceneFileUtility.h"
+#include "lightsky/draw/SceneMaterial.h"
+#include "lightsky/draw/TextureAssembly.h"
+#include "lightsky/draw/Transform.h"
+#include "lightsky/draw/VAOAssembly.h"
+#include "lightsky/draw/VAOAttrib.h"
+#include "lightsky/draw/VertexArray.h"
+#include "lightsky/draw/VertexBuffer.h"
+#include "lightsky/draw/VertexUtils.h"
 
 
 

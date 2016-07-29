@@ -2,9 +2,9 @@
 #ifndef __LS_DRAW_UNIFORM_BUFFER_H__
 #define __LS_DRAW_UNIFORM_BUFFER_H__
 
-#include "ls/draw/BufferObject.h"
+#include "lightsky/draw/BufferObject.h"
 
-#include "ls/draw/ShaderBlockAttrib.h"
+#include "lightsky/draw/ShaderBlockAttrib.h"
 
 
 

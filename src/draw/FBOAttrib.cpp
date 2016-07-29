@@ -6,11 +6,11 @@
  * Created on March 4, 2016, 4:40 PM
  */
 
-#include "ls/utils/Assertions.h"
+#include "lightsky/utils/Assertions.h"
 
-#include "ls/draw/FBOAttrib.h"
-#include "ls/draw/Texture.h"
-#include "ls/draw/RenderBuffer.h"
+#include "lightsky/draw/FBOAttrib.h"
+#include "lightsky/draw/Texture.h"
+#include "lightsky/draw/RenderBuffer.h"
 
 namespace ls {
 namespace draw {

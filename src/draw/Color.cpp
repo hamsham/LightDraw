@@ -2,9 +2,9 @@
 #include <cassert>
 #include <cstdint>
 
-#include "ls/utils/Assertions.h"
+#include "lightsky/utils/Assertions.h"
 
-#include "ls/draw/Color.h"
+#include "lightsky/draw/Color.h"
 
 namespace ls {
 

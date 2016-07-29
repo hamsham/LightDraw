@@ -7,12 +7,12 @@
 
 #include <limits>
 
-#include "ls/math/scalar_utils.h"
+#include "lightsky/math/scalar_utils.h"
 
-#include "ls/utils/Endian.h"
+#include "lightsky/utils/Endian.h"
 
-#include "ls/draw/VAOAttrib.h"
-#include "ls/draw/VertexUtils.h"
+#include "lightsky/draw/VAOAttrib.h"
+#include "lightsky/draw/VertexUtils.h"
 
 namespace ls {
 

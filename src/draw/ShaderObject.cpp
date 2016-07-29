@@ -9,13 +9,13 @@
 #include <new> // std::nothrow
 #include <utility> // std::move()
 
-#include "ls/setup/Compiler.h"
+#include "lightsky/setup/Compiler.h"
 
-#include "ls/utils/Assertions.h"
-#include "ls/utils/Copy.h"
+#include "lightsky/utils/Assertions.h"
+#include "lightsky/utils/Copy.h"
 
-#include "ls/draw/ShaderObject.h"
-#include "ls/draw/VAOAttrib.h"
+#include "lightsky/draw/ShaderObject.h"
+#include "lightsky/draw/VAOAttrib.h"
 
 
 

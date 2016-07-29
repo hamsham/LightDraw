@@ -7,8 +7,8 @@
 
 #include <new> // std::nothrow
 
-#include "ls/draw/VAOAttrib.h"
-#include "ls/draw/VertexBuffer.h"
+#include "lightsky/draw/VAOAttrib.h"
+#include "lightsky/draw/VertexBuffer.h"
 
 namespace ls {
 namespace draw {

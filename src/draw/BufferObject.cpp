@@ -8,11 +8,11 @@
 #include <algorithm>
 #include <new>
 
-#include "ls/utils/Assertions.h"
-#include "ls/utils/Log.h"
+#include "lightsky/utils/Assertions.h"
+#include "lightsky/utils/Log.h"
 
-#include "ls/draw/BufferObject.h"
-#include "ls/draw/VertexUtils.h"
+#include "lightsky/draw/BufferObject.h"
+#include "lightsky/draw/VertexUtils.h"
 
 namespace ls {
 namespace draw {

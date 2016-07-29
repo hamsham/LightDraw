@@ -8,13 +8,13 @@
 #include <algorithm> // std::copy
 #include <utility> // std::move
 
-#include "ls/draw/Setup.h"
-#include "ls/draw/Atlas.h"
-#include "ls/draw/Color.h"
-#include "ls/draw/BufferObject.h"
-#include "ls/draw/FontResource.h"
-#include "ls/draw/GLQuery.h"
-#include "ls/draw/TextureAssembly.h"
+#include "lightsky/draw/Setup.h"
+#include "lightsky/draw/Atlas.h"
+#include "lightsky/draw/Color.h"
+#include "lightsky/draw/BufferObject.h"
+#include "lightsky/draw/FontResource.h"
+#include "lightsky/draw/GLQuery.h"
+#include "lightsky/draw/TextureAssembly.h"
 
 namespace ls {
 namespace draw {

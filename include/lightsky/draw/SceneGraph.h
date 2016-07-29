@@ -5,9 +5,9 @@
 #include <climits> // UINT_MAX
 #include <vector>
 
-#include "ls/draw/Animation.h"
-#include "ls/draw/GLContext.h"
-#include "ls/draw/DrawParams.h"
+#include "lightsky/draw/Animation.h"
+#include "lightsky/draw/GLContext.h"
+#include "lightsky/draw/DrawParams.h"
 
 
 

@@ -5,8 +5,8 @@
  * Created on November 15, 2013, 8:28 PM
  */
 
-#include "ls/draw/Setup.h"
-#include "ls/utils/Log.h"
+#include "lightsky/draw/Setup.h"
+#include "lightsky/utils/Log.h"
 
 /*-----------------------------------------------------------------------------
  * Windows OpenGL Function Loading

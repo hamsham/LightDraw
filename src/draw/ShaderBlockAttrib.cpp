@@ -2,9 +2,9 @@
 #include <memory> // std::nothrow
 #include <utility> // std::move
 
-#include "ls/utils/Copy.h" // utils::fast_memset
+#include "lightsky/utils/Copy.h" // utils::fast_memset
 
-#include "ls/draw/ShaderBlockAttrib.h"
+#include "lightsky/draw/ShaderBlockAttrib.h"
 
 
 

@@ -8,16 +8,16 @@
 
 #include <new>
 
-#include "ls/setup/Macros.h"
+#include "lightsky/setup/Macros.h"
 
-#include "ls/utils/Assertions.h"
-#include "ls/utils/Log.h"
+#include "lightsky/utils/Assertions.h"
+#include "lightsky/utils/Log.h"
 
-#include "ls/draw/Color.h"
-#include "ls/draw/Texture.h"
-#include "ls/draw/RenderBuffer.h"
-#include "ls/draw/FrameBuffer.h"
-#include "ls/draw/FBOAssembly.h"
+#include "lightsky/draw/Color.h"
+#include "lightsky/draw/Texture.h"
+#include "lightsky/draw/RenderBuffer.h"
+#include "lightsky/draw/FrameBuffer.h"
+#include "lightsky/draw/FBOAssembly.h"
 
 namespace ls {
 namespace draw {

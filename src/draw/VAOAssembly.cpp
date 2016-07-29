@@ -8,10 +8,10 @@
 
 #include <memory> // std::nothrow
 
-#include "ls/utils/Log.h"
+#include "lightsky/utils/Log.h"
 
-#include "ls/draw/VertexArray.h"
-#include "ls/draw/VAOAssembly.h"
+#include "lightsky/draw/VertexArray.h"
+#include "lightsky/draw/VAOAssembly.h"
 
 
 

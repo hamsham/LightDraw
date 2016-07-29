@@ -1,7 +1,7 @@
 
-#include "ls/utils/Copy.h"
+#include "lightsky/utils/Copy.h"
 
-#include "ls/draw/SceneMaterial.h"
+#include "lightsky/draw/SceneMaterial.h"
 
 
 namespace ls {

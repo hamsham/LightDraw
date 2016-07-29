@@ -7,8 +7,8 @@
 
 #include <utility> // std::move()
 
-#include "ls/draw/VertexArray.h"
-#include "ls/draw/VAOAssembly.h"
+#include "lightsky/draw/VertexArray.h"
+#include "lightsky/draw/VAOAssembly.h"
 
 namespace ls {
 namespace draw {

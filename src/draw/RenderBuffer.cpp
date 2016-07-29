@@ -1,8 +1,8 @@
 
 #include <utility>
 
-#include "ls/draw/TextureAttrib.h" // get_texture_int/float()
-#include "ls/draw/RenderBuffer.h"
+#include "lightsky/draw/TextureAttrib.h" // get_texture_int/float()
+#include "lightsky/draw/RenderBuffer.h"
 
 namespace ls {
 namespace draw {
