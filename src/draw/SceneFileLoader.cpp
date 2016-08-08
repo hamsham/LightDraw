@@ -205,7 +205,7 @@ bool SceneFilePreLoader::load(const std::string& filename) noexcept {
     importer.reset(new Assimp::Importer);
 
     Assimp::Importer& fileImporter = *importer.get();
-    fileImporter.SetPropertyBool(AI_CONFIG_IMPORT_NO_SKELETON_MESHES, true);
+    //fileImporter.SetPropertyBool(AI_CONFIG_IMPORT_NO_SKELETON_MESHES, true);
     fileImporter.SetPropertyBool(AI_CONFIG_PP_FD_REMOVE, true); // remove degenerate triangles
     fileImporter.SetPropertyInteger(AI_CONFIG_FAVOUR_SPEED, AI_TRUE);
 
