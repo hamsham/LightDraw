@@ -8,6 +8,13 @@ set(OUTPUT_NAME lsdraw)
 
 
 # -------------------------------------
+# CMake Setup
+# -------------------------------------
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules" ${CMAKE_MODULE_PATH})
+
+
+
+# -------------------------------------
 # Finders
 # -------------------------------------
 # Only using OpenGL for its libraries, not headers
