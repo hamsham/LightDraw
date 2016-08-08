@@ -16,6 +16,8 @@ include(FindOpenGL)
 # FreeType requires special care
 include(FindFreetype)
 
+find_package(ASSIMP REQUIRED)
+
 
 
 # -------------------------------------
@@ -106,6 +108,8 @@ set(
     LS_DRAW_EXTERNAL_DEPS
     ${OPENGL_gl_LIBRARY}
     ${FREETYPE_LIBRARIES}
+    ${ASSIMP_LIBRARIES}
+    freeimage
 )
 
 
