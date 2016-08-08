@@ -113,6 +113,7 @@ set(
 # -------------------------------------
 # Library Setup
 # -------------------------------------
+# Keeping LightDraw as a static library until Vulkan support is added.
 add_library("${OUTPUT_NAME}" STATIC "${LS_DRAW_SOURCES}")
 
 # Internal dependencies
@@ -120,6 +121,18 @@ add_dependencies(${LS_DRAW_INTERNAL_DEPS})
 
 # Linking Setup
 target_link_libraries("${OUTPUT_NAME}" ${LS_DRAW_INTERNAL_DEPS} ${LS_DRAW_EXTERNAL_DEPS})
+
+
+
+# -------------------------------------
+# Library Installation Setup
+# -------------------------------------
+install(TARGETS "${OUTPUT_NAME}"
+    RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib
+)
+install(DIRECTORY include/lightsky/draw DESTINATION include/lightsky)
 
 
 

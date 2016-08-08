@@ -26,7 +26,9 @@
     // std::regex support wasn't addded to Clang until version 3.5.
     // A bug in Clang's libc++, prevents it from distinguishing escaped parenthesis in raw-string literals.
     #if defined(LS_COMPILER_CLANG)
-        #define LS_REQUIRE_BOOST_REGEX
+        #if (LS_COMPILER_CLANG_MAJ == 3) && (LS_COMPILER_CLANG_MIN < 6)
+            #define LS_REQUIRE_BOOST_REGEX
+        #endif
 
     // std::regex support wasn't addded to GCC until version 4.9.2
     #elif defined(LS_COMPILER_GCC) && (LS_COMPILER_GCC == 4) && (LS_COMPILER_GCC_MAJ < 9)
