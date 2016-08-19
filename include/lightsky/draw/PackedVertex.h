@@ -36,7 +36,7 @@ struct PackedVertex_2_10_10_10 {
  * Little-Endian Version
 -------------------------------------*/
 template <>
-struct alignas(16) PackedVertex_2_10_10_10<utils::endian_t::LS_LITTLE_ENDIAN> {
+struct alignas(sizeof(int32_t)) PackedVertex_2_10_10_10<utils::endian_t::LS_LITTLE_ENDIAN> {
     int32_t x: 10;
     int32_t y: 10;
     int32_t z: 10;
@@ -60,7 +60,7 @@ struct alignas(16) PackedVertex_2_10_10_10<utils::endian_t::LS_LITTLE_ENDIAN> {
  * Big-Endian Version
 -------------------------------------*/
 template <>
-struct alignas(16) PackedVertex_2_10_10_10<utils::endian_t::LS_BIG_ENDIAN> {
+struct alignas(sizeof(int32_t)) PackedVertex_2_10_10_10<utils::endian_t::LS_BIG_ENDIAN> {
     int32_t w: 2;
     int32_t z: 10;
     int32_t y: 10;
@@ -84,7 +84,7 @@ struct alignas(16) PackedVertex_2_10_10_10<utils::endian_t::LS_BIG_ENDIAN> {
  * Big-Endian Version
 -------------------------------------*/
 template <>
-struct alignas(16) PackedVertex_2_10_10_10<utils::endian_t::LS_PDP_ENDIAN> {
+struct alignas(sizeof(int32_t)) PackedVertex_2_10_10_10<utils::endian_t::LS_PDP_ENDIAN> {
     int32_t y: 10;
     int32_t x: 10;
     int32_t w: 2;

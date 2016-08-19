@@ -24,6 +24,14 @@ include(FindOpenGL)
 include(FindFreetype)
 
 find_package(ASSIMP REQUIRED)
+if (NOT assimp_FOUND)
+    message(FATAL_ERROR "Unable to locate the library for ASSIMP.")
+endif()
+
+find_package(Boost REQUIRED COMPONENTS regex)
+if (NOT Boost_REGEX_FOUND)
+    message(FATAL_ERROR "Unable to locate the library for Boost-Regex.")
+endif()
 
 
 

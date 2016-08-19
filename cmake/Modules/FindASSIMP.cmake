@@ -4,7 +4,7 @@ elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
 	set(ASSIMP_ARCHITECTURE "32")
 endif(CMAKE_SIZEOF_VOID_P EQUAL 8)
 	
-if(WIN32)
+if (MSVC)
 	set(ASSIMP_ROOT_DIR CACHE PATH "ASSIMP root directory")
 
 	# Find path of each library
@@ -30,12 +30,12 @@ if(WIN32)
 				${ASSIMP_ROOT_DIR}/lib${ASSIMP_ARCHITECTURE}
 		)
 		
-		find_library(ASSIMP_LIBRARY_RELEASE				assimp-${ASSIMP_MSVC_VERSION}-mt.lib 			PATHS ${ASSIMP_LIBRARY_DIR})
-		find_library(ASSIMP_LIBRARY_DEBUG				assimp-${ASSIMP_MSVC_VERSION}-mtd.lib			PATHS ${ASSIMP_LIBRARY_DIR})
+		find_library(ASSIMP_LIBRARY_RELEASE assimp-${ASSIMP_MSVC_VERSION}-mt.lib    PATHS ${ASSIMP_LIBRARY_DIR})
+		find_library(ASSIMP_LIBRARY_DEBUG   assimp-${ASSIMP_MSVC_VERSION}-mtd.lib   PATHS ${ASSIMP_LIBRARY_DIR})
 		
 		set(ASSIMP_LIBRARY 
-			optimized 	${ASSIMP_LIBRARY_RELEASE}
-			debug		${ASSIMP_LIBRARY_DEBUG}
+			optimized   ${ASSIMP_LIBRARY_RELEASE}
+			debug       ${ASSIMP_LIBRARY_DEBUG}
 		)
 		
 		set(ASSIMP_LIBRARIES "ASSIMP_LIBRARY_RELEASE" "ASSIMP_LIBRARY_DEBUG")
@@ -50,32 +50,42 @@ if(WIN32)
 	
 	endif()
 	
-else(WIN32)
-
-	find_path(
-	  assimp_INCLUDE_DIRS
-	  NAMES postprocess.h scene.h version.h config.h cimport.h
-	  PATHS /usr/local/include/
+else(MSVC)
+	find_path(assimp_INCLUDE_DIRS
+        NAMES
+            postprocess.h
+            scene.h
+            version.h
+            config.h
+            cimport.h
+        PATH_SUFFIXES
+            assimp
+        PATHS
+            /usr/include/
+            /usr/local/include/
 	)
 
-	find_library(
-	  assimp_LIBRARIES
-	  NAMES assimp
-	  PATHS /usr/local/lib/
+	find_library(assimp_LIBRARIES
+        NAMES
+            assimp
+            assimp.dll
+        PATHS
+            /usr/lib/
+            /usr/local/lib/
 	)
 
 	if (assimp_INCLUDE_DIRS AND assimp_LIBRARIES)
-	  SET(assimp_FOUND TRUE)
-	ENDIF (assimp_INCLUDE_DIRS AND assimp_LIBRARIES)
+        set(assimp_FOUND TRUE)
+	endif (assimp_INCLUDE_DIRS AND assimp_LIBRARIES)
 
 	if (assimp_FOUND)
-	  if (NOT assimp_FIND_QUIETLY)
-		message(STATUS "Found asset importer library: ${assimp_LIBRARIES}")
-	  endif (NOT assimp_FIND_QUIETLY)
+        if (NOT assimp_FIND_QUIETLY)
+    		message(STATUS "Found asset importer library: ${assimp_LIBRARIES}")
+        endif (NOT assimp_FIND_QUIETLY)
 	else (assimp_FOUND)
-	  if (assimp_FIND_REQUIRED)
-		message(FATAL_ERROR "Could not find asset importer library")
-	  endif (assimp_FIND_REQUIRED)
+        if (assimp_FIND_REQUIRED)
+            message(FATAL_ERROR "Could not find asset importer library")
+        endif (assimp_FIND_REQUIRED)
 	endif (assimp_FOUND)
 	
-endif(WIN32)
+endif(MSVC)
