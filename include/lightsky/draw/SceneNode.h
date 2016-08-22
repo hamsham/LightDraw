@@ -7,8 +7,6 @@
 #include <vector>
 #include <deque>
 
-#include "lightsky/draw/Transform.h"
-
 
 
 namespace ls {
@@ -53,7 +51,7 @@ enum class scene_node_t : uint32_t {
  * helps to ensure that other objects contained within a SceneGraph can be
  * managed separately from the node.
 -----------------------------------------------------------------------------*/
-struct alignas(16) SceneNode final {
+struct alignas(sizeof(uint32_t)*4) SceneNode final {
     /**
      * @brief Enumeration containing the type of scene node which *this
      * represents.
@@ -61,19 +59,18 @@ struct alignas(16) SceneNode final {
     scene_node_t type;
     
     /**
-     * @brief nodeId contains the index of a node's name and transform within
+     * @brief nodeId contains the index of a node's name, and transform within
      * a SceneGraph.
+     * 
+     * This member has a 1:1 relationship with the following members of a scene
+     * graph:
+     *      - bounds
+     *      - baseTransforms
+     *      - currentTransforms
+     *      - modelMatrices
+     *      - nodeNames
      */
     uint32_t nodeId;
-
-    /**
-     * @brief RenderPropertyId contains the SceneGraph index of a render
-     * property which can be used to assign values to shaders during rendering.
-     * 
-     * Render properties are separate from drawParamIds in that a render
-     * property is a per-shader property, rather than a per-mesh property.
-     */
-    uint32_t renderPropertyId;
 
     /**
      * @brief The dataId parameter contains the indexed location of data for a
@@ -87,6 +84,13 @@ struct alignas(16) SceneNode final {
      * Camera Nodes will reference the "cameras" member of a SceneGraph.
      */
     uint32_t dataId;
+    
+    /**
+     * This member represents an index into the parent SceneGraph's "nodeAnims"
+     * member. Use this to retrieve a single animation track related to the
+     * current node.
+     */
+    uint32_t animListId;
     
     /**
      * @brief reset() assigns a default value of '0' to all internal members.

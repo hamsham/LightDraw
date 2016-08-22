@@ -998,6 +998,7 @@ void SceneFileLoader::read_node_hierarchy(
     nodeList.emplace_back(SceneNode());
     SceneNode& currentNode = nodeList.back();
 
+    // initialize
     currentNode.reset();
     currentNode.nodeId = nodeList.size() - 1;
 
@@ -1176,29 +1177,46 @@ bool SceneFileLoader::import_animations(const aiScene* const pScene) noexcept {
     SceneGraph& sceneData                       = preloader.sceneData;
     std::vector<Animation>& animations          = sceneData.animations;
     const unsigned totalAnimations              = pScene->mNumAnimations;
+    std::vector<std::vector<AnimationChannel>>& allChannels = sceneData.nodeAnims;
 
     for (unsigned i = 0; i < totalAnimations; ++i) {
         const aiAnimation* const pInAnim = pAnimations[i];
         Animation& anim = animations[i];
 
+        // The animation as a whole needs to have its properties imported from
+        // ASSIMP.
         anim.set_duration(pInAnim->mDuration);
         anim.set_anim_name(std::string {pInAnim->mName.C_Str()});
         anim.set_ticks_per_sec(pInAnim->mTicksPerSecond > 0.0 ? pInAnim->mTicksPerSecond : 23.976);
-
-        std::vector<AnimationChannel>& channels = anim.get_anim_channels();
-        channels.reserve(pInAnim->mNumChannels);
+        anim.reserve_anim_channels(pInAnim->mNumChannels);
 
         for (unsigned c = 0; c < pInAnim->mNumChannels; ++c) {
-            const aiNodeAnim* const pInTrack = pInAnim->mChannels[c];
             AnimationChannel track;
+            const aiNodeAnim* const pInTrack = pInAnim->mChannels[c];
+            const unsigned nodeId = import_animation_track(pInTrack, track, anim.get_duration());
 
-            if (!import_animation_track(pInTrack, track, anim.get_duration())) {
+            if (nodeId == UINT_MAX) {
                 // failing to load an Animation track is not an error.
                 ret = false;
                 continue;
             }
 
-            channels.emplace_back(std::move(track));
+            // Grab the scene node which contains the data ID to map with a
+            // transformation and animation channel
+            SceneNode& node = sceneData.nodes[nodeId];
+            
+            // If a list of animation tracks doesn't exist for the current node
+            // then be sure to add it.
+            if (node.animListId == scene_property_t::SCENE_GRAPH_ROOT_ID) {
+                node.animListId = allChannels.size();
+                allChannels.emplace_back(std::vector<AnimationChannel>{});
+            }
+            
+            std::vector<AnimationChannel>& nodeChannels = allChannels[node.animListId];
+            nodeChannels.emplace_back(std::move(track));
+            
+            // Add the node's imported track to the current animation
+            anim.add_anim_channel(node, nodeChannels.size()-1);
         }
 
         LS_LOG_MSG(
@@ -1206,7 +1224,7 @@ bool SceneFileLoader::import_animations(const aiScene* const pScene) noexcept {
             "\n\t\tName:      ", anim.get_anim_name(),
             "\n\t\tDuration:  ", anim.get_duration(),
             "\n\t\tTicks/Sec: ", anim.get_ticks_per_sec(),
-            "\n\t\tChannels:  ", anim.get_anim_channels().size()
+            "\n\t\tChannels:  ", anim.get_num_anim_channels()
         );
     }
 
@@ -1223,7 +1241,7 @@ bool SceneFileLoader::import_animations(const aiScene* const pScene) noexcept {
 /*-------------------------------------
  * Import a single Animation track
 -------------------------------------*/
-bool SceneFileLoader::import_animation_track(
+unsigned SceneFileLoader::import_animation_track(
     const aiNodeAnim* const pInAnim,
     AnimationChannel& outAnim,
     const anim_prec_t animDuration
@@ -1231,12 +1249,12 @@ bool SceneFileLoader::import_animation_track(
     const unsigned posFrames                    = pInAnim->mNumPositionKeys;
     const unsigned sclFrames                    = pInAnim->mNumScalingKeys;
     const unsigned rotFrames                    = pInAnim->mNumRotationKeys;
-
     SceneGraph& sceneData                       = preloader.sceneData;
     const std::vector<std::string>& nodeNames   = sceneData.nodeNames;
     const char* const pInName                   = pInAnim->mNodeName.C_Str();
     unsigned nodeId                             = 0;
 
+    // Locate the node associated with the current animation track.
     for (; nodeId < nodeNames.size(); ++nodeId) {
         if (nodeNames[nodeId] == pInName) {
             break;
@@ -1246,36 +1264,42 @@ bool SceneFileLoader::import_animation_track(
     if (nodeId == nodeNames.size()) {
         LS_LOG_ERR("\tError: Unable to locate the animation track for a scene node: ", pInAnim);
         outAnim.clear();
-        return false;
-    }
-    else {
-        outAnim.nodeId = nodeId;
+        return UINT_MAX;
     }
 
     if (!outAnim.set_num_frames(posFrames, sclFrames, rotFrames)) {
         LS_LOG_MSG("Unable to import the Animation \"", pInAnim->mNodeName.C_Str(), "\".");
-        return false;
+        return UINT_MAX;
     }
 
     AnimationKeyListVec3& outPosFrames = outAnim.positionFrames;
     AnimationKeyListVec3& outSclFrames = outAnim.scaleFrames;
     AnimationKeyListQuat& outRotFrames = outAnim.rotationFrames;
 
+    // Convert all animation times into percentages for the internal animation
+    // system.
+    // Positions
     for (unsigned p=0; p < outPosFrames.size(); ++p) {
         const aiVectorKey& posKey = pInAnim->mPositionKeys[p];
         outPosFrames.set_frame(p, posKey.mTime/animDuration, convert_assimp_vector(posKey.mValue));
     }
 
+    // Scalings
     for (unsigned s=0; s < outSclFrames.size(); ++s) {
         const aiVectorKey& sclKey = pInAnim->mScalingKeys[s];
         outSclFrames.set_frame(s, sclKey.mTime/animDuration, convert_assimp_vector(sclKey.mValue));
     }
 
+    // Rotations
     for (unsigned r=0; r < outRotFrames.size(); ++r) {
         const aiQuatKey& rotKey = pInAnim->mRotationKeys[r];
         outRotFrames.set_frame(r, rotKey.mTime/animDuration, convert_assimp_quaternion(rotKey.mValue));
     }
 
+    // Convert ASSIMP animation flags into internal ones.
+    // ASSIMP allows for animation behavior to change between the starting and
+    // ending animation frames. Those are currently unsupported, all imported
+    // animations share the same flags from start to finish.
     unsigned animFlags = ANIM_FLAG_NONE;
     const auto flagFill = [&](const aiAnimBehaviour inFlag, const unsigned outFlag)->void {
         if (pInAnim->mPreState & inFlag || pInAnim->mPostState & inFlag) {
@@ -1283,10 +1307,11 @@ bool SceneFileLoader::import_animation_track(
         }
     };
 
-    flagFill(aiAnimBehaviour_CONSTANT, ANIM_FLAG_IMMEDIATE);
-    flagFill(aiAnimBehaviour_DEFAULT, ANIM_FLAG_INTERPOLATE);
-    flagFill(aiAnimBehaviour_LINEAR, ANIM_FLAG_INTERPOLATE);
-    flagFill(aiAnimBehaviour_REPEAT, ANIM_FLAG_REPEAT);
+    flagFill(aiAnimBehaviour_CONSTANT,  ANIM_FLAG_IMMEDIATE);
+    flagFill(aiAnimBehaviour_DEFAULT,   ANIM_FLAG_INTERPOLATE);
+    flagFill(aiAnimBehaviour_LINEAR,    ANIM_FLAG_INTERPOLATE);
+    flagFill(aiAnimBehaviour_REPEAT,    ANIM_FLAG_REPEAT);
+    
     outAnim.animationMode = (animation_flag_t)animFlags;
 
     LS_LOG_MSG(
@@ -1296,7 +1321,7 @@ bool SceneFileLoader::import_animation_track(
         "\n\t\tRotation Keys: ", outRotFrames.size(), " @ ", outRotFrames.get_duration()
     );
 
-    return true;
+    return nodeId;
 }
 
 

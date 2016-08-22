@@ -44,30 +44,83 @@ enum scene_property_t : unsigned {
 -----------------------------------------------------------------------------*/
 class SceneGraph {
     public: // member objects
+        /**
+         * Referenced by camera-type scene nodes using their
+         * "SceneNode::dataId" member.
+         */
         std::vector<Camera> cameras;
 
+        /**
+         * Array to contain all meshes referenced by mesh node draw commands.
+         */
         std::vector<SceneMesh> meshes;
 
+        /**
+         * Bounding boxes for meshes
+         */
         std::vector<BoundingBox> bounds;
 
+        /**
+         * Referenced by all mesh node types using the following relationship:
+         *      "SceneGraph::nodeMeshes[SceneNode::nodeId]->materialId"
+         */
         std::vector<SceneMaterial> materials;
 
+        /**
+         * Contains all empty, camera, mesh, and bode nodes in a scene graph.
+         */
         std::vector<SceneNode> nodes;
 
+        /**
+         * Referenced by all scene node types using their
+         * "SceneNode::nodeId" member.
+         */
         std::vector<math::mat4> baseTransforms;
 
+        /**
+         * Referenced by all scene node types using their
+         * "SceneNode::nodeId" member.
+         */
         std::vector<Transform> currentTransforms;
 
+        /**
+         * Referenced by all scene node types using their
+         * "SceneNode::nodeId" member.
+         */
         std::vector<math::mat4> modelMatrices;
 
+        /**
+         * Referenced by all scene node types using their
+         * "SceneNode::nodeId" member.
+         */
         std::vector<std::string> nodeNames;
         
+        /**
+         * Contains all animations available in the current scene graph.
+         */
         std::vector<Animation> animations;
+        
+        /**
+         * Referenced by all scene node types using their
+         * "SceneNode::animTrackId" member.
+         */
+        std::vector<std::vector<AnimationChannel>> nodeAnims;
 
+        /**
+         * Referenced by mesh-type scene nodes using their
+         * "SceneNode::dataId" member.
+         */
         std::vector<unsigned> nodeMeshCounts;
 
+        /**
+         * Referenced by mesh-type scene nodes using their
+         * "SceneNode::dataId" member.
+         */
         std::vector<utils::Pointer<DrawCommandParams[]>> nodeMeshes;
 
+        /**
+         * Accessor for all OpenGL data
+         */
         GLContextData renderData;
     
     private:

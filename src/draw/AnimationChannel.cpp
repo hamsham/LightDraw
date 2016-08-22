@@ -45,7 +45,6 @@ AnimationChannel::~AnimationChannel() noexcept {
  * Animation Key Constructor
 -------------------------------------*/
 AnimationChannel::AnimationChannel() noexcept :
-    nodeId{scene_property_t::SCENE_GRAPH_ROOT_ID},
     animationMode{animation_flag_t::ANIM_FLAG_DEFAULT},
     positionFrames{},
     scaleFrames{},
@@ -56,7 +55,6 @@ AnimationChannel::AnimationChannel() noexcept :
  * Animation Key Copy Constructor
 -------------------------------------*/
 AnimationChannel::AnimationChannel(const AnimationChannel& ac) noexcept :
-    nodeId{ac.nodeId},
     animationMode{ac.animationMode},
     positionFrames{ac.positionFrames},
     scaleFrames{ac.scaleFrames},
@@ -67,13 +65,11 @@ AnimationChannel::AnimationChannel(const AnimationChannel& ac) noexcept :
  * Animation Key Move Constructor
 -------------------------------------*/
 AnimationChannel::AnimationChannel(AnimationChannel&& ac) noexcept :
-    nodeId{ac.nodeId},
     animationMode{ac.animationMode},
     positionFrames{std::move(ac.positionFrames)},
     scaleFrames{std::move(ac.scaleFrames)},
     rotationFrames{std::move(ac.rotationFrames)}
 {
-    ac.nodeId = scene_property_t::SCENE_GRAPH_ROOT_ID;
     ac.animationMode = animation_flag_t::ANIM_FLAG_DEFAULT;
 }
 
@@ -85,7 +81,6 @@ AnimationChannel& AnimationChannel::operator =(const AnimationChannel& ac) noexc
         return *this;
     }
     
-    nodeId = ac.nodeId;
     animationMode = ac.animationMode;
     positionFrames = ac.positionFrames;
     scaleFrames = ac.scaleFrames;
@@ -102,11 +97,8 @@ AnimationChannel& AnimationChannel::operator =(AnimationChannel&& ac) noexcept {
         return *this;
     }
     
-    nodeId = ac.nodeId;
-    ac.nodeId = scene_property_t::SCENE_GRAPH_ROOT_ID;
-    
-    ac.animationMode = animation_flag_t::ANIM_FLAG_DEFAULT;
     animationMode = ac.animationMode;
+    ac.animationMode = animation_flag_t::ANIM_FLAG_DEFAULT;
     
     positionFrames = std::move(ac.positionFrames);
     scaleFrames = std::move(ac.scaleFrames);
@@ -138,7 +130,6 @@ bool AnimationChannel::set_num_frames(
  * Clear all Animation keys
 -------------------------------------*/
 void AnimationChannel::clear() noexcept {
-    nodeId = scene_property_t::SCENE_GRAPH_ROOT_ID;
     animationMode = animation_flag_t::ANIM_FLAG_DEFAULT;
     positionFrames.clear();
     scaleFrames.clear();

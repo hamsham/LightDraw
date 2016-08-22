@@ -34,7 +34,9 @@ Animation::Animation() noexcept :
     totalTicks {0},
     ticksPerSec {0.0},
     animName {""},
-    nodeChannels {}
+    animationIds {},
+    nodeTrackIds {},
+    transformIds {}
 {}
 
 /*-------------------------------------
@@ -46,7 +48,9 @@ Animation::Animation(const Animation& a) noexcept :
     totalTicks {a.totalTicks},
     ticksPerSec {a.ticksPerSec},
     animName {a.animName},
-    nodeChannels {a.nodeChannels}
+    animationIds {a.animationIds},
+    nodeTrackIds {a.nodeTrackIds},
+    transformIds {a.transformIds}
 {}
 
 /*-------------------------------------
@@ -58,7 +62,9 @@ Animation::Animation(Animation&& a) noexcept :
     totalTicks {a.totalTicks},
     ticksPerSec {a.ticksPerSec},
     animName {std::move(a.animName)},
-    nodeChannels {std::move(a.nodeChannels)}
+    animationIds {std::move(a.animationIds)},
+    nodeTrackIds {std::move(a.nodeTrackIds)},
+    transformIds {std::move(a.transformIds)}
 {
     a.playMode = animation_play_t::ANIM_PLAY_DEFAULT;
     a.animationId = 0;
@@ -75,7 +81,9 @@ Animation& Animation::operator =(const Animation& a) noexcept {
     totalTicks = a.totalTicks;
     ticksPerSec = a.ticksPerSec;
     animName = a.animName;
-    nodeChannels = a.nodeChannels;
+    animationIds = a.animationIds;
+    nodeTrackIds = a.nodeTrackIds;
+    transformIds = a.transformIds;
 
     return *this;
 }
@@ -97,40 +105,11 @@ Animation& Animation::operator =(Animation&& a) noexcept {
     a.ticksPerSec = 0.0;
 
     animName = std::move(a.animName);
-
-    nodeChannels = std::move(a.nodeChannels);
+    animationIds = std::move(a.animationIds);
+    nodeTrackIds = std::move(a.nodeTrackIds);
+    transformIds = std::move(a.transformIds);
 
     return *this;
-}
-
-/*-------------------------------------
- * Play a single Animation track.
--------------------------------------*/
-anim_prec_t Animation::play_channel(
-    SceneGraph& graph,
-    const AnimationChannel& track,
-    const anim_prec_t percent
-) const noexcept {
-    const unsigned nodeId = track.nodeId;
-    LS_DEBUG_ASSERT(nodeId != scene_property_t::SCENE_GRAPH_ROOT_ID);
-    Transform& nodeTransform = graph.currentTransforms[nodeId];
-
-    if (track.has_position_frame(percent)) {
-        const math::vec3&& pos = track.get_position_frame(percent);
-        nodeTransform.set_position(pos);
-    }
-
-    if (track.has_scale_frame(percent)) {
-        const math::vec3&& scl = track.get_scale_frame(percent);
-        nodeTransform.set_scale(scl);
-    }
-
-    if (track.has_rotation_frame(percent)) {
-        math::quat&& rot = track.get_rotation_frame(percent);
-        nodeTransform.set_orientation(rot);
-    }
-
-    return percent;
 }
 
 /*-------------------------------------
@@ -199,66 +178,76 @@ void Animation::set_ticks_per_sec(const anim_prec_t numTicks) noexcept {
 }
 
 /*-------------------------------------
- * Retrieve the sub-animations affected by *this (const).
+ * Retrieve the transformations affected by *this.
 -------------------------------------*/
-const std::vector<AnimationChannel>& Animation::get_anim_channels() const noexcept {
-    return nodeChannels;
+const std::vector<uint32_t>& Animation::get_transforms() const noexcept {
+    return transformIds;
 }
 
 /*-------------------------------------
- * Retrieve the sub-animations affected by *this.
+ * Retrieve the animation channels affected by *this.
 -------------------------------------*/
-std::vector<AnimationChannel>& Animation::get_anim_channels() noexcept {
-    return nodeChannels;
+const std::vector<uint32_t>& Animation::get_node_tracks() const noexcept {
+    return nodeTrackIds;
 }
 
 /*-------------------------------------
- * Copy sub-animations into *this.
+ * Retrieve an array of animations affected by *this.
 -------------------------------------*/
-void Animation::set_anim_channels(const std::vector<AnimationChannel>& channels) noexcept {
-    nodeChannels = channels;
-}
-
-/*-------------------------------------
- * Move sub-animations into *this.
--------------------------------------*/
-void Animation::set_anim_channels(std::vector<AnimationChannel>&& channels) noexcept {
-    nodeChannels = std::move(channels);
+const std::vector<uint32_t>& Animation::get_node_animations() const noexcept {
+    return animationIds;
 }
 
 /*-------------------------------------
  * Get the number of sub-animations
 -------------------------------------*/
 unsigned Animation::get_num_anim_channels() const noexcept {
-    return nodeChannels.size();
+    LS_DEBUG_ASSERT(transformIds.size() == animationIds.size());
+    LS_DEBUG_ASSERT(transformIds.size() == nodeTrackIds.size());
+    return transformIds.size();
 }
 
 /*-------------------------------------
- * Add a sub-Animation to *this
+ * Add a node's animation track to *this
 -------------------------------------*/
-void Animation::add_anim_channel(const AnimationChannel& channel) noexcept {
-    nodeChannels.push_back(channel);
+void Animation::add_anim_channel(const SceneNode& node, const uint32_t nodeTrackId) noexcept {
+    animationIds.push_back(node.animListId);
+    nodeTrackIds.push_back(nodeTrackId);
+    transformIds.push_back(node.nodeId);
 }
 
 /*-------------------------------------
- * Move a sub-Animation into *this.
+ * Remove a node's animation from *this.
 -------------------------------------*/
-void Animation::add_anim_channel(AnimationChannel&& channel) noexcept {
-    nodeChannels.emplace_back(std::move(channel));
-}
-
-/*-------------------------------------
- * Remove a sub-Animation from *this.
--------------------------------------*/
-void Animation::remove_anim_channel(unsigned channelIndex) noexcept {
-    nodeChannels.erase(nodeChannels.begin() + channelIndex);
+void Animation::remove_anim_channel(const unsigned channelIndex) noexcept {
+    LS_DEBUG_ASSERT(transformIds.size() == animationIds.size());
+    LS_DEBUG_ASSERT(transformIds.size() == nodeTrackIds.size());
+    
+    if (channelIndex >= transformIds.size()) {
+        return;
+    }
+    
+    animationIds.erase(animationIds.begin() + channelIndex);
+    nodeTrackIds.erase(nodeTrackIds.begin() + channelIndex);
+    transformIds.erase(transformIds.begin() + channelIndex);
 }
 
 /*-------------------------------------
  * Clear all sub-animations.
 -------------------------------------*/
 void Animation::clear_anim_channels() noexcept {
-    nodeChannels.clear();
+    animationIds.clear();
+    nodeTrackIds.clear();
+    transformIds.clear();
+}
+
+/*-------------------------------------
+ * Reserve space for animation tracks.
+-------------------------------------*/
+void Animation::reserve_anim_channels(const unsigned reserveSize) noexcept {
+    animationIds.reserve(reserveSize);
+    nodeTrackIds.reserve(reserveSize);
+    transformIds.reserve(reserveSize);
 }
 
 /*-------------------------------------
@@ -266,9 +255,34 @@ void Animation::clear_anim_channels() noexcept {
 -------------------------------------*/
 void Animation::animate(SceneGraph& graph, const anim_prec_t percentDone) const noexcept {
     LS_DEBUG_ASSERT(percentDone >= 0.0);
-    for (unsigned i = nodeChannels.size(); i --> 0;) {
-        const AnimationChannel& track = nodeChannels[i];
-        play_channel(graph, track, percentDone);
+    LS_DEBUG_ASSERT(transformIds.size() == animationIds.size());
+    LS_DEBUG_ASSERT(transformIds.size() == nodeTrackIds.size());
+    
+    for (unsigned i = transformIds.size(); i --> 0;) {
+        const uint32_t animChannelId    = animationIds[i];
+        const uint32_t nodeTrackId      = nodeTrackIds[i];
+        const uint32_t transformId      = transformIds[i];
+        
+        const std::vector<AnimationChannel>& nodeTracks = graph.nodeAnims[animChannelId];
+        const AnimationChannel& track   = nodeTracks[nodeTrackId];
+        Transform& nodeTransform        = graph.currentTransforms[transformId];
+        
+        LS_DEBUG_ASSERT(transformId != scene_property_t::SCENE_GRAPH_ROOT_ID);
+
+        if (track.has_position_frame(percentDone)) {
+            const math::vec3&& pos = track.get_position_frame(percentDone);
+            nodeTransform.set_position(pos);
+        }
+
+        if (track.has_scale_frame(percentDone)) {
+            const math::vec3&& scl = track.get_scale_frame(percentDone);
+            nodeTransform.set_scale(scl);
+        }
+
+        if (track.has_rotation_frame(percentDone)) {
+            math::quat&& rot = track.get_rotation_frame(percentDone);
+            nodeTransform.set_orientation(rot);
+        }
     }
 }
 
@@ -276,9 +290,17 @@ void Animation::animate(SceneGraph& graph, const anim_prec_t percentDone) const 
  * Animate a scene graph using all tracks.
 -------------------------------------*/
 void Animation::init(SceneGraph& graph, const bool atStart) const noexcept {
-    for (unsigned i = nodeChannels.size(); i --> 0;) {
-        const AnimationChannel& track = nodeChannels[i];
-        Transform& nodeTransform = graph.currentTransforms[track.nodeId];
+    LS_DEBUG_ASSERT(transformIds.size() == animationIds.size());
+    LS_DEBUG_ASSERT(transformIds.size() == nodeTrackIds.size());
+    
+    for (unsigned i = transformIds.size(); i --> 0;) {
+        const uint32_t animChannelId    = animationIds[i];
+        const uint32_t nodeTrackId      = nodeTrackIds[i];
+        const uint32_t transformId      = transformIds[i];
+        
+        const std::vector<AnimationChannel>& nodeTracks = graph.nodeAnims[animChannelId];
+        const AnimationChannel& track   = nodeTracks[nodeTrackId];
+        Transform& nodeTransform        = graph.currentTransforms[transformId];
 
         if (track.positionFrames.is_valid()) {
             nodeTransform.set_position(atStart ? track.positionFrames.get_start_data() : track.positionFrames.get_end_data());

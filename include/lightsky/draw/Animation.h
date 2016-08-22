@@ -86,33 +86,23 @@ class Animation {
     std::string animName;
 
     /**
-     * @brief nodeChannels contains the sceneNode-specific list of
-     * keyframes that animate one or more sceneNodes during playback.
+     * @brief animationIds contains ID of the std::vector<AnimationChannel>
+     * which will be used to identify a SceneNode's animation channel to use.
      */
-    std::vector<AnimationChannel> nodeChannels;
+    std::vector<uint32_t> animationIds;
 
     /**
-     * @brief playChannel is used internally to interpolate a specific
-     * keyframe during playback.
-     *
-     * @param graph
-     * A reference to a scene graph which contains a node to animate.
-     *
-     * @param track
-     * A constant reference to the Animation keyframe that will be used to
-     * interpolate the position, scaling, and orientation of a scene node.
-     *
-     * @param percent
-     * The percentage of the total Animation which has already elapsed.
-     *
-     * @return The updated percent of a scene's Animation which has
-     * elapsed since playback began.
+     * @brief nodeTrackIds are used after the animationIds to determine the
+     * exact AnimationChannel in a list of animation channels to use for an
+     * animation.
      */
-    anim_prec_t play_channel(
-        SceneGraph& graph,
-        const AnimationChannel& track,
-        const anim_prec_t percent
-    ) const noexcept;
+    std::vector<uint32_t> nodeTrackIds;
+    
+    /**
+     * @brief transformIds contains the indices of all node transformations
+     * that will contain the resulting transformation after an animation.
+     */
+    std::vector<uint32_t> transformIds;
 
   public:
     /**
@@ -238,7 +228,7 @@ class Animation {
      * @brief Set the duration, in ticks, of *this Animation.
      *
      * @param ticks
-     * A anim_prec_t-precition float, containing the number of ticks that an
+     * A anim_prec_t-precision float, containing the number of ticks that an
      * Animation will play.
      */
     void set_duration(const anim_prec_t ticks) noexcept;
@@ -263,90 +253,80 @@ class Animation {
     void set_ticks_per_sec(const anim_prec_t numTicks) noexcept;
 
     /**
-     * @brief Retrieve the list of Animation keyframes used by a single
-     * Animation (const).
+     * @brief Retrieve the list of indices which are used to reference scene
+     * nodes transformations in a scene graph
+     * (through the SceneGraph::currentTransform member).
+     *
+     * @return A reference to a constant vector of indices which reference
+     * the "currentTransform" objects in a SceneGraph.
+     */
+    const std::vector<uint32_t>& get_transforms() const noexcept;
+
+    /**
+     * @brief Retrieve the list of indices which will be used to reference a
+     * node-specific animation channel from a scene graph.
      *
      * Each sub-list of keyframes contained within the return value can
      * reference its own sceneNode. This means that only one animationReel
      * can reference a single sceneNode, but *this can animate multiple
      * sceneNodes by using multiple animationReels.
      *
-     * @return A constant reference to a constant vector of animationReels.
+     * @return A reference to a constant vector of indices which will
+     * reference single AnimationChannel objects in a SceneGraph's array of
+     * per-node animation channels
+     * (SceneGraph::nodeAnims[animTrackId][nodeTrackId]).
      */
-    const std::vector<AnimationChannel>& get_anim_channels() const noexcept;
+    const std::vector<uint32_t>& get_node_tracks() const noexcept;
 
     /**
-     * @brief Retrieve the list of Animation keyframes used by a single
-     * Animation.
-    void setTi
+     * @brief Retrieve the list of indices which will be used to reference
+     * lists of node animation channels from a scene graph.
+     * 
+     * Multiple scene nodes can reference the same array of AnimationChannels
+     * in a scene graph.
      *
-     * Each sub-list of keyframes contained within the return value can
-     * reference its own sceneNode. This means that only one animationReel
-     * can reference a single sceneNode, but *this can animate multiple
-     * sceneNodes by using multiple animationReels.
-     *
-     * @return A reference to a constant vector of animationReels.
+     * @return A reference to a constant vector of indices which will
+     * reference an array of AnimationChannel objects in a SceneGraph.
+     * (SceneGraph::nodeAnims[animTrackId]).
      */
-    std::vector<AnimationChannel>& get_anim_channels() noexcept;
-
-    /**
-     * @brief Set the Animation channels that will be used by *this.
-     *
-     * @param channels
-     * A constant reference to a vector of animationReels that *this will
-     * use when animating nodes in a sceneGraph.
-     */
-    void set_anim_channels(const std::vector<AnimationChannel>& channels) noexcept;
-
-    /**
-     * @brief Set the Animation channels that will be used by *this.
-     *
-     * No memory realocations will occur when using this function overload.
-     *
-     * @param channels
-     * An r-valuereference to a vector of animationReels that *this will
-     * use when animating nodes in a sceneGraph.
-     */
-    void set_anim_channels(std::vector<AnimationChannel>&& channels) noexcept;
+    const std::vector<uint32_t>& get_node_animations() const noexcept;
 
     /**
      * @brief Get the number of Animation channels that will be animated by
      * *this.
      */
     unsigned get_num_anim_channels() const noexcept;
-
+    
     /**
      * @brief Add an Animation channel to *this.
+     * 
+     * @param node
+     * A constant reference to the scene node which will be animated.
      *
-     * @param channel
-     * A constant reference to an animationReel which contains keyframes to
-     * interpolate when animating a sceneGraph.
+     * @param nodeTrackId
+     * An unsigned integer, containing the index of the AnimationChannel in
+     * the input node's std::vector<AnimationChannel> to use for animation.
      */
-    void add_anim_channel(const AnimationChannel& channel) noexcept;
-
-    /**
-     * @brief Add an Animation channel to *this.
-     *
-     * No memory realocations will occur when using this function overload.
-     *
-     * @param channel
-     * An r-value reference to an animationReel which contains keyframes to
-     * interpolate when animating a sceneGraph.
-     */
-    void add_anim_channel(AnimationChannel&& channel) noexcept;
+    void add_anim_channel(const SceneNode& node, const uint32_t nodeTrackId) noexcept;
 
     /**
      * Remove a single Animation channel from *this.
      *
-     * @param channelIndex
+     * @param trackId
      * The index of the Animation channel to remove.
      */
-    void remove_anim_channel(unsigned channelIndex) noexcept;
+    void remove_anim_channel(const unsigned trackId) noexcept;
 
     /**
      * Remove all Animation keyframes and channels inside of *this.
      */
     void clear_anim_channels() noexcept;
+    
+    /**
+     * @brief Reserve a number of animation channels to help avoid the chances
+     * of a reallocation when adding single animations.
+     */
+    void reserve_anim_channels(const unsigned reserveSize) noexcept;
 
     /**
      * @brief Animate nodes in a sceneGraph.
@@ -377,6 +357,8 @@ class Animation {
      */
     void init(SceneGraph& graph, const bool atStart = true) const noexcept;
 };
+
+
 
 } // end draw namespace
 } // end ls namespace

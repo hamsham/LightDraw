@@ -23,13 +23,6 @@ namespace draw {
 -----------------------------------------------------------------------------*/
 struct AnimationChannel {
     /**
-     * @brief affectedNode is simply a hash ID of the node affected by
-     * *this Animation. It is reserved for the Animation object which
-     * contains *this.
-     */
-    unsigned nodeId;
-    
-    /**
      * @brief animationMode Is a bit-flag which is used during
      * "getFrame(...)". This helps to identify if different frames of an
      * Animation should be interpolated/non-interpolated, repeated/non-
@@ -141,9 +134,9 @@ struct AnimationChannel {
      * allocated, FALSE if not.
      */
     bool set_num_frames(
-        unsigned positionKeys,
-        unsigned scalingKeys,
-        unsigned rotationKeys
+        const unsigned positionKeys,
+        const unsigned scalingKeys,
+        const unsigned rotationKeys
     ) noexcept;
 
     /**

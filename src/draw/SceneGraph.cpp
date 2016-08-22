@@ -49,6 +49,7 @@ SceneGraph::SceneGraph() noexcept :
     modelMatrices(),
     nodeNames(),
     animations(),
+    nodeAnims(),
     nodeMeshCounts(),
     nodeMeshes(),
     renderData()
@@ -82,6 +83,7 @@ SceneGraph& SceneGraph::operator=(const SceneGraph& s) noexcept {
     modelMatrices = s.modelMatrices;
     nodeNames = s.nodeNames;
     animations = s.animations;
+    nodeAnims = s.nodeAnims;
     
     LS_DEBUG_ASSERT(s.nodeMeshCounts.size() == s.nodeMeshes.size());
     nodeMeshCounts = s.nodeMeshCounts;
@@ -121,6 +123,7 @@ SceneGraph& SceneGraph::operator=(SceneGraph&& s) noexcept {
     modelMatrices = std::move(s.modelMatrices);
     nodeNames = std::move(s.nodeNames);
     animations = std::move(s.animations);
+    nodeAnims = std::move(s.nodeAnims);
     nodeMeshCounts = std::move(s.nodeMeshCounts);
     nodeMeshes = std::move(s.nodeMeshes);
     renderData = std::move(s.renderData);
@@ -142,6 +145,7 @@ void SceneGraph::terminate() noexcept {
     modelMatrices.clear();
     nodeNames.clear();
     animations.clear();
+    nodeAnims.clear();
     nodeMeshCounts.clear();
     renderData.terminate();
 }

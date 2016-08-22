@@ -295,9 +295,10 @@ class SceneFileLoader {
          * @param animDuration
          * Contains the total duration of the animation, in ticks.
          *
-         * @return TRUE if the track was successfully imported, FALSE if not.
+         * @return The ID of a node who's track was successfully imported,
+         * UINT_MAX if not.
          */
-        bool import_animation_track(
+        unsigned import_animation_track(
             const aiNodeAnim* const pInAnim,
             AnimationChannel& outAnim,
             const anim_prec_t animDuration
