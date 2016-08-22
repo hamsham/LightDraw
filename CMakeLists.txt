@@ -123,7 +123,8 @@ set(
     LS_DRAW_EXTERNAL_DEPS
     ${OPENGL_gl_LIBRARY}
     ${FREETYPE_LIBRARIES}
-    ${ASSIMP_LIBRARIES}
+    ${assimp_LIBRARIES}
+    ${Boost_REGEX_LIBRARY}
     freeimage
 )
 
