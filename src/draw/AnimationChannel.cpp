@@ -136,6 +136,31 @@ void AnimationChannel::clear() noexcept {
     rotationFrames.clear();
 }
 
+/*-------------------------------------
+ * Retrieve the starting time of the current animation track.
+-------------------------------------*/
+anim_prec_t AnimationChannel::get_start_time() const noexcept {
+    return math::min(
+        positionFrames.get_start_time(),
+        scaleFrames.get_start_time(),
+        rotationFrames.get_start_time()
+    );
+}
+
+/*-------------------------------------
+ * Assign a start time for the current animation track.
+-------------------------------------*/
+void AnimationChannel::set_start_time(const anim_prec_t startOffset) noexcept {
+    const anim_prec_t posOffset = positionFrames.get_start_time() - get_start_time();
+    positionFrames.set_start_time(startOffset+posOffset);
+    
+    const anim_prec_t sclOffset = scaleFrames.get_start_time() - get_start_time();
+    scaleFrames.set_start_time(startOffset+sclOffset);
+    
+    const anim_prec_t rotOffset = rotationFrames.get_start_time() - get_start_time();
+    rotationFrames.set_start_time(startOffset+rotOffset);
+}
+
 
 
 } // end draw namespace

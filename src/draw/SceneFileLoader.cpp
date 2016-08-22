@@ -1181,7 +1181,7 @@ bool SceneFileLoader::import_animations(const aiScene* const pScene) noexcept {
 
     for (unsigned i = 0; i < totalAnimations; ++i) {
         const aiAnimation* const pInAnim = pAnimations[i];
-        Animation& anim = animations[i];
+        Animation& anim = animations[i]; // These must have been preallocated by now
 
         // The animation as a whole needs to have its properties imported from
         // ASSIMP.
@@ -1217,6 +1217,10 @@ bool SceneFileLoader::import_animations(const aiScene* const pScene) noexcept {
             
             // Add the node's imported track to the current animation
             anim.add_anim_channel(node, nodeChannels.size()-1);
+            
+            // TESTING: Adding single animation channels as their own animations
+            //animations.push_back(anim);
+            //animations.back().add_anim_channel(node, nodeChannels.size()-1);
         }
 
         LS_LOG_MSG(

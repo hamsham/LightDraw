@@ -17,9 +17,6 @@ namespace draw {
 
 /*-----------------------------------------------------------------------------
  * Animation Keys (interpolations of animations).
- *
- * FIXME: Animations do not play if only two keyframes are present. At least
- * 3 frames are necessary for an Animation to play.
 -----------------------------------------------------------------------------*/
 struct AnimationChannel {
     /**
@@ -325,6 +322,24 @@ struct AnimationChannel {
         math::quat_t<float>& outRotation,
         const anim_prec_t percentFinished // currentTime / timePerSecond
     ) const noexcept;
+    
+    /**
+     * Retrieve the time of the first keyframe in *this.
+     * 
+     * @return A floating-point number, containing the time at which *this
+     * animation channel starts running.
+     */
+    anim_prec_t get_start_time() const noexcept;
+    
+    /**
+     * Set the start time for all keyframes in *this. All internal keyframes
+     * will use this time as an offset before playing in an animation player.
+     * 
+     * @param startOffset
+     * A floating-point number, containing the time at which *this animation
+     * channel starts running.
+     */
+    void set_start_time(const anim_prec_t startOffset) noexcept;
 };
 
 /*-------------------------------------

@@ -201,6 +201,15 @@ class AnimationKeyList {
         anim_prec_t get_start_time() const noexcept;
         
         /**
+         * Set the time of the starting keyframe in *this.
+         * 
+         * @param startOffset
+         * A floating-point value within the range (0.0, 1.0) which determines
+         * when a particular keyframe should be used to start an animation.
+         */
+        void set_start_time(const anim_prec_t startOffset) noexcept;
+        
+        /**
          * Retrieve the time of the final keyframe in *this.
          * 
          * @return A floating-point value within the range (0.0, 1.0) which
@@ -394,8 +403,8 @@ AnimationKeyList<data_t>& AnimationKeyList<data_t>::operator=(const AnimationKey
     
     numFrames = k.numFrames;
     
-    utils::fast_memcpy(keyTimes.get(), keyTimes.get(), sizeof(anim_prec_t)*numFrames);
-    utils::fast_memcpy(keyTimes.get(), keyData.get(), sizeof(data_t)*numFrames);
+    utils::fast_memcpy(keyTimes.get(), k.keyTimes.get(), sizeof(anim_prec_t)*numFrames);
+    utils::fast_memcpy(keyData.get(), k.keyData.get(), sizeof(data_t)*numFrames);
     
     return *this;
 }
@@ -485,6 +494,21 @@ inline anim_prec_t AnimationKeyList<data_t>::get_start_time() const noexcept {
 /*-------------------------------------
 -------------------------------------*/
 template <typename data_t>
+void AnimationKeyList<data_t>::set_start_time(const anim_prec_t startOffset) noexcept {
+    LS_DEBUG_ASSERT(startOffset >= anim_prec_t{0.0});
+    LS_DEBUG_ASSERT(startOffset < anim_prec_t{1.0}); // because somewhere, someone hasn't read the documentation
+    
+    const anim_prec_t currentOffset = get_start_time();
+    const anim_prec_t newOffset = currentOffset - startOffset;
+    
+    for (unsigned i = 0; i < numFrames; ++i) {
+        keyTimes[i] = math::clamp<anim_prec_t>(keyTimes[i] - newOffset, 0.0, 1.0);
+    }
+}
+
+/*-------------------------------------
+-------------------------------------*/
+template <typename data_t>
 inline anim_prec_t AnimationKeyList<data_t>::get_end_time() const noexcept {
     return numFrames ? keyTimes[numFrames-1] : anim_prec_t{0};
 }
@@ -557,18 +581,17 @@ inline anim_prec_t AnimationKeyList<data_t>::calc_frame_interpolation(
     outNextFrame = 1;
     
     // If there's one thing I hate more in hot code paths than branches, it's
-    // loops. One day I'll find out how to get rid of this. The key frames in
-    // an animation channel, the longer this will take to run.
+    // loops. One day I'll find out how to get rid of this. The more key frames
+    // that are in an animation channel, the longer this will take to run.
     while (keyTimes[outNextFrame] <= totalAnimPercent && outNextFrame < numFrames-1) {
         outCurrFrame++;
         outNextFrame++;
     }
     
-    const anim_prec_t currTime = keyTimes[outCurrFrame];
-    const anim_prec_t nextTime = keyTimes[outNextFrame];
-    const anim_prec_t frameDelta = nextTime - currTime;
-    
-    const anim_prec_t ret = anim_prec_t{1} - ((nextTime-totalAnimPercent) / frameDelta);
+    const anim_prec_t currTime      = keyTimes[outCurrFrame];
+    const anim_prec_t nextTime      = keyTimes[outNextFrame];
+    const anim_prec_t frameDelta    = nextTime - currTime;
+    const anim_prec_t ret           = anim_prec_t{1} - ((nextTime-totalAnimPercent) / frameDelta);
     
     return ret;
 }

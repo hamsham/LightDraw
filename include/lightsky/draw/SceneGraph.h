@@ -123,15 +123,15 @@ class SceneGraph {
          */
         GLContextData renderData;
     
-    private:
-      /**
-       * Update the transformation of a single node in the transformation
-       * hierarchy.
-       * 
-       * @param transformId
-       * An array index which will determine which transform is currently being
-       */
-      void update_node_transform(const unsigned transformId) noexcept;
+    private: // member functions
+        /**
+         * Update the transformation of a single node in the transformation
+         * hierarchy.
+         * 
+         * @param transformId
+         * An array index which will determine which transform is currently being
+         */
+        void update_node_transform(const unsigned transformId) noexcept;
 
     public: // member functions
         /**
