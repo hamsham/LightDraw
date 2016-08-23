@@ -1040,10 +1040,10 @@ void SceneFileLoader::read_node_hierarchy(
         currentNode.type = scene_node_t::NODE_TYPE_EMPTY;
     }
 
-    // Remaining transformatrion information
+    // Remaining transformation information
     {
         Transform& nodeTransform = currTransforms.back();
-        nodeTransform.set_parent_index(parentId);
+        nodeTransform.set_parent_id(parentId);
 
         // Only apply parented transforms here. Applying non-parented
         // transforms will cause root objects to swap X & Z axes.
@@ -1110,10 +1110,10 @@ void SceneFileLoader::import_camera_node(
     SceneGraph& sceneData                   = preloader.sceneData;
     std::vector<Camera>& camList            = sceneData.cameras;
 
-    camList.emplace_back(Camera{});
-
     // Very important
     outNode.dataId = camList.size();
+    
+    camList.emplace_back(Camera{});
 
     const aiCamera* const pInCam = pCamList[camIndex];
     Camera& camProj = camList.back();
@@ -1185,10 +1185,12 @@ bool SceneFileLoader::import_animations(const aiScene* const pScene) noexcept {
 
         // The animation as a whole needs to have its properties imported from
         // ASSIMP.
-        anim.set_duration(pInAnim->mDuration);
-        anim.set_anim_name(std::string {pInAnim->mName.C_Str()});
-        anim.set_ticks_per_sec(pInAnim->mTicksPerSecond > 0.0 ? pInAnim->mTicksPerSecond : 23.976);
-        anim.reserve_anim_channels(pInAnim->mNumChannels);
+        anim = std::move(setup_imported_animation(
+            pInAnim->mName.C_Str(),
+            pInAnim->mDuration,
+            pInAnim->mTicksPerSecond,
+            pInAnim->mNumChannels
+        ));
 
         for (unsigned c = 0; c < pInAnim->mNumChannels; ++c) {
             AnimationChannel track;
@@ -1217,10 +1219,6 @@ bool SceneFileLoader::import_animations(const aiScene* const pScene) noexcept {
             
             // Add the node's imported track to the current animation
             anim.add_anim_channel(node, nodeChannels.size()-1);
-            
-            // TESTING: Adding single animation channels as their own animations
-            //animations.push_back(anim);
-            //animations.back().add_anim_channel(node, nodeChannels.size()-1);
         }
 
         LS_LOG_MSG(

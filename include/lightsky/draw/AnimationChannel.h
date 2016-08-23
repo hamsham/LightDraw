@@ -340,6 +340,22 @@ struct AnimationChannel {
      * channel starts running.
      */
     void set_start_time(const anim_prec_t startOffset) noexcept;
+    
+    /**
+     * Retrieve the time of the last keyframe in *this.
+     * 
+     * @return A floating-point number, containing the time at which *this
+     * animation channel finishes running.
+     */
+    anim_prec_t get_end_time() const noexcept;
+    
+    /**
+     * Retrieve the total running time of *this animation channel.
+     * 
+     * @return A floating-point number, containing the difference between the
+     * last keyframe time and the initial keyframe time.
+     */
+    anim_prec_t get_duration() const noexcept;
 };
 
 /*-------------------------------------
@@ -436,6 +452,13 @@ inline bool AnimationChannel::get_frame(
     outScale    = get_scale_frame(percentFinished);
     outRotation = get_rotation_frame(percentFinished);
     return true;
+}
+
+/*-------------------------------------
+ * Retrieve the total track running time
+-------------------------------------*/
+inline anim_prec_t AnimationChannel::get_duration() const noexcept {
+    return get_end_time() - get_start_time();
 }
 
 } // end draw namespace

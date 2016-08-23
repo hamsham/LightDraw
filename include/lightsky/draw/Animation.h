@@ -4,6 +4,9 @@
 
 #include <vector>
 #include <string>
+#include <utility> // std::forward
+
+#include "lightsky/utils/Hash.h"
 
 #include "lightsky/draw/AnimationProperty.h"
 #include "lightsky/draw/AnimationChannel.h"
@@ -54,6 +57,10 @@ enum class animation_play_t : unsigned {
  * keyframes, that are used to animate one or more meshes.
 ------------------------------------------------------------------------------*/
 class Animation {
+    
+  // Allow scene graphs to delete animation tracks based on the scene node
+  friend class SceneGraph;
+    
   private:
     /**
      * @brief playMode is by Animation players to determine if an Animation
@@ -65,7 +72,7 @@ class Animation {
      * @brief animationId contains a hash value, from 'animName', which is
      * used to provide an instance of this class with a unique identifier.
      */
-    unsigned animationId;
+    utils::hash_t animationId;
 
     /**
      * @brief totalTicks contains the number of ticks, or duration, of an
@@ -103,8 +110,18 @@ class Animation {
      * that will contain the resulting transformation after an animation.
      */
     std::vector<uint32_t> transformIds;
+    
+  private: // Private member functions
+    /**
+     * Remove a single Animation channel from *this.
+     *
+     * @param n
+     * A constant reference to a scene node object who's animations should be
+     * removed from *this.
+     */
+    void remove_anim_channel(const SceneNode& n) noexcept;
 
-  public:
+  public: // public member functions
     /**
      * @brief Destructor
      *
@@ -210,7 +227,8 @@ class Animation {
      * @param name
      * A constant reference to a string, containing the new name of *this.
      */
-    void set_anim_name(const std::string& name) noexcept;
+    template <typename std_string_type>
+    void set_anim_name(std_string_type&& name) noexcept;
 
     /**
      * @brief Get the duration, in ticks, of *this Animation.
@@ -294,6 +312,9 @@ class Animation {
     /**
      * @brief Get the number of Animation channels that will be animated by
      * *this.
+     * 
+     * @return The total number of node channels which *this Animation object
+     * runs during any given frame.
      */
     unsigned get_num_anim_channels() const noexcept;
     
@@ -357,6 +378,17 @@ class Animation {
      */
     void init(SceneGraph& graph, const bool atStart = true) const noexcept;
 };
+
+
+
+/*-------------------------------------
+ * Set the Animation name
+-------------------------------------*/
+template <typename std_string_type>
+void Animation::set_anim_name(std_string_type&& name) noexcept {
+    animationId = utils::string_hash(name.c_str());
+    animName = std::forward<std_string_type>(name);
+}
 
 
 

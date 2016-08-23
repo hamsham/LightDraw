@@ -47,6 +47,9 @@ class SceneGraph {
         /**
          * Referenced by camera-type scene nodes using their
          * "SceneNode::dataId" member.
+         * 
+         * No two nodes should be able to reference a single camera. Doing so
+         * will cause a crash when deleting nodes.
          */
         std::vector<Camera> cameras;
 
@@ -73,13 +76,15 @@ class SceneGraph {
 
         /**
          * Referenced by all scene node types using their
-         * "SceneNode::nodeId" member.
+         * "SceneNode::nodeId" member. Base Transformations are not expected to
+         * maintain a reference to their parent transform.
          */
         std::vector<math::mat4> baseTransforms;
 
         /**
          * Referenced by all scene node types using their
-         * "SceneNode::nodeId" member.
+         * "SceneNode::nodeId" member. The current transformation for a scene
+         * node is expected to keep track of its parent transformation.
          */
         std::vector<Transform> currentTransforms;
 
@@ -109,12 +114,18 @@ class SceneGraph {
         /**
          * Referenced by mesh-type scene nodes using their
          * "SceneNode::dataId" member.
+         * 
+         * No two nodes should be able to reference the same mesh count index.
+         * Doing so will cause a crash when deleting nodes.
          */
         std::vector<unsigned> nodeMeshCounts;
 
         /**
          * Referenced by mesh-type scene nodes using their
          * "SceneNode::dataId" member.
+         * 
+         * No two nodes should be able to reference the same DrawCommandParam
+         * array. Doing so will cause a crash when deleting nodes.
          */
         std::vector<utils::Pointer<DrawCommandParams[]>> nodeMeshes;
 
@@ -132,6 +143,30 @@ class SceneGraph {
          * An array index which will determine which transform is currently being
          */
         void update_node_transform(const unsigned transformId) noexcept;
+        
+        /**
+         * Remove all data specific to mesh nodes.
+         * 
+         * @param n
+         * A constant reference to the scene node who's data is being deleted.
+         */
+        void delete_mesh_node_data(const SceneNode& n) noexcept;
+        
+        /**
+         * Remove all data specific to camera nodes.
+         * 
+         * @param n
+         * A constant reference to the scene node who's data is being deleted.
+         */
+        void delete_camera_node_data(const SceneNode& n) noexcept;
+        
+        /**
+         * Remove all animation data pertaining to the current node.
+         * 
+         * @param n
+         * A constant reference to the scene node who's data is being deleted.
+         */
+        void delete_node_animation_data(const SceneNode& n) noexcept;
 
     public: // member functions
         /**
@@ -205,6 +240,14 @@ class SceneGraph {
          * resources.
          */
         void terminate() noexcept;
+        
+        /**
+         * Remove all data related to scene nodes. This includes:
+         * cameras, transformations, node names, animations, node meshes.
+         * 
+         * All render data and bounding boxes will remain intact.
+         */
+        void clear_node_data() noexcept;
 
         /**
          * Update all scene nodes in *this scene graph.
@@ -213,6 +256,19 @@ class SceneGraph {
          * placed into the modelMatrices array.
          */
         void update() noexcept;
+        
+        /**
+         * Remove a node from the scene graph.
+         * 
+         * This function will remove all children related to the current node.
+         * 
+         * @param nodeIndex
+         * An unsigned integral type, containing the array-index of the node to
+         * remove from the graph.
+         * 
+         * @return The total number of nodes which were deleted.
+         */
+        unsigned delete_node(const unsigned nodeIndex) noexcept;
 };
 
 

@@ -141,15 +141,6 @@ const std::string& Animation::get_anim_name() const noexcept {
 }
 
 /*-------------------------------------
- * Set the Animation name
--------------------------------------*/
-void Animation::set_anim_name(const std::string& name) noexcept {
-    std::hash<std::string> hashFunc {};
-    animationId = hashFunc(name);
-    animName = name;
-}
-
-/*-------------------------------------
  * Set the Animation duration (ticks per second)
 -------------------------------------*/
 anim_prec_t Animation::get_duration() const noexcept {
@@ -230,6 +221,28 @@ void Animation::remove_anim_channel(const unsigned channelIndex) noexcept {
     animationIds.erase(animationIds.begin() + channelIndex);
     nodeTrackIds.erase(nodeTrackIds.begin() + channelIndex);
     transformIds.erase(transformIds.begin() + channelIndex);
+}
+
+/*-------------------------------------
+ * Remove a node's animation from *this.
+-------------------------------------*/
+void Animation::remove_anim_channel(const SceneNode& n) noexcept {
+    const uint32_t nodeId = n.nodeId;
+    const uint32_t animId = n.animListId;
+    
+    // Reduce the animation ID of all animations in *this.
+    for (uint32_t i = animationIds.size(); i --> 0;) {
+        if (animationIds[i] > animId) {
+            --animationIds[i];
+        }
+        else if (animationIds[i] == animId) {
+            remove_anim_channel(i);
+        }
+        
+        if (transformIds[i] > nodeId) {
+            --transformIds[i];
+        }
+    }
 }
 
 /*-------------------------------------

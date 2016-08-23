@@ -163,7 +163,7 @@ class Transform {
          * An integer ID, containing the index of a parent transformation
          * within a SceneGraph object.
          */
-        void set_parent_index(const uint32_t inIndex) noexcept;
+        void set_parent_id(const uint32_t inIndex) noexcept;
         
         /**
          * Retrieve the index of the parent transformation which *this object
@@ -522,7 +522,7 @@ class Transform {
 /*-------------------------------------
  * Set the array-index of the parent transformation.
 -------------------------------------*/
-inline void Transform::set_parent_index(const uint32_t inIndex) noexcept {
+inline void Transform::set_parent_id(const uint32_t inIndex) noexcept {
     parentId = inIndex;
 }
 

@@ -161,6 +161,17 @@ void AnimationChannel::set_start_time(const anim_prec_t startOffset) noexcept {
     rotationFrames.set_start_time(startOffset+rotOffset);
 }
 
+/*-------------------------------------
+ * Retrieve the ending time of the current animation track.
+-------------------------------------*/
+anim_prec_t AnimationChannel::get_end_time() const noexcept {
+    return math::max(
+        positionFrames.get_end_time(),
+        scaleFrames.get_end_time(),
+        rotationFrames.get_end_time()
+    );
+}
+
 
 
 } // end draw namespace

@@ -320,3 +320,24 @@ unsigned count_assimp_nodes(const aiNode* const pNode) noexcept {
 
     return numNodes;
 }
+
+
+
+/*-------------------------------------
+ * Setup an animation for importing
+-------------------------------------*/
+draw::Animation setup_imported_animation(
+    const char* const name,
+    const draw::anim_prec_t duration,
+    const draw::anim_prec_t ticksPerSec,
+    const unsigned numChannels
+) noexcept {
+    draw::Animation anim{};
+    
+    anim.set_duration(duration);
+    anim.set_anim_name(std::string{name});
+    anim.set_ticks_per_sec(ticksPerSec > 0.0 ? ticksPerSec : 23.976);
+    anim.reserve_anim_channels(numChannels);
+    
+    return anim;
+}

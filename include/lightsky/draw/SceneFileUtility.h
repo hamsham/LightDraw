@@ -8,6 +8,7 @@
 #include <assimp/postprocess.h>
 #include <assimp/cimport.h>
 
+#include "lightsky/draw/Animation.h"
 #include "lightsky/draw/PackedVertex.h"
 #include "lightsky/draw/SceneFileLoader.h"
 
@@ -255,6 +256,18 @@ inline int is_node_type<aiMesh>(const aiNode* const pNode, const aiMesh* const* 
  * Count all scene nodes in an aiScene
 -------------------------------------*/
 unsigned count_assimp_nodes(const aiNode* const pNode) noexcept;
+
+
+
+/*-------------------------------------
+ * Setup Animation
+-------------------------------------*/
+ls::draw::Animation setup_imported_animation(
+    const char* const name,
+    const ls::draw::anim_prec_t duration,
+    const ls::draw::anim_prec_t ticksPerSec,
+    const unsigned numChannels
+) noexcept;
 
 
 
