@@ -268,7 +268,7 @@ class SceneFileLoader {
          * A reference to the SceneNode object which will have the remainder of
          * its data initialized through this method.
          */
-        void import_camera_node(const aiScene* const pScene, const int camIndex, SceneNode& outNode) noexcept;
+        void import_camera_node(const aiScene* const pScene, const unsigned camIndex, SceneNode& outNode) noexcept;
 
         /**
          * @brief Import all animations contained within a 3D scene file,

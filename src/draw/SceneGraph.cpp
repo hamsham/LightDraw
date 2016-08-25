@@ -201,6 +201,7 @@ void SceneGraph::update_node_transform(const unsigned transformId) noexcept {
  * Scene Updating
 -------------------------------------*/
 void SceneGraph::update() noexcept {
+    // Transformation indices have a 1:1 relationship with node indices.
     for (unsigned i = 0; i < currentTransforms.size(); ++i) {
         if (currentTransforms[i].is_dirty()) {
             update_node_transform(i);
@@ -217,53 +218,56 @@ void SceneGraph::update() noexcept {
 /*-------------------------------------
  * Mesh Node Deletion
 -------------------------------------*/
-void SceneGraph::delete_mesh_node_data(const SceneNode& n) noexcept {
-    nodeMeshCounts.erase(nodeMeshCounts.begin() + n.dataId);
-    nodeMeshes.erase(nodeMeshes.begin() + n.dataId);
+void SceneGraph::delete_mesh_node_data(const unsigned nodeDataId) noexcept {
+    nodeMeshCounts.erase(nodeMeshCounts.begin() + nodeDataId);
+    nodeMeshes.erase(nodeMeshes.begin() + nodeDataId);
 }
 
 /*-------------------------------------
  * Camera Deletion
 -------------------------------------*/
-void SceneGraph::delete_camera_node_data(const SceneNode& n) noexcept {
-    cameras.erase(cameras.begin() + n.dataId);
+void SceneGraph::delete_camera_node_data(const unsigned nodeDataId) noexcept {
+    cameras.erase(cameras.begin() + nodeDataId);
 }
 
 /*-------------------------------------
  * Animation Deletion
 -------------------------------------*/
-void SceneGraph::delete_node_animation_data(const SceneNode& n) noexcept {
-    const uint32_t animId = n.animListId;
-    
-    // early exit
-    if (animId == scene_property_t::SCENE_GRAPH_ROOT_ID) {
-        return;
-    }
-    
-    // Deal with all animation objects
+void SceneGraph::delete_node_animation_data(const uint32_t nodeId, const uint32_t animId) noexcept {
+    // Remove all animation channels associated with the current node.
     for (unsigned i = animations.size(); i --> 0;) {
-        // Animations will automatically decrement transformation indices with
-        // a value greater than the current node's dataId.
-        animations[i].remove_anim_channel(n);
+        
+        // Animations contain transformation IDs which may need to be
+        // decremented. Search for transformation indices with a value greater
+        // than the current node's nodeId.
+        Animation& currentAnim = animations[i];
+        
+        // friendly class member manipulation
+        std::vector<uint32_t>& currentAnimIds = currentAnim.animationIds;
+        std::vector<uint32_t>& currentTransIds = currentAnim.transformIds;
+        
+        // Reduce the animation ID of all animations in *this.
+        for (uint32_t j = currentAnimIds.size(); j --> 0;) {
+            if (currentTransIds[j] > nodeId) {
+                --currentTransIds[j];
+            }
+            
+            if (currentAnimIds[j] > animId) {
+                --currentAnimIds[j];
+            }
+            else if (currentAnimIds[j] == animId) {
+                currentAnim.remove_anim_channel(j);
+            }
+        }
         
         // Remove any defunct animations
-        if (!animations[i].get_num_anim_channels()) {
+        if (!currentAnim.get_num_anim_channels()) {
             animations.erase(animations.begin() + i);
         }
     }
     
     // Animation Channels
-    if (n.animListId != scene_property_t::SCENE_GRAPH_ROOT_ID) {
-        nodeAnims.erase(nodeAnims.begin() + n.animListId);
-    }
-    
-    // decrement the animation ID from all nodes with a value greater than the
-    // current node's ID
-    for (unsigned i = nodes.size(); i --> 0;) {
-        if (nodes[i].animListId > animId && nodes[i].animListId != scene_property_t::SCENE_GRAPH_ROOT_ID) {
-            nodes[i].animListId -= 1;
-        }
-    }
+    nodeAnims.erase(nodeAnims.begin() + animId);
 }
 
 /*-------------------------------------
@@ -294,82 +298,86 @@ unsigned SceneGraph::delete_node(const unsigned nodeIndex) noexcept {
         return numDeleted;
     }
     
-    if (nodeIndex >= nodes.size()) {
-        return 0;
-    }
+    // No mercy for client code
+    LS_DEBUG_ASSERT(nodeIndex < nodes.size());
     
-    const SceneNode& n = nodes[nodeIndex];
-    const unsigned nodeId = n.nodeId;
-    
+    // Remove all child nodes and their data
     for (unsigned i = nodes.size(); i --> nodeIndex;) {
-        SceneNode& nextNode             = nodes[i];
-        const unsigned nextTransform    = nextNode.nodeId;
-        const unsigned nextParentId     = currentTransforms[nextTransform].get_parent_id();
-        
-        // Delete child nodes
-        if (nextParentId == nodeId) {
+        if (currentTransforms[i].get_parent_id() == nodeIndex) {
             numDeleted += delete_node(i);
         }
     }
     
+    const SceneNode& n          = nodes[nodeIndex];
+    const scene_node_t typeId   = n.type;
+    const uint32_t dataId       = n.dataId;
+    const uint32_t animId       = n.animListId;
+    
+    LS_DEBUG_ASSERT(nodeIndex == n.nodeId);
+    
     // Delete any specific data associated with the node.
-    switch (n.type) {
+    switch (typeId) {
         case scene_node_t::NODE_TYPE_CAMERA:
-            delete_camera_node_data(n);
+            delete_camera_node_data(dataId);
             break;
             
         case scene_node_t::NODE_TYPE_MESH:
-            delete_mesh_node_data(n);
+            delete_mesh_node_data(dataId);
             break;
             
         case scene_node_t::NODE_TYPE_EMPTY:
             break;
     }
     
-    delete_node_animation_data(n);
-
-    // Node Name
-    nodeNames.erase(nodeNames.begin() + nodeId);
+    // Delete the actual node
+    nodes.erase                 (nodes.begin()              + nodeIndex);
+    currentTransforms.erase     (currentTransforms.begin()  + nodeIndex);
+    baseTransforms.erase        (baseTransforms.begin()     + nodeIndex);
+    modelMatrices.erase         (modelMatrices.begin()      + nodeIndex);
+    nodeNames.erase             (nodeNames.begin()          + nodeIndex);
     
-    // Node Base Transformation
-    baseTransforms.erase(baseTransforms.begin() + nodeId);
-
-    // Node Model Matrix
-    modelMatrices.erase(modelMatrices.begin() + nodeId);
+    // early exit in case there are no animations tied to the current node.
+    if (animId != scene_property_t::SCENE_GRAPH_ROOT_ID) {
+        delete_node_animation_data(nodeIndex, animId);
+    }
     
     // Decrement all node ID and data ID indices that are greater than those in
     // the current node. Also deal with the last bit of transformation data in
     // case a recursive deletion is in required.
     for (unsigned i = nodes.size(); i --> nodeIndex;) {
-        SceneNode& nextNode             = nodes[i];
-        const unsigned nextTransform    = nextNode.nodeId;
-        const unsigned nextParentId     = currentTransforms[nextTransform].get_parent_id();
-        
-        // Delete child nodes
-        if (nextParentId > nodeId && nextParentId != scene_property_t::SCENE_GRAPH_ROOT_ID) {
-            // decrement the next node's parent ID if necessary
-            currentTransforms[nextTransform].set_parent_id(nextParentId - 1);
-        }
+        SceneNode& nextNode         = nodes[i];
+        const scene_node_t nextType = nextNode.type;
+        unsigned& nextDataId        = nextNode.dataId;
+        unsigned& nextAnimId        = nextNode.animListId;
+        Transform& nextTransform    = currentTransforms[i];
+        const unsigned nextParentId = nextTransform.get_parent_id();
         
         // Placing assertion here because nodeIds must never equate to the
         // root node ID. They must always have tangible data to point at.
         LS_DEBUG_ASSERT(nextNode.nodeId != scene_property_t::SCENE_GRAPH_ROOT_ID);
         
-        if (nextNode.nodeId > nodeId) {
-            nextNode.nodeId -= 1;
+        nodes[i].nodeId = i;
+        
+        if (nextParentId > nodeIndex && nextParentId != scene_property_t::SCENE_GRAPH_ROOT_ID) {
+            // decrement the next node's parent ID if necessary
+            nextTransform.set_parent_id(nextParentId - 1);
         }
         
         // the node dataId member can be equal to the root node ID. This is
         // because empty nodes may not have have data to use.
-        if (nextNode.dataId > n.dataId && nextNode.dataId != scene_property_t::SCENE_GRAPH_ROOT_ID) {
-            nextNode.dataId -= 1;
+        if (nextType == typeId
+        && nextDataId > dataId
+        && nextDataId != scene_property_t::SCENE_GRAPH_ROOT_ID
+        ) {
+            --nextDataId;
+        }
+        
+        // decrement the animation ID from all nodes with a value greater than
+        // the current node's
+        if (nextAnimId > animId && nextAnimId != scene_property_t::SCENE_GRAPH_ROOT_ID) {
+            --nextAnimId;
         }
     }
-    
-    // Fin.
-    currentTransforms.erase(currentTransforms.begin() + nodeId);
-    
-    nodes.erase(nodes.begin() + nodeIndex);
     
     return numDeleted;
 }

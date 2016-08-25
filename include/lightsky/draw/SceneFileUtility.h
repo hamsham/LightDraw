@@ -224,14 +224,14 @@ unsigned upload_mesh_vertices(
  * Check to see if a node is a mesh/camera/bone/light node
 -------------------------------------*/
 template <typename assimp_data_t>
-int is_node_type(
+unsigned is_node_type(
     const aiNode* const pNode,
     const assimp_data_t* const* const pItems,
     const unsigned itemCount
 ) noexcept {
     const aiString& nodeName = pNode->mName;
 
-    for (int i = 0; i < (int)itemCount; ++i) {
+    for (unsigned i = 0; i < itemCount; ++i) {
         const assimp_data_t* const pItem = pItems[i];
         const aiString& itemName = pItem->mName;
 
@@ -240,13 +240,13 @@ int is_node_type(
         }
     }
 
-    return -1;
+    return ls::draw::scene_property_t::SCENE_GRAPH_ROOT_ID;
 }
 
 
 
 template <>
-inline int is_node_type<aiMesh>(const aiNode* const pNode, const aiMesh* const* const, const unsigned) noexcept {
+inline unsigned is_node_type<aiMesh>(const aiNode* const pNode, const aiMesh* const* const, const unsigned) noexcept {
     return pNode->mNumMeshes > 0;
 }
 

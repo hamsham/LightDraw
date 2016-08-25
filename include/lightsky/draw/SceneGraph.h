@@ -71,6 +71,11 @@ class SceneGraph {
 
         /**
          * Contains all empty, camera, mesh, and bode nodes in a scene graph.
+         * 
+         * @note Parent nodes must always have a lower array index value than
+         * their children. This allows for the transformation update routines
+         * to reduce the number of recursive iterations required to update
+         * child nodes.
          */
         std::vector<SceneNode> nodes;
 
@@ -147,26 +152,31 @@ class SceneGraph {
         /**
          * Remove all data specific to mesh nodes.
          * 
-         * @param n
-         * A constant reference to the scene node who's data is being deleted.
+         * @param nodeDataId
+         * An unsigned integer, containing the data index of a node being
+         * deleted.
          */
-        void delete_mesh_node_data(const SceneNode& n) noexcept;
+        void delete_mesh_node_data(const unsigned nodeDataId) noexcept;
         
         /**
          * Remove all data specific to camera nodes.
          * 
-         * @param n
-         * A constant reference to the scene node who's data is being deleted.
+         * @param nodeDataId
+         * An unsigned integer, containing the data index of a node being
+         * deleted.
          */
-        void delete_camera_node_data(const SceneNode& n) noexcept;
+        void delete_camera_node_data(const unsigned nodeDataId) noexcept;
         
         /**
          * Remove all animation data pertaining to the current node.
          * 
-         * @param n
-         * A constant reference to the scene node who's data is being deleted.
+         * @param nodeId
+         * The array index of a node being deleted.
+         * 
+         * @param animId
+         * The array index of the animation being deleted.
          */
-        void delete_node_animation_data(const SceneNode& n) noexcept;
+        void delete_node_animation_data(const uint32_t nodeId, const uint32_t animId) noexcept;
 
     public: // member functions
         /**

@@ -110,16 +110,6 @@ class Animation {
      * that will contain the resulting transformation after an animation.
      */
     std::vector<uint32_t> transformIds;
-    
-  private: // Private member functions
-    /**
-     * Remove a single Animation channel from *this.
-     *
-     * @param n
-     * A constant reference to a scene node object who's animations should be
-     * removed from *this.
-     */
-    void remove_anim_channel(const SceneNode& n) noexcept;
 
   public: // public member functions
     /**

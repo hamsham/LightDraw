@@ -214,35 +214,11 @@ void Animation::remove_anim_channel(const unsigned channelIndex) noexcept {
     LS_DEBUG_ASSERT(transformIds.size() == animationIds.size());
     LS_DEBUG_ASSERT(transformIds.size() == nodeTrackIds.size());
     
-    if (channelIndex >= transformIds.size()) {
-        return;
-    }
+    LS_DEBUG_ASSERT(channelIndex < transformIds.size());
     
     animationIds.erase(animationIds.begin() + channelIndex);
     nodeTrackIds.erase(nodeTrackIds.begin() + channelIndex);
     transformIds.erase(transformIds.begin() + channelIndex);
-}
-
-/*-------------------------------------
- * Remove a node's animation from *this.
--------------------------------------*/
-void Animation::remove_anim_channel(const SceneNode& n) noexcept {
-    const uint32_t nodeId = n.nodeId;
-    const uint32_t animId = n.animListId;
-    
-    // Reduce the animation ID of all animations in *this.
-    for (uint32_t i = animationIds.size(); i --> 0;) {
-        if (animationIds[i] > animId) {
-            --animationIds[i];
-        }
-        else if (animationIds[i] == animId) {
-            remove_anim_channel(i);
-        }
-        
-        if (transformIds[i] > nodeId) {
-            --transformIds[i];
-        }
-    }
 }
 
 /*-------------------------------------
@@ -271,14 +247,16 @@ void Animation::animate(SceneGraph& graph, const anim_prec_t percentDone) const 
     LS_DEBUG_ASSERT(transformIds.size() == animationIds.size());
     LS_DEBUG_ASSERT(transformIds.size() == nodeTrackIds.size());
     
+    // prefetch
+    const std::vector<std::vector<AnimationChannel>>& nodeAnims = graph.nodeAnims;
+    Transform* const pTransforms = graph.currentTransforms.data();
+    
     for (unsigned i = transformIds.size(); i --> 0;) {
-        const uint32_t animChannelId    = animationIds[i];
-        const uint32_t nodeTrackId      = nodeTrackIds[i];
-        const uint32_t transformId      = transformIds[i];
-        
-        const std::vector<AnimationChannel>& nodeTracks = graph.nodeAnims[animChannelId];
-        const AnimationChannel& track   = nodeTracks[nodeTrackId];
-        Transform& nodeTransform        = graph.currentTransforms[transformId];
+        const uint32_t animChannelId    = animationIds[i]; // SceneGraph.nodeAnims[node.animId]
+        const uint32_t nodeTrackId      = nodeTrackIds[i]; // SceneGraph.nodeAnims[node.animId][nodeTrackId]
+        const uint32_t transformId      = transformIds[i]; // SceneGraph.currentTransforms[node.nodeId]
+        const AnimationChannel& track   = nodeAnims[animChannelId][nodeTrackId];
+        Transform& nodeTransform        = pTransforms[transformId];
         
         LS_DEBUG_ASSERT(transformId != scene_property_t::SCENE_GRAPH_ROOT_ID);
 
@@ -306,14 +284,16 @@ void Animation::init(SceneGraph& graph, const bool atStart) const noexcept {
     LS_DEBUG_ASSERT(transformIds.size() == animationIds.size());
     LS_DEBUG_ASSERT(transformIds.size() == nodeTrackIds.size());
     
+    // prefetch
+    const std::vector<std::vector<AnimationChannel>>& nodeAnims = graph.nodeAnims;
+    Transform* pTransforms = graph.currentTransforms.data();
+    
     for (unsigned i = transformIds.size(); i --> 0;) {
-        const uint32_t animChannelId    = animationIds[i];
-        const uint32_t nodeTrackId      = nodeTrackIds[i];
-        const uint32_t transformId      = transformIds[i];
-        
-        const std::vector<AnimationChannel>& nodeTracks = graph.nodeAnims[animChannelId];
-        const AnimationChannel& track   = nodeTracks[nodeTrackId];
-        Transform& nodeTransform        = graph.currentTransforms[transformId];
+        const uint32_t animChannelId    = animationIds[i]; // SceneGraph.nodeAnims[node.animId]
+        const uint32_t nodeTrackId      = nodeTrackIds[i]; // SceneGraph.nodeAnims[node.animId][nodeTrackId]
+        const uint32_t transformId      = transformIds[i]; // SceneGraph.currentTransforms[node.nodeId]
+        const AnimationChannel& track   = nodeAnims[animChannelId][nodeTrackId];
+        Transform& nodeTransform        = pTransforms[transformId];
 
         if (track.positionFrames.is_valid()) {
             nodeTransform.set_position(atStart ? track.positionFrames.get_start_data() : track.positionFrames.get_end_data());

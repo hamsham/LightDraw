@@ -62,6 +62,10 @@ struct alignas(sizeof(uint32_t)*4) SceneNode final {
      * @brief nodeId contains the index of a node's name, and transform within
      * a SceneGraph.
      * 
+     * It is important that the nodeId is always equal to a node's index within
+     * its parent scene graph. Animations and transformation updates rely on
+     * this correlation for updates.
+     * 
      * This member has a 1:1 relationship with the following members of a scene
      * graph:
      *      - bounds

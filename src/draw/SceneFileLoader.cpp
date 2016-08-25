@@ -357,7 +357,6 @@ const aiScene* SceneFilePreLoader::preload_mesh_data() noexcept {
  * Allocate all required CPU-side memory for a scene.
 -------------------------------------*/
 bool SceneFilePreLoader::allocate_cpu_data(const aiScene* const pScene) noexcept {
-    sceneData.cameras.resize(pScene->mNumCameras);
     sceneData.meshes.resize(pScene->mNumMeshes);
     sceneData.materials.resize(pScene->mNumMaterials);
 
@@ -381,7 +380,8 @@ bool SceneFilePreLoader::allocate_cpu_data(const aiScene* const pScene) noexcept
     sceneData.baseTransforms.reserve(numSceneNodes);
     sceneData.currentTransforms.reserve(numSceneNodes);
     sceneData.nodeNames.reserve(numSceneNodes);
-    sceneData.animations.resize(pScene->mNumAnimations);
+    sceneData.animations.reserve(pScene->mNumAnimations);
+    sceneData.cameras.reserve(pScene->mNumCameras);
     sceneData.nodeMeshCounts.reserve(pScene->mNumMeshes);
     sceneData.nodeMeshes.reserve(pScene->mNumMeshes);
 
@@ -1026,9 +1026,9 @@ void SceneFileLoader::read_node_hierarchy(
         baseTransforms.push_back(baseTrans.get_transform());
     }
 
-    const int camIndex = is_node_type<aiCamera>(pInNode, pScene->mCameras, pScene->mNumCameras);
+    const unsigned camIndex = is_node_type<aiCamera>(pInNode, pScene->mCameras, pScene->mNumCameras);
 
-    if (camIndex >= 0) {
+    if (camIndex != scene_property_t::SCENE_GRAPH_ROOT_ID) {
         currentNode.type = scene_node_t::NODE_TYPE_CAMERA;
         import_camera_node(pScene, camIndex, currentNode);
     }
@@ -1091,7 +1091,8 @@ void SceneFileLoader::import_mesh_node(const aiNode* const pNode, SceneNode& out
         drawParams[i] = loadedMesh.drawParams;
     }
 
-    // Very important
+    // Very important for the scene graph to keep track of what mesh node owns
+    // which set of meshes
     outNode.dataId = meshList.size();
 
     nodeMeshCounts.push_back(numMeshes);
@@ -1103,26 +1104,26 @@ void SceneFileLoader::import_mesh_node(const aiNode* const pNode, SceneNode& out
 -------------------------------------*/
 void SceneFileLoader::import_camera_node(
     const aiScene* const pScene,
-    const int camIndex,
+    const unsigned camIndex,
     SceneNode& outNode
 ) noexcept {
-    const aiCamera* const* const pCamList   = pScene->mCameras;
-    SceneGraph& sceneData                   = preloader.sceneData;
-    std::vector<Camera>& camList            = sceneData.cameras;
-
-    // Very important
-    outNode.dataId = camList.size();
+    // Very important for the scene graph to keep track of what camera node
+    // owns which camera
+    outNode.dataId = camIndex;
+    
+    const aiCamera* const pInCam    = pScene->mCameras[camIndex];
+    SceneGraph& sceneData           = preloader.sceneData;
+    std::vector<Camera>& camList    = sceneData.cameras;
     
     camList.emplace_back(Camera{});
-
-    const aiCamera* const pInCam = pCamList[camIndex];
-    Camera& camProj = camList.back();
-    camProj.set_fov(pInCam->mHorizontalFOV);
-    camProj.set_aspect_ratio(pInCam->mAspect, 1.f);
-    camProj.set_near_plane(pInCam->mClipPlaneNear);
-    camProj.set_far_plane(pInCam->mClipPlaneFar);
-    camProj.set_projection_type(projection_type_t::PROJECTION_PERSPECTIVE);
-    camProj.update();
+    Camera& outCam = sceneData.cameras.back();
+    
+    outCam.set_fov(pInCam->mHorizontalFOV);
+    outCam.set_aspect_ratio(pInCam->mAspect, 1.f);
+    outCam.set_near_plane(pInCam->mClipPlaneNear);
+    outCam.set_far_plane(pInCam->mClipPlaneFar);
+    outCam.set_projection_type(projection_type_t::PROJECTION_PERSPECTIVE);
+    outCam.update();
 
     // A Transform object must have been added by the parent function
     Transform& camTrans = sceneData.currentTransforms.back();
@@ -1159,10 +1160,10 @@ void SceneFileLoader::import_camera_node(
     const math::vec3&& camUp = math::vec3{0.f, 1.f, 0.f};//nodeCam.get_up_direction();
 
     LS_LOG_MSG("\tLoaded the scene camera ", pInCam->mName.C_Str(), ':',
-        "\n\t\tField of View: ", LS_RAD2DEG(camProj.get_fov()),
-        "\n\t\tAspect Ratio:  ", camProj.get_aspect_ratio(),
-        "\n\t\tNear Plane:    ", camProj.get_near_plane(),
-        "\n\t\tFar Plane:     ", camProj.get_far_plane(),
+        "\n\t\tField of View: ", LS_RAD2DEG(outCam.get_fov()),
+        "\n\t\tAspect Ratio:  ", outCam.get_aspect_ratio(),
+        "\n\t\tNear Plane:    ", outCam.get_near_plane(),
+        "\n\t\tFar Plane:     ", outCam.get_far_plane(),
         "\n\t\tPosition:      {", camPos[0], ", ", camPos[1], ", ", camPos[2], '}',
         "\n\t\tUp Direction:  {", camUp[0], ", ", camUp[1], ", ", camUp[2], '}'
     );
@@ -1181,7 +1182,9 @@ bool SceneFileLoader::import_animations(const aiScene* const pScene) noexcept {
 
     for (unsigned i = 0; i < totalAnimations; ++i) {
         const aiAnimation* const pInAnim = pAnimations[i];
-        Animation& anim = animations[i]; // These must have been preallocated by now
+        
+        animations.emplace_back(Animation{});
+        Animation& anim = animations.back();
 
         // The animation as a whole needs to have its properties imported from
         // ASSIMP.
