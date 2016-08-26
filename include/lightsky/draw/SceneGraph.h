@@ -279,6 +279,18 @@ class SceneGraph {
          * @return The total number of nodes which were deleted.
          */
         unsigned delete_node(const unsigned nodeIndex) noexcept;
+        
+        /**
+         * Search for a node by its name and return its index.
+         * 
+         * @param nameQuery
+         * A constant reference to an std::string object, containing the name
+         * of the node to search for.
+         * 
+         * @return The array-index of the node being searched for, or
+         * SCENE_GRAPH_ROOT_ID if the node was not found.
+         */
+        unsigned find_node_id(const std::string& nameQuery) const noexcept;
 };
 
 

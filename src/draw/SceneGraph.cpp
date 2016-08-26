@@ -5,8 +5,6 @@
  * Created on January 19, 2015, 10:08 PM
  */
 
-#include <utility>
-
 #include "lightsky/utils/Assertions.h"
 #include "lightsky/utils/Copy.h"
 
@@ -382,6 +380,21 @@ unsigned SceneGraph::delete_node(const unsigned nodeIndex) noexcept {
     }
     
     return numDeleted;
+}
+
+/*-------------------------------------
+ * Node Searching
+-------------------------------------*/
+unsigned SceneGraph::find_node_id(const std::string& nameQuery) noexcept {
+    unsigned nodeId = scene_property_t::SCENE_GRAPH_ROOT_ID;
+    
+    for (unsigned i = nodeNames.size(); i --> 0;) {
+        if (nodeNames[i] == nodeName) {
+            return i;
+        }
+    }
+    
+    return nodeId;
 }
 
 
