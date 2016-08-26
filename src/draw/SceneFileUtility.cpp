@@ -1,4 +1,4 @@
-﻿
+
 #include <type_traits>
 
 #include "lightsky/math/Math.h"

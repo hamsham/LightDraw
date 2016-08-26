@@ -1,4 +1,4 @@
-﻿/*
+/*
  * File:   draw/Vertex.cpp
  * Author: miles
  *

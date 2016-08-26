@@ -1,4 +1,4 @@
-﻿/*
+/*
  * File:   draw/setup.h
  * Author: Miles Lacey
  *

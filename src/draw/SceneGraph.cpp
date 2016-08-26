@@ -1,4 +1,4 @@
-﻿/* 
+/* 
  * File:   sceneGraph.cpp
  * Author: Miles Lacey
  * 
@@ -248,15 +248,17 @@ void SceneGraph::delete_node_animation_data(const uint32_t nodeId, const uint32_
         
         // Reduce the animation ID of all animations in *this.
         for (uint32_t j = currentAnimIds.size(); j --> 0;) {
+            if (currentTransIds[j] == nodeId && currentAnimIds[j] == animId) {
+                currentAnim.remove_anim_channel(j);
+                continue;
+            }
+            
             if (currentTransIds[j] > nodeId) {
                 --currentTransIds[j];
             }
             
             if (currentAnimIds[j] > animId) {
                 --currentAnimIds[j];
-            }
-            else if (currentAnimIds[j] == animId) {
-                currentAnim.remove_anim_channel(j);
             }
         }
         

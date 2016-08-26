@@ -1,4 +1,4 @@
-﻿/*
+/*
  * File:   ShaderAttrib.h
  * Author: Miles
  *

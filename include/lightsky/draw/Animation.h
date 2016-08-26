@@ -27,7 +27,7 @@ namespace ls {
 namespace draw {
 
 /*-----------------------------------------------------------------------------
- * Forward declaration of GFX types
+ * Forward declaration of scene types
 -----------------------------------------------------------------------------*/
 struct SceneNode;
 class SceneGraph;

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * File:   draw/GeometryLoader.cpp
  * Author: miles
  *

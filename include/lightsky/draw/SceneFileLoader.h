@@ -1,4 +1,4 @@
-﻿
+
 /* 
  * File:   SceneFileLoader.h
  * Author: miles

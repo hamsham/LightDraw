@@ -1,4 +1,4 @@
-﻿
+
 #include <utility> // std::move
 #include <memory> // std::nothrow
 #include <string>

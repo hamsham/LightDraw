@@ -1,4 +1,4 @@
-﻿
+
 #ifndef __LS_DRAW_SCENE_FILE_UTILITY_H__
 #define __LS_DRAW_SCENE_FILE_UTILITY_H__
 
