@@ -248,7 +248,7 @@ void SceneGraph::delete_node_animation_data(const uint32_t nodeId, const uint32_
         
         // Reduce the animation ID of all animations in *this.
         for (uint32_t j = currentAnimIds.size(); j --> 0;) {
-            if (currentTransIds[j] == nodeId && currentAnimIds[j] == animId) {
+            if (currentTransIds[j] == nodeId) {
                 currentAnim.remove_anim_channel(j);
                 continue;
             }
@@ -257,7 +257,7 @@ void SceneGraph::delete_node_animation_data(const uint32_t nodeId, const uint32_
                 --currentTransIds[j];
             }
             
-            if (currentAnimIds[j] > animId) {
+            if (animId != scene_property_t::SCENE_GRAPH_ROOT_ID && currentAnimIds[j] > animId) {
                 --currentAnimIds[j];
             }
         }
@@ -269,7 +269,9 @@ void SceneGraph::delete_node_animation_data(const uint32_t nodeId, const uint32_
     }
     
     // Animation Channels
-    nodeAnims.erase(nodeAnims.begin() + animId);
+    if (animId != scene_property_t::SCENE_GRAPH_ROOT_ID) {
+        nodeAnims.erase(nodeAnims.begin() + animId);
+    }
 }
 
 /*-------------------------------------
@@ -339,9 +341,7 @@ unsigned SceneGraph::delete_node(const unsigned nodeIndex) noexcept {
     nodeNames.erase             (nodeNames.begin()          + nodeIndex);
     
     // early exit in case there are no animations tied to the current node.
-    if (animId != scene_property_t::SCENE_GRAPH_ROOT_ID) {
-        delete_node_animation_data(nodeIndex, animId);
-    }
+    delete_node_animation_data(nodeIndex, animId);
     
     // Decrement all node ID and data ID indices that are greater than those in
     // the current node. Also deal with the last bit of transformation data in
