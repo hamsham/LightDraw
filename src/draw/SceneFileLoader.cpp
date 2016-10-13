@@ -499,6 +499,11 @@ bool SceneFileLoader::load_scene(const aiScene* const pScene) noexcept {
     }
 
     read_node_hierarchy(pScene, pScene->mRootNode, scene_property_t::SCENE_GRAPH_ROOT_ID);
+    
+    for (const SceneNode n : sceneData.nodes) {
+        const unsigned nId = n.nodeId;
+        LS_LOG_MSG(nId, ' ', sceneData.currentTransforms[nId].parentId);
+    }
 
     if (!import_animations(pScene)) {
       LS_LOG_ERR("\tWarning: Failed to animations from ", filename, "!\n");
@@ -1043,7 +1048,7 @@ void SceneFileLoader::read_node_hierarchy(
     // Remaining transformation information
     {
         Transform& nodeTransform = currTransforms.back();
-        nodeTransform.set_parent_id(parentId);
+        nodeTransform.parentId = parentId;
 
         // Only apply parented transforms here. Applying non-parented
         // transforms will cause root objects to swap X & Z axes.
@@ -1188,12 +1193,14 @@ bool SceneFileLoader::import_animations(const aiScene* const pScene) noexcept {
 
         // The animation as a whole needs to have its properties imported from
         // ASSIMP.
-        anim = std::move(setup_imported_animation(
+        Animation&& tempAnim = setup_imported_animation(
             pInAnim->mName.C_Str(),
             pInAnim->mDuration,
             pInAnim->mTicksPerSecond,
             pInAnim->mNumChannels
-        ));
+        );
+        
+        anim = std::move(tempAnim);
 
         for (unsigned c = 0; c < pInAnim->mNumChannels; ++c) {
             AnimationChannel track;

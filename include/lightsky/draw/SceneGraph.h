@@ -76,6 +76,9 @@ class SceneGraph {
          * their children. This allows for the transformation update routines
          * to reduce the number of recursive iterations required to update
          * child nodes.
+         * 
+         * Child nodes are always expected to be grouped sequentially after
+         * their parent nodes.
          */
         std::vector<SceneNode> nodes;
 
@@ -281,6 +284,26 @@ class SceneGraph {
         unsigned delete_node(const unsigned nodeIndex) noexcept;
         
         /**
+         * Reassign a node to a different parent.
+         * 
+         * This method will move a node and all of its children. Large node
+         * hierarchies will cause a large reallocation of the internal node and
+         * transform arrays.
+         * 
+         * @param nodeIndex
+         * An unsigned integral type, containing the array-index of the node to
+         * re-parent within the graph.
+         * 
+         * @param parentIndex
+         * An unsigned integral type, containing the array-index of the node to
+         * serve as the node's new parent.
+         * 
+         * @return TRUE if the node could be reparented, FALSE if the node is
+         * currently an ancestor of the requested parent.
+         */
+        bool reparent_node(const unsigned nodeIndex, const unsigned parentIndex = SCENE_GRAPH_ROOT_ID) noexcept;
+        
+        /**
          * Search for a node by its name and return its index.
          * 
          * @param nameQuery
@@ -291,6 +314,44 @@ class SceneGraph {
          * SCENE_GRAPH_ROOT_ID if the node was not found.
          */
         unsigned find_node_id(const std::string& nameQuery) const noexcept;
+        
+        /**
+         * Retrieve the total number of children hierarchially attached to a
+         * SceneNode.
+         * 
+         * @param nodeIndex
+         * An unsigned integral type, containing the array-index of the node to
+         * query.
+         * 
+         * @return An unsigned integral type, containing the total number of
+         * child nodes that are recursively attached to the queried node.
+         */
+        unsigned get_num_total_children(const unsigned nodeIndex) const noexcept;
+        
+        /**
+         * Retrieve the number of children immediately attached to a SceneNode.
+         * 
+         * @param nodeIndex
+         * An unsigned integral type, containing the array-index of the node to
+         * query.
+         * 
+         * @return An unsigned integral type, containing the number of child
+         * nodes that are attached to the queried node.
+         */
+        unsigned get_num_immediate_children(const unsigned nodeIndex) const noexcept;
+        
+        /**
+         * Determine if a node is a hierarchal child of another node.
+         * 
+         * @param nodeIndex
+         * An unsigned integral type, containing the array-index of the node to
+         * query.
+         * 
+         * @param parentId
+         * An unsigned integral type, containing the array-index of the
+         * possible parent ID.
+         */
+        bool node_is_child(const unsigned nodeIndex, const unsigned parentId) const noexcept;
 };
 
 

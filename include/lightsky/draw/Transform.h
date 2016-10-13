@@ -43,12 +43,13 @@ enum transform_type_t : uint32_t {
 ----------------------------------------------------------------------------*/
 class Transform {
 //class alignas(128) Transform {
-    private:
+    public:
         /**
-         * Index ID of a parent transformation in a Scene Graph.
+         * Array index of a parent transformation in a Scene Graph.
          */
         uint32_t parentId;
-        
+    
+    private:
         /**
          * @brief Meta-information container.
          */
@@ -150,29 +151,6 @@ class Transform {
          * An r-value reference to another transform object
          */
         Transform& operator=(Transform&& t) noexcept;
-        
-        /**
-         * Set the array-index of the parent transformation which *this
-         * Transform object will belong to in a Scene Graph.
-         * 
-         * Use of this function will not require any internal members be
-         * updated (i.e. it will stay clean or dirty depending on what the
-         * internal state currently is).
-         * 
-         * @param inIndex
-         * An integer ID, containing the index of a parent transformation
-         * within a SceneGraph object.
-         */
-        void set_parent_id(const uint32_t inIndex) noexcept;
-        
-        /**
-         * Retrieve the index of the parent transformation which *this object
-         * is modified by.
-         * 
-         * @return An integer ID, containing the index of a parent
-         * transformation within a SceneGraph object.
-         */
-        uint32_t get_parent_id() const noexcept;
 
         /**
          * @brief Check if the current transformation object needs to be
@@ -518,20 +496,6 @@ class Transform {
          */
         void look_at(const math::vec3& target);
 };
-
-/*-------------------------------------
- * Set the array-index of the parent transformation.
--------------------------------------*/
-inline void Transform::set_parent_id(const uint32_t inIndex) noexcept {
-    parentId = inIndex;
-}
-
-/*-------------------------------------
- * Retrieve the index of the parent transformation.
--------------------------------------*/
-inline uint32_t Transform::get_parent_id() const noexcept {
-    return parentId;
-}
 
 /*-------------------------------------
 -------------------------------------*/
