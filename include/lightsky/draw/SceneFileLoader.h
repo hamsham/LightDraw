@@ -44,6 +44,7 @@ namespace draw {
 -----------------------------------------------------------------------------*/
 enum common_vertex_t : unsigned; // VertexUtils.h
 
+class ImageBuffer;
 class IndexBuffer;
 struct SceneMaterial;
 class TextureAssembly;
@@ -212,9 +213,9 @@ class SceneFileLoader {
         
         bool import_materials(const aiScene* const pScene) noexcept;
         
-        void import_texture_path(const aiMaterial* const pMaterial, const int slotType, SceneMaterial& outMaterial, ImageResource& imgLoader, TextureAssembly& texAssembly) noexcept;
+        void import_texture_path(const aiMaterial* const pMaterial, const int slotType, SceneMaterial& outMaterial, ImageBuffer& imgLoader, TextureAssembly& texAssembly) noexcept;
         
-        unsigned load_texture_at_path(const std::string& path, ImageResource& imgLoader, TextureAssembly& texAssembly, const tex_wrap_t wrapMode) noexcept;
+        unsigned load_texture_at_path(const std::string& path, ImageBuffer& imgLoader, TextureAssembly& texAssembly, const tex_wrap_t wrapMode) noexcept;
         
         bool import_mesh_data(const aiScene* const pScene) noexcept;
         

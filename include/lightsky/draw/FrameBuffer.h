@@ -92,7 +92,7 @@ class FrameBuffer final {
         const math::vec2i& dstOffset, const math::vec2i& dstSize,
         const fbo_mask_t mask = (fbo_mask_t) (fbo_mask_t::FBO_COLOR_BIT | fbo_mask_t::FBO_DEPTH_BIT),
         const tex_filter_t filtr = TEX_FILTER_LINEAR
-        ) noexcept;
+    ) noexcept;
 
     /**
      * Clear the color attachment indicated by the input parameter.
@@ -101,7 +101,7 @@ class FrameBuffer final {
      */
     static void clear_buffers(
         const GLbitfield mask = (fbo_mask_t) fbo_mask_t::FBO_COLOR_BIT | fbo_mask_t::FBO_DEPTH_STENCIL_BIT
-        ) noexcept;
+    ) noexcept;
 
     static void clear_color_buffer(const fbo_attach_t attachIndex, const color::color& clearVal = color::black) noexcept;
 
@@ -357,12 +357,12 @@ inline void FrameBuffer::blit(
     const math::vec2i& srcOrig, const math::vec2i& srcSize,
     const math::vec2i& dstOrig, const math::vec2i& dstSize,
     fbo_mask_t mask, tex_filter_t filter
-    ) noexcept {
+) noexcept {
     glBlitFramebuffer(
         srcOrig[0], srcOrig[1], srcSize[0], srcSize[1],
         dstOrig[0], dstOrig[1], dstSize[0], dstSize[1],
         (GLbitfield) mask, (GLenum) filter
-        );
+    );
 }
 
 /*-------------------------------------

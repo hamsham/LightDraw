@@ -13,7 +13,6 @@
 #include "lightsky/draw/Setup.h"
 #include "lightsky/draw/Color.h"
 #include "lightsky/draw/GLQuery.h"
-#include "lightsky/draw/ImageResource.h"
 #include "lightsky/draw/TextureAttrib.h"
 
 namespace ls {

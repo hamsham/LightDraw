@@ -19,54 +19,56 @@
 namespace ls {
 namespace draw {
 
+    
+    
 /*-------------------------------------
  * Destructor
 -------------------------------------*/
 TextureAssembly::~TextureAssembly() noexcept {
 }
 
+
+
 /*-------------------------------------
  * Constructor
 -------------------------------------*/
 TextureAssembly::TextureAssembly() noexcept :
-texMainType {
-    tex_type_t::TEX_TYPE_2D
-},
-texSubType {tex_2d_type_t::TEX_SUBTYPE_2D},
-mipmapLevel {0},
-size {0},
-attribs {}
-{
-}
+    texMainType {tex_type_t::TEX_TYPE_2D},
+    texSubType {tex_2d_type_t::TEX_SUBTYPE_2D},
+    mipmapLevel {0},
+    size {0},
+    attribs {}
+{}
+
+
 
 /*-------------------------------------
  * Copy Constructor
 -------------------------------------*/
 TextureAssembly::TextureAssembly(const TextureAssembly& a) noexcept :
-texMainType {
-    a.texMainType
-},
-texSubType {a.texSubType},
-mipmapLevel {a.mipmapLevel},
-size {a.size},
-attribs {a.attribs}
-{
-}
+    texMainType {a.texMainType},
+    texSubType {a.texSubType},
+    mipmapLevel {a.mipmapLevel},
+    size {a.size},
+    attribs {a.attribs}
+{}
+
+
 
 /*-------------------------------------
  * Move Constructor
 -------------------------------------*/
 TextureAssembly::TextureAssembly(TextureAssembly&& a) noexcept :
-texMainType {
-    a.texMainType
-},
-texSubType {a.texSubType},
-mipmapLevel {a.mipmapLevel},
-size {std::move(a.size)},
-attribs {std::move(a.attribs)}
+    texMainType {a.texMainType},
+    texSubType {a.texSubType},
+    mipmapLevel {a.mipmapLevel},
+    size {std::move(a.size)},
+    attribs {std::move(a.attribs)}
 {
     a.clear();
 }
+
+
 
 /*-------------------------------------
  * Copy Operator
@@ -80,6 +82,8 @@ TextureAssembly& TextureAssembly::operator =(const TextureAssembly& a) noexcept 
 
     return *this;
 }
+
+
 
 /*-------------------------------------
  * Move Operator
@@ -95,6 +99,8 @@ TextureAssembly& TextureAssembly::operator =(TextureAssembly&& a) noexcept {
 
     return *this;
 }
+
+
 
 /*-------------------------------------
 -------------------------------------*/
@@ -123,12 +129,16 @@ void TextureAssembly::apply_attribs() const noexcept {
     glTexParameterf(texMainType, tex_param_t::TEX_PARAM_MAX_LOD, attribs.get_max_lod());
 }
 
+
+
 /*-------------------------------------
 -------------------------------------*/
 bool TextureAssembly::set_attribs(const TextureAttrib& a) noexcept {
     attribs = a;
     return true;
 }
+
+
 
 /*-------------------------------------
 -------------------------------------*/
@@ -138,11 +148,11 @@ bool TextureAssembly::set_int_attrib(const tex_param_t param, const int attribVa
 
     if (param == tex_param_t::TEX_PARAM_MIN_FILTER) {
         if (attribVal != tex_filter_t::TEX_FILTER_NEAREST
-            && attribVal != tex_filter_t::TEX_FILTER_LINEAR
-            && attribVal != tex_filter_t::TEX_FILTER_NEAREST_NEAREST
-            && attribVal != tex_filter_t::TEX_FILTER_NEAREST_LINEAR
-            && attribVal != tex_filter_t::TEX_FILTER_LINEAR_NEAREST
-            && attribVal != tex_filter_t::TEX_FILTER_LINEAR_LINEAR
+        && attribVal != tex_filter_t::TEX_FILTER_LINEAR
+        && attribVal != tex_filter_t::TEX_FILTER_NEAREST_NEAREST
+        && attribVal != tex_filter_t::TEX_FILTER_NEAREST_LINEAR
+        && attribVal != tex_filter_t::TEX_FILTER_LINEAR_NEAREST
+        && attribVal != tex_filter_t::TEX_FILTER_LINEAR_LINEAR
         ) {
             LS_LOG_ERR("\tUnknown texture minification filter: ", attribVal);
             ret = false;
@@ -153,7 +163,7 @@ bool TextureAssembly::set_int_attrib(const tex_param_t param, const int attribVa
     }
     else if (param == tex_param_t::TEX_PARAM_MAG_FILTER) {
         if (attribVal != tex_filter_t::TEX_FILTER_NEAREST
-            && attribVal != tex_filter_t::TEX_FILTER_LINEAR
+        && attribVal != tex_filter_t::TEX_FILTER_LINEAR
         ) {
             LS_LOG_ERR("\tUnknown texture magnification filter: ", attribVal);
             ret = false;
@@ -163,16 +173,16 @@ bool TextureAssembly::set_int_attrib(const tex_param_t param, const int attribVa
         }
     }
     else if (param == tex_param_t::TEX_PARAM_SWIZZLE_R
-        || param == tex_param_t::TEX_PARAM_SWIZZLE_G
-        || param == tex_param_t::TEX_PARAM_SWIZZLE_B
-        || param == tex_param_t::TEX_PARAM_SWIZZLE_A
-        ) {
+    || param == tex_param_t::TEX_PARAM_SWIZZLE_G
+    || param == tex_param_t::TEX_PARAM_SWIZZLE_B
+    || param == tex_param_t::TEX_PARAM_SWIZZLE_A
+    ) {
         if (attribVal != pixel_swizzle_t::SWIZZLE_RED
-            && attribVal != pixel_swizzle_t::SWIZZLE_GREEN
-            && attribVal != pixel_swizzle_t::SWIZZLE_BLUE
-            && attribVal != pixel_swizzle_t::SWIZZLE_ALPHA
-            && attribVal != pixel_swizzle_t::SWIZZLE_ZERO
-            && attribVal != pixel_swizzle_t::SWIZZLE_ONE
+        && attribVal != pixel_swizzle_t::SWIZZLE_GREEN
+        && attribVal != pixel_swizzle_t::SWIZZLE_BLUE
+        && attribVal != pixel_swizzle_t::SWIZZLE_ALPHA
+        && attribVal != pixel_swizzle_t::SWIZZLE_ZERO
+        && attribVal != pixel_swizzle_t::SWIZZLE_ONE
         ) {
             LS_LOG_ERR("\tUnknown texture swizzle filter: ", attribVal);
             ret = false;
@@ -182,12 +192,12 @@ bool TextureAssembly::set_int_attrib(const tex_param_t param, const int attribVa
         }
     }
     else if (param == tex_param_t::TEX_PARAM_WRAP_S
-        || param == tex_param_t::TEX_PARAM_WRAP_T
-        || param == tex_param_t::TEX_PARAM_WRAP_R
+    || param == tex_param_t::TEX_PARAM_WRAP_T
+    || param == tex_param_t::TEX_PARAM_WRAP_R
     ) {
         if (attribVal != tex_wrap_t::TEX_WRAP_CLAMP
-            && attribVal != tex_wrap_t::TEX_WRAP_MIRROR_REPEAT
-            && attribVal != tex_wrap_t::TEX_WRAP_REPEAT
+        && attribVal != tex_wrap_t::TEX_WRAP_MIRROR_REPEAT
+        && attribVal != tex_wrap_t::TEX_WRAP_REPEAT
         ) {
             LS_LOG_ERR("\tUnknown texture wrap filter: ", attribVal);
             ret = false;
@@ -212,6 +222,8 @@ bool TextureAssembly::set_int_attrib(const tex_param_t param, const int attribVa
 
     return ret;
 }
+
+
 
 /*-------------------------------------
 -------------------------------------*/
@@ -246,12 +258,16 @@ bool TextureAssembly::set_float_attrib(const tex_param_t param, const float attr
     return true;
 }
 
+
+
 /*-------------------------------------
 -------------------------------------*/
 bool TextureAssembly::set_mipmap_attrib(const unsigned level) noexcept {
     mipmapLevel = level;
     return true;
 }
+
+
 
 /*-------------------------------------
 -------------------------------------*/
@@ -261,13 +277,15 @@ bool TextureAssembly::set_format_attrib(const pixel_format_t internalFormat) noe
     return true;
 }
 
+
+
 /*-------------------------------------
 -------------------------------------*/
 bool TextureAssembly::set_size_attrib(
     const math::vec2i& texSize,
     const tex_type_t texType,
     const tex_2d_type_t subType
-    ) noexcept {
+) noexcept {
     size[0] = texSize[0];
     size[1] = texSize[1];
     size[2] = 1;
@@ -278,20 +296,23 @@ bool TextureAssembly::set_size_attrib(
     return true;
 }
 
+
+
 /*-------------------------------------
 -------------------------------------*/
 bool TextureAssembly::set_size_attrib(
     const math::vec3i& texSize,
     const tex_type_t texType,
     const tex_3d_type_t subType
-    ) noexcept {
+) noexcept {
     size = texSize;
-
     texMainType = texType;
     texSubType = subType;
 
     return true;
 }
+
+
 
 /*-------------------------------------
 -------------------------------------*/
@@ -302,6 +323,8 @@ void TextureAssembly::clear() noexcept {
     size = math::vec3i {0};
     attribs.reset_attribs();
 }
+
+
 
 /*-------------------------------------
 -------------------------------------*/
@@ -322,11 +345,11 @@ bool TextureAssembly::is_assembly_valid() const noexcept {
         LS_LOG_MSG("\tVerifying Cube texture parameters.");
 
         if (texSubType != tex_2d_type_t::TEX_SUBTYPE_CUBE_RIGHT
-            || texSubType != tex_2d_type_t::TEX_SUBTYPE_CUBE_TOP
-            || texSubType != tex_2d_type_t::TEX_SUBTYPE_CUBE_BACK
-            || texSubType != tex_2d_type_t::TEX_SUBTYPE_CUBE_LEFT
-            || texSubType != tex_2d_type_t::TEX_SUBTYPE_CUBE_BOTTOM
-            || texSubType != tex_2d_type_t::TEX_SUBTYPE_CUBE_FRONT
+        || texSubType != tex_2d_type_t::TEX_SUBTYPE_CUBE_TOP
+        || texSubType != tex_2d_type_t::TEX_SUBTYPE_CUBE_BACK
+        || texSubType != tex_2d_type_t::TEX_SUBTYPE_CUBE_LEFT
+        || texSubType != tex_2d_type_t::TEX_SUBTYPE_CUBE_BOTTOM
+        || texSubType != tex_2d_type_t::TEX_SUBTYPE_CUBE_FRONT
         ) {
             LS_LOG_ERR("\t\tMismatched Cube Texture subtype!\n");
             return false;
@@ -362,15 +385,20 @@ bool TextureAssembly::is_assembly_valid() const noexcept {
     // Validate individual attribs
     const float minLod = attribs.get_min_lod();
     const float maxLod = attribs.get_max_lod();
+    
     LS_LOG_MSG("\tValidating texture LOD parameters.");
+    
     if (minLod >= maxLod) {
         LS_LOG_ERR("\t\tInvalid texture LOD values: ", minLod, " >= ", maxLod, "!\n");
         return false;
     }
+    
     LS_LOG_MSG("\t\tDone. Successfully validated a texture assembly.\n");
 
     return true;
 }
+
+
 
 /*-------------------------------------
 -------------------------------------*/
@@ -402,37 +430,62 @@ bool TextureAssembly::assemble(Texture& tex, const void* const pData) const noex
     LS_LOG_MSG("\tAllocating space for texture data using texture ", gpuId, '.');
     glBindTexture(texMainType, gpuId);
 
-    if (texMainType == tex_type_t::TEX_TYPE_2D || texMainType == tex_type_t::TEX_TYPE_CUBE) {
-        glTexImage2D(texSubType, mipmapLevel, attribs.get_internal_format(), size[0], size[1], 0, attribs.get_basic_format(), attribs.get_color_type(), pData);
+    if (texMainType == tex_type_t::TEX_TYPE_2D
+    || texMainType == tex_type_t::TEX_TYPE_CUBE
+    ) {
+        glTexImage2D(
+            texSubType,
+            mipmapLevel,
+            attribs.get_internal_format(),
+            size[0],
+            size[1],
+            0,
+            attribs.get_basic_format(),
+            attribs.get_color_type(), pData
+        );
     }
     else {
-        glTexImage3D(texSubType, mipmapLevel, attribs.get_internal_format(), size[0], size[1], size[2], 0, attribs.get_basic_format(), attribs.get_color_type(), pData);
+        glTexImage3D(
+            texSubType,
+            mipmapLevel,
+            attribs.get_internal_format(),
+            size[0],
+            size[1],
+            size[2],
+            0,
+            attribs.get_basic_format(),
+            attribs.get_color_type(), pData
+        );
     }
+    
     LS_LOG_GL_ERR();
-    LS_LOG_MSG("\t\tDone. Allocated storage for texture ", gpuId, '.');
-
-    LS_LOG_MSG("\tApplying attributes.");
+    LS_LOG_MSG(
+        "\t\tDone. Allocated storage for texture ", gpuId, '.',
+        "\n\tApplying attributes."
+    );
     apply_attribs();
 
     tex.gpuId = gpuId;
     tex.texType = texMainType;
     tex.size = size;
     tex.attribs = attribs;
-    LS_LOG_MSG("\t\tDone. Successfully applied attributes to texture object ", gpuId, '.');
-
+    
     LS_LOG_MSG(
-        "\tSuccessfully assembled a texture object:",
+        "\t\tDone. Successfully applied attributes to texture object ", gpuId, '.',
+        "\n\tSuccessfully assembled a texture object:",
         "\n\t\tGPU ID:        ", tex.gpuId,
         "\n\t\tTexture Type:  ", tex.texType,
         "\n\t\tPixel Format:  ", tex.attribs.get_internal_format(),
         "\n\t\tDimensions:    ", tex.size[0], " x ", tex.size[1], " x ", tex.size[2],
         "\n"
-        );
+    );
 
     glBindTexture(texMainType, 0);
 
     return true;
 }
+
+
 
 } // end draw namespace
 } // end ls namepace

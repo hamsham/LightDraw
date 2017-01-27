@@ -23,7 +23,7 @@
 #include "lightsky/draw/GLQuery.h"
 #include "lightsky/draw/GLSLCommon.h"
 #include "lightsky/draw/GeometryUtils.h"
-#include "lightsky/draw/ImageResource.h"
+#include "lightsky/draw/ImageBuffer.h"
 #include "lightsky/draw/IndexBuffer.h"
 #include "lightsky/draw/SceneMaterial.h"
 #include "lightsky/draw/MatrixStack.h"

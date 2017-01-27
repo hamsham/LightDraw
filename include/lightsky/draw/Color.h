@@ -10,8 +10,12 @@
 
 #include "lightsky/draw/Setup.h"
 
+
+
 namespace ls {
 namespace draw {
+
+
 
 /**----------------------------------------------------------------------------
  * @brief pixel_id_t
@@ -21,12 +25,11 @@ namespace draw {
 -----------------------------------------------------------------------------*/
 typedef uint32_t pixel_id_t;
 
+
+
 /*-----------------------------------------------------------------------------
     Enumerations
 -----------------------------------------------------------------------------*/
-
-
-
 /**
  * @brief Framebuffer/Texture data types.
  *
@@ -183,6 +186,8 @@ enum pixel_format_t : GLenum {
     COLOR_FMT_INVALID = GL_INVALID_ENUM,
 };
 
+
+
 /**
  * Convert a pixel format to a standard color layout.
  *
@@ -193,6 +198,8 @@ enum pixel_format_t : GLenum {
  * OpenGL texture objects.
  */
 pixel_layout_t get_color_layout(const pixel_format_t internalFormat) noexcept;
+
+
 
 /**
  * Retrieve the appropriate byte layout of a pixel format.
@@ -206,6 +213,8 @@ pixel_layout_t get_color_layout(const pixel_format_t internalFormat) noexcept;
  */
 color_type_t get_color_type(const pixel_format_t internalFormat) noexcept;
 
+
+
 /**
  * Retrieve the number of components contained within a pixel format
  *
@@ -217,6 +226,8 @@ color_type_t get_color_type(const pixel_format_t internalFormat) noexcept;
  * contained within a single pixel.
  */
 unsigned get_num_pixel_components(const pixel_format_t internalFormat) noexcept;
+
+
 
 /**
  * Retrieve the number of bytes occupied by a single pixel
@@ -230,6 +241,8 @@ unsigned get_num_pixel_components(const pixel_format_t internalFormat) noexcept;
  */
 unsigned get_num_color_bytes(const color_type_t colorType) noexcept;
 
+
+
 /*-----------------------------------------------------------------------------
     Useful Typedefs
 -----------------------------------------------------------------------------*/
@@ -240,6 +253,8 @@ typedef math::vec4_t<unsigned int> colorui_t;
 typedef math::vec4_t<float> colorf_t;
 
 typedef colorf_t color;
+
+
 
 /*-----------------------------------------------------------------------------
     Color Types
@@ -261,10 +276,11 @@ static constexpr color black = color{0.f, 0.f, 0.f, 1.f};
 static constexpr color white = color{1.f, 1.f, 1.f, 1.f};
 static constexpr color gray = color{0.5f, 0.5f, 0.5f, 1.f};
 
+
+
 /*-----------------------------------------------------------------------------
  * Color Functions
 -----------------------------------------------------------------------------*/
-
 /**
  * @brief Convert a color using an integral type into a float color.
  *
@@ -287,6 +303,8 @@ math::vec4_t<float_t> color_int_to_float(const math::vec4_t<int_t>& c) {
         range * (float_t) c[3]
     };
 }
+
+
 
 /**
  * @brief Convert a color using a float type into an integral color.
@@ -311,29 +329,30 @@ constexpr math::vec4_t<int_t> color_float_to_int(const math::vec4_t<float_t>& c)
     };
 }
 
+
+
 /*-------------------------------------
  * Color Conversion to ID
 -------------------------------------*/
-constexpr pixel_id_t color_to_id(const colorub_t& col)
-{
+constexpr pixel_id_t color_to_id(const colorub_t& col) noexcept {
     return 0
     | (col[0] << 0)
     | (col[1] << 8)
     | (col[2] << 16);
 }
 
+
+
 /*-------------------------------------
  * ID Conversion to Color
 -------------------------------------*/
-constexpr colorf_t id_to_color(const pixel_id_t id, const float normFactor = 1.f/255.f)
-{
-  return colorf_t
-  {
-    (float)((id & 0x000000FF) >> 0) * normFactor,
-    (float)((id & 0x0000FF00) >> 8) * normFactor,
-    (float)((id & 0x00FF0000) >> 16) * normFactor,
-    1.f
-  };
+constexpr colorf_t id_to_color(const pixel_id_t id, const float normFactor = 1.f/255.f) noexcept {
+    return colorf_t {
+        (float)((id & 0x000000FF) >> 0) * normFactor,
+        (float)((id & 0x0000FF00) >> 8) * normFactor,
+        (float)((id & 0x00FF0000) >> 16) * normFactor,
+        1.f
+    };
 }
 
 

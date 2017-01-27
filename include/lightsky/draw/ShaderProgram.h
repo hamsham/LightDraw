@@ -272,7 +272,7 @@ class ShaderProgram {
      * lookup and possibly return the index of a ShaderBlockAttrib in *this.
      * 
      * @return An integer which identifies one of the ShaderBlockAttribs in
-     * *this. A negative value will be returned if *this ShaderProgram does not
+     * *this. A negative value will be returned if the input string does not
      * match any of the block attributes in *this.
      */
     int get_matching_uniform_block_index(const char* const blockName) const noexcept;
@@ -286,10 +286,24 @@ class ShaderProgram {
      * lookup and possibly return the index of a ShaderBlockAttrib in *this.
      * 
      * @return An integer which identifies one of the ShaderBlockAttribs in
-     * *this. A negative value will be returned if *this ShaderProgram does not
+     * *this. A negative value will be returned if the input string does not
      * match any of the block attributes in *this.
      */
     int get_matching_uniform_block_index(const std::string& blockName) const noexcept;
+    
+    /**
+     * Retrieve the index of a uniform block which matches the attributes in a
+     * UniformBuffer object.
+     * 
+     * @param ubo
+     * A constant reference to a UniformBuffer object whose index should be
+     * retrieved from *this shader.
+     * 
+     * @return An integer which identifies one of the ShaderBlockAttribs in
+     * *this. A negative value will be returned if the input UBO does not
+     * match any of the block attributes in *this.
+     */
+    int get_matching_uniform_block_index(const UniformBuffer& ubo) const noexcept;
 };
 
 /*-------------------------------------

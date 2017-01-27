@@ -68,7 +68,7 @@ set(LS_DRAW_SOURCES
     src/draw/GeometryUtils.cpp
     src/draw/GLContext.cpp
     src/draw/GLQuery.cpp
-    src/draw/ImageResource.cpp
+    src/draw/ImageBuffer.cpp
     src/draw/IndexBuffer.cpp
     src/draw/MatrixStack.cpp
     src/draw/OcclusionMeshLoader.cpp

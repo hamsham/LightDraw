@@ -14,16 +14,21 @@
 #include "lightsky/draw/ShaderObject.h"
 #include "lightsky/draw/ShaderProgram.h"
 #include "lightsky/draw/ShaderAttrib.h"
+#include "lightsky/draw/UniformBuffer.h"
 #include "lightsky/draw/VertexUtils.h"
 
 namespace ls {
 namespace draw {
+
+
 
 /*-------------------------------------
     Destructor
 -------------------------------------*/
 ShaderProgram::~ShaderProgram() noexcept {
 }
+
+
 
 /*-------------------------------------
     Constructor
@@ -37,6 +42,8 @@ ShaderProgram::ShaderProgram() noexcept :
     fragAttribs{}
 {}
 
+
+
 /*-------------------------------------
     Copy Constructor
 -------------------------------------*/
@@ -44,12 +51,16 @@ ShaderProgram::ShaderProgram(const ShaderProgram& sp) noexcept {
     *this = sp;
 }
 
+
+
 /*-------------------------------------
     Move Constructor
 -------------------------------------*/
 ShaderProgram::ShaderProgram(ShaderProgram&& sp) noexcept {
     *this = std::move(sp);
 }
+
+
 
 /*-------------------------------------
     Copy Operator
@@ -75,6 +86,8 @@ ShaderProgram& ShaderProgram::operator =(const ShaderProgram& sp) noexcept {
     return *this;
 }
 
+
+
 /*-------------------------------------
     Move Operator
 -------------------------------------*/
@@ -93,6 +106,8 @@ ShaderProgram& ShaderProgram::operator =(ShaderProgram&& sp) noexcept {
     return *this;
 }
 
+
+
 /*-------------------------------------
     Termination
 -------------------------------------*/
@@ -105,6 +120,8 @@ void ShaderProgram::terminate() noexcept {
     vertAttribs.reset_num_attribs(0);
     fragAttribs.reset_num_attribs(0);
 }
+
+
 
 /*-------------------------------------
  * Retrieve an attached shader object ID
@@ -155,6 +172,8 @@ GLuint ShaderProgram::get_attached_shader_id(const shader_stage_t shaderType) co
     return 0;
 }
 
+
+
 /*-------------------------------------
  * Retrieve the index of a CPU-Side shader block attribute (C-String)
 -------------------------------------*/
@@ -172,6 +191,8 @@ int ShaderProgram::get_matching_uniform_block_index(const char* const blockName)
     return -1;
 }
 
+
+
 /*-------------------------------------
  * Retrieve the index of a CPU-Side shader block attribute
 -------------------------------------*/
@@ -188,6 +209,17 @@ int ShaderProgram::get_matching_uniform_block_index(const std::string& blockName
     
     return -1;
 }
+
+
+
+/*-------------------------------------
+ * Retrieve the index of a CPU-Side shader block attribute
+-------------------------------------*/
+int ShaderProgram::get_matching_uniform_block_index(const UniformBuffer& ubo) const noexcept {
+    return get_matching_uniform_block_index(ubo.get_attribs().get_block_name());
+}
+
+
 
 } // end draw namespace
 } // end ls namespace

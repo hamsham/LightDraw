@@ -6,7 +6,7 @@
 
 #include "lightsky/draw/Camera.h"
 #include "lightsky/draw/Color.h"
-#include "lightsky/draw/ImageResource.h"
+#include "lightsky/draw/ImageBuffer.h"
 #include "lightsky/draw/IndexBuffer.h"
 #include "lightsky/draw/PackedVertex.h"
 #include "lightsky/draw/SceneFileLoader.h"
@@ -660,7 +660,7 @@ bool SceneFileLoader::import_materials(const aiScene* const pScene) noexcept {
     SceneGraph& sceneData                       = preloader.sceneData;
     std::vector<SceneMaterial>& materials       = sceneData.materials;
     utils::Pointer<TextureAssembly> texMaker    {new TextureAssembly{}};
-    utils::Pointer<ImageResource> imgLoader     {new ImageResource{}};
+    utils::Pointer<ImageBuffer> imgLoader       {new ImageBuffer{}};
 
     for (unsigned i = 0; i < numMaterials; ++i) {
         const aiMaterial* const pMaterial = pScene->mMaterials[i];
@@ -684,7 +684,7 @@ void SceneFileLoader::import_texture_path(
     const aiMaterial* const pMaterial,
     const int slotType,
     SceneMaterial& outMaterial,
-    ImageResource& imgLoader,
+    ImageBuffer& imgLoader,
     TextureAssembly& texAssembly
 ) noexcept {
     imgLoader.unload();
@@ -791,18 +791,22 @@ void SceneFileLoader::import_texture_path(
 -------------------------------------*/
 unsigned SceneFileLoader::load_texture_at_path(
     const std::string& path,
-    ImageResource& imgLoader,
+    ImageBuffer& imgLoader,
     TextureAssembly& texAssembly,
     const tex_wrap_t wrapMode
 ) noexcept {
     TextureDataList& textures = preloader.sceneData.renderData.textures;
     Texture outTex;
 
-    if (!imgLoader.load_file(path)) {
+    if (imgLoader.load_file(path) != ImageBuffer::img_status_t::FILE_LOAD_SUCCESS) {
         return material_property_t::INVALID_MATERIAL_TEXTURE;
     }
 
-    LS_ASSERT(texAssembly.set_size_attrib(imgLoader.get_pixel_size()));
+    // textures from ASSIMP's 3D models are 2D until otherwise noted
+    const math::vec3i& imgSize3d = imgLoader.get_pixel_size();
+    const math::vec2i&& imgSize2d = {imgSize3d[0], imgSize3d[1]};
+    
+    LS_ASSERT(texAssembly.set_size_attrib(imgSize2d));
     LS_ASSERT(texAssembly.set_format_attrib(imgLoader.get_internal_format()));
 
     LS_ASSERT(texAssembly.set_int_attrib(tex_param_t::TEX_PARAM_WRAP_S, wrapMode));
