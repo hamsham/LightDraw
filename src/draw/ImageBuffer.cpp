@@ -428,7 +428,7 @@ bool ImageBuffer::save_file(const std::string& filename, img_file_t format) cons
         case img_file_t::IMG_FILE_PPM:  fiFormat = FIF_PPM;     break;
         case img_file_t::IMG_FILE_TGA:  fiFormat = FIF_TARGA;   break;
         case img_file_t::IMG_FILE_TIF:  fiFormat = FIF_TIFF;    break;
-        case img_file_t::IMG_FILE_WBP:  fiFormat = FIF_WEBP;    break;
+        //case img_file_t::IMG_FILE_WBP:  fiFormat = FIF_WEBP;    break;
         case img_file_t::IMG_FILE_XPM:  fiFormat = FIF_XPM;     break;
         default:                        fiFormat = FIF_PNG;     break;
     }
