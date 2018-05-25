@@ -20,27 +20,12 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules" ${CMAKE_MODULE
 # Only using OpenGL for its libraries, not headers
 include(FindOpenGL)
 
-# FreeType requires special care
-include(FindFreetype)
-
-find_package(ASSIMP REQUIRED)
-if (NOT assimp_FOUND)
-    message(FATAL_ERROR "Unable to locate the library for ASSIMP.")
-endif()
-
-find_package(Boost REQUIRED COMPONENTS regex)
-if (NOT Boost_REGEX_FOUND)
-    message(FATAL_ERROR "Unable to locate the library for Boost-Regex.")
-endif()
-
 
 
 # -------------------------------------
 # Include Paths
 # -------------------------------------
-include_directories("include")
-
-include_directories(${FREETYPE_INCLUDE_DIRS})
+include_directories(include)
 
 
 
@@ -48,63 +33,63 @@ include_directories(${FREETYPE_INCLUDE_DIRS})
 # Source Paths
 # -------------------------------------
 set(LS_DRAW_SOURCES
-    src/draw/AnimationChannel.cpp
-    src/draw/Animation.cpp
-    src/draw/AnimationKeyList.cpp
-    src/draw/AnimationPlayer.cpp
-    src/draw/Atlas.cpp
-    src/draw/BlendObject.cpp
-    src/draw/BoundingBox.cpp
-    src/draw/BufferObject.cpp
-    src/draw/Camera.cpp
-    src/draw/Color.cpp
-    src/draw/DepthObject.cpp
-    src/draw/DrawBatch.cpp
-    src/draw/DrawParams.cpp
-    src/draw/FBOAssembly.cpp
-    src/draw/FBOAttrib.cpp
-    src/draw/FontResource.cpp
-    src/draw/FrameBuffer.cpp
-    src/draw/GeometryUtils.cpp
-    src/draw/GLContext.cpp
-    src/draw/GLQuery.cpp
-    src/draw/ImageBuffer.cpp
-    src/draw/IndexBuffer.cpp
-    src/draw/MatrixStack.cpp
-    src/draw/OcclusionMeshLoader.cpp
-    src/draw/PixelBuffer.cpp
-    src/draw/RBOAssembly.cpp
-    src/draw/RenderBuffer.cpp
-    src/draw/RenderPass.cpp
-    src/draw/RenderValidation.cpp
-    src/draw/SceneFileLoader.cpp
-    src/draw/SceneFileUtility.cpp
-    src/draw/SceneGraph.cpp
-    src/draw/SceneMaterial.cpp
-    src/draw/SceneMesh.cpp
-    src/draw/SceneNode.cpp
-    src/draw/SceneRenderData.cpp
-    src/draw/Setup.cpp
-    src/draw/ShaderAssembly.cpp
-    src/draw/ShaderAttribArray.cpp
-    src/draw/ShaderAttrib.cpp
-    src/draw/ShaderBlockAttrib.cpp
-    src/draw/ShaderObject.cpp
-    src/draw/ShaderProgram.cpp
-    src/draw/ShaderUniform.cpp
-    src/draw/TextMeshLoader.cpp
-    src/draw/TextureAssembly.cpp
-    src/draw/TextureAttrib.cpp
-    src/draw/Texture.cpp
-    src/draw/Transform.cpp
-    src/draw/UniformBuffer.cpp
-    src/draw/VAOAssembly.cpp
-    src/draw/VAOAttrib.cpp
-    src/draw/VBOAttrib.cpp
-    src/draw/VertexArray.cpp
-    src/draw/VertexBuffer.cpp
-    src/draw/Vertex.cpp
-    src/draw/VertexUtils.cpp
+    src/AnimationChannel.cpp
+    src/Animation.cpp
+    src/AnimationKeyList.cpp
+    src/AnimationPlayer.cpp
+    src/Atlas.cpp
+    src/BlendObject.cpp
+    src/BoundingBox.cpp
+    src/BufferObject.cpp
+    src/Camera.cpp
+    src/Color.cpp
+    src/DepthObject.cpp
+    src/DrawBatch.cpp
+    src/DrawParams.cpp
+    src/FBOAssembly.cpp
+    src/FBOAttrib.cpp
+    src/FontResource.cpp
+    src/FrameBuffer.cpp
+    src/GeometryUtils.cpp
+    src/GLContext.cpp
+    src/GLQuery.cpp
+    src/ImageBuffer.cpp
+    src/IndexBuffer.cpp
+    src/MatrixStack.cpp
+    src/OcclusionMeshLoader.cpp
+    src/PixelBuffer.cpp
+    src/RBOAssembly.cpp
+    src/RenderBuffer.cpp
+    src/RenderPass.cpp
+    src/RenderValidation.cpp
+    src/SceneFileLoader.cpp
+    src/SceneFileUtility.cpp
+    src/SceneGraph.cpp
+    src/SceneMaterial.cpp
+    src/SceneMesh.cpp
+    src/SceneNode.cpp
+    src/SceneRenderData.cpp
+    src/Setup.cpp
+    src/ShaderAssembly.cpp
+    src/ShaderAttribArray.cpp
+    src/ShaderAttrib.cpp
+    src/ShaderBlockAttrib.cpp
+    src/ShaderObject.cpp
+    src/ShaderProgram.cpp
+    src/ShaderUniform.cpp
+    src/TextMeshLoader.cpp
+    src/TextureAssembly.cpp
+    src/TextureAttrib.cpp
+    src/Texture.cpp
+    src/Transform.cpp
+    src/UniformBuffer.cpp
+    src/VAOAssembly.cpp
+    src/VAOAttrib.cpp
+    src/VBOAttrib.cpp
+    src/VertexArray.cpp
+    src/VertexBuffer.cpp
+    src/Vertex.cpp
+    src/VertexUtils.cpp
 )
 
 
@@ -122,10 +107,9 @@ set(
 set(
     LS_DRAW_EXTERNAL_DEPS
     ${OPENGL_gl_LIBRARY}
-    ${FREETYPE_LIBRARIES}
-    ${assimp_LIBRARIES}
-    ${Boost_REGEX_LIBRARY}
-    freeimage
+    ${FREETYPE_LIBS}
+    ${ASSIMP_LIBS}
+    ${FREEIMAGE_LIBS}
 )
 
 
@@ -134,13 +118,16 @@ set(
 # Library Setup
 # -------------------------------------
 # Keeping LightDraw as a static library until Vulkan support is added.
-add_library("${OUTPUT_NAME}" STATIC "${LS_DRAW_SOURCES}")
+add_library(${OUTPUT_NAME} STATIC ${LS_DRAW_SOURCES})
 
 # Internal dependencies
-add_dependencies(${LS_DRAW_INTERNAL_DEPS})
+add_dependencies(${OUTPUT_NAME} Boost_Regex)
 
 # Linking Setup
-target_link_libraries("${OUTPUT_NAME}" ${LS_DRAW_INTERNAL_DEPS} ${LS_DRAW_EXTERNAL_DEPS})
+target_link_libraries(
+    ${OUTPUT_NAME}
+    ${LS_DRAW_INTERNAL_DEPS}
+    ${LS_DRAW_EXTERNAL_DEPS})
 
 
 
