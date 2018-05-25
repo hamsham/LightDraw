@@ -10,6 +10,9 @@
 #define __LS_DRAW_SHADER_ASSEMBLY_H__
 
 
+#include "lightsky/draw/Setup.h"
+
+
 
 namespace ls {
 namespace draw {

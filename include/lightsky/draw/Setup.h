@@ -864,7 +864,7 @@ extern PFNGLPIXELSTOREXPROC glPixelStorex;
 #if defined(GL_ES_VERSION_3_0) && !defined(LS_DRAW_FORCE_BACKEND_GL)
     #define LS_DRAW_BACKEND_GLES
     
-#elif defined(GL_VERSION_3_3)
+#elif defined(GL_VERSION_3_3) || defined(LS_DRAW_FORCE_BACKEND_GL)
     #define LS_DRAW_BACKEND_GL
     
 #else
