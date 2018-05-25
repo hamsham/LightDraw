@@ -26,7 +26,7 @@
 -------------------------------------*/
 enum : unsigned int {
     SCENE_FILE_IMPORT_FLAGS = 0
-        //| aiProcess_OptimizeGraph
+        | aiProcess_Triangulate
         | aiProcess_OptimizeMeshes
         | aiProcess_FindInstances
         | aiProcess_SortByPType

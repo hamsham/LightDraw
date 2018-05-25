@@ -51,7 +51,7 @@ enum class scene_node_t : uint32_t {
  * helps to ensure that other objects contained within a SceneGraph can be
  * managed separately from the node.
 -----------------------------------------------------------------------------*/
-struct alignas(sizeof(uint32_t)*4) SceneNode final {
+struct alignas(sizeof(uint32_t)) SceneNode final {
     /**
      * @brief Enumeration containing the type of scene node which *this
      * represents.
