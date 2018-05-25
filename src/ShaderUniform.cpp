@@ -8,9 +8,13 @@
 #include <cstring> // strlen
 #include <utility> // std::move()
 
-#include "lightsky//utils/Assertions.h"
-#include "lightsky//utils/Copy.h"
-#include "lightsky//utils/Hash.h"
+#include "lightsky/utils/Assertions.h"
+#include "lightsky/utils/Copy.h"
+#include "lightsky/utils/Hash.h"
+
+#include "lightsky/math/vec2.h"
+#include "lightsky/math/vec3.h"
+#include "lightsky/math/vec4.h"
 
 #include "lightsky/draw/ShaderUniform.h"
 

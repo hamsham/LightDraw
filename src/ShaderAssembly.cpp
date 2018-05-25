@@ -30,9 +30,9 @@ ShaderProgramAssembly::~ShaderProgramAssembly() noexcept {
  * Constructor
 -------------------------------------*/
 ShaderProgramAssembly::ShaderProgramAssembly() noexcept :
-    pVertShader{},
-    pFragShader{},
-    pGeomShader{}
+    pVertShader{nullptr},
+    pFragShader{nullptr},
+    pGeomShader{nullptr}
 {}
 
 /*-------------------------------------

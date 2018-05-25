@@ -9,13 +9,7 @@
 #include <utility> // std::move
 #include <string>
 
-#include "lightsky/setup/OS.h"
-
-#ifdef LS_OS_WINDOWS
-    #include <freetype2/ft2build.h>
-#else
-    #include <ft2build.h>
-#endif
+#include <freetype2/ft2build.h>
 
 
 #include FT_FREETYPE_H

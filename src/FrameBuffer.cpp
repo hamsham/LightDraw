@@ -121,12 +121,12 @@ void FrameBuffer::bind_default_framebuffer(const fbo_access_t access, const bool
     glBindFramebuffer(access, 0);
     LS_LOG_GL_ERR();
 
-    if (access == fbo_access_t::FBO_ACCESS_R || fbo_access_t::FBO_ACCESS_RW) {
+    if (access == fbo_access_t::FBO_ACCESS_R || access == fbo_access_t::FBO_ACCESS_RW) {
         glReadBuffer(rasterize ? GL_BACK : GL_NONE);
         LS_LOG_GL_ERR();
     }
 
-    if ((access == fbo_access_t::FBO_ACCESS_W || fbo_access_t::FBO_ACCESS_RW) && !rasterize) {
+    if ((access == fbo_access_t::FBO_ACCESS_W || access == fbo_access_t::FBO_ACCESS_RW) && !rasterize) {
         constexpr GLenum discardMode = GL_NONE;
         glDrawBuffers(1, &discardMode);
         LS_LOG_GL_ERR();

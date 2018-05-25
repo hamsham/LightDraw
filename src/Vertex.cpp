@@ -45,7 +45,7 @@ unsigned draw::get_num_vertex_bytes(const vertex_data_t type) {
         case VERTEX_DATA_VEC_2I:
             return sizeof (math::vec2i);
         case VERTEX_DATA_VEC_2UI:
-            return sizeof (math::vec2ui);
+            return sizeof (math::vec2u);
         case VERTEX_DATA_VEC_2F:
             return sizeof (math::vec2f);
 
@@ -54,7 +54,7 @@ unsigned draw::get_num_vertex_bytes(const vertex_data_t type) {
         case VERTEX_DATA_VEC_3I:
             return sizeof (math::vec3i);
         case VERTEX_DATA_VEC_3UI:
-            return sizeof (math::vec3ui);
+            return sizeof (math::vec3u);
         case VERTEX_DATA_VEC_3F:
             return sizeof (math::vec3f);
 
@@ -63,7 +63,7 @@ unsigned draw::get_num_vertex_bytes(const vertex_data_t type) {
         case VERTEX_DATA_VEC_4I:
             return sizeof (math::vec4i);
         case VERTEX_DATA_VEC_4UI:
-            return sizeof (math::vec4ui);
+            return sizeof (math::vec4u);
         case VERTEX_DATA_VEC_4F:
             return sizeof (math::vec4f);
 
