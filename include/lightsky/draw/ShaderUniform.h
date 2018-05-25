@@ -280,21 +280,21 @@ inline void set_shader_uniform(GLint uniformId, unsigned val0, unsigned val1, un
 /**------------------------------------
  * @brief Set a uniform 2d vector of unsigned ints
 -------------------------------------*/
-inline void set_shader_uniform(GLint uniformId, const math::vec2ui& val) {
+inline void set_shader_uniform(GLint uniformId, const math::vec2u& val) {
     glUniform2uiv(uniformId, 1, val.v);
 }
 
 /**------------------------------------
  * @brief Set a uniform 3d vector of unsigned ints
 -------------------------------------*/
-inline void set_shader_uniform(GLint uniformId, const math::vec3ui& val) {
+inline void set_shader_uniform(GLint uniformId, const math::vec3u& val) {
     glUniform3uiv(uniformId, 1, val.v);
 }
 
 /**------------------------------------
  * @brief Set a uniform 4d vector of unsigned ints
 -------------------------------------*/
-inline void set_shader_uniform(GLint uniformId, const math::vec4ui& val) {
+inline void set_shader_uniform(GLint uniformId, const math::vec4u& val) {
     glUniform4uiv(uniformId, 1, val.v);
 }
 
