@@ -38,7 +38,7 @@ int init_eds_draw();
  * Debugging Various Messages.
 -------------------------------------*/
 #ifdef LS_DEBUG
-unsigned print_gl_error(const char* const func, const int line, const char* const file) noexcept;
+    unsigned print_gl_error(const char* const func, const int line, const char* const file) noexcept;
 #else
 
 inline unsigned print_gl_error(const char* const, int, const char*) noexcept {
@@ -56,8 +56,14 @@ inline unsigned print_gl_error(const char* const, int, const char*) noexcept {
 /*-------------------------------------
  * Rudimentary GL logging
 -------------------------------------*/
-#ifndef LS_LOG_GL_ERR
-#define LS_LOG_GL_ERR() ls::draw::print_gl_error(__func__, __LINE__, __FILE__)
+#ifdef LS_DEBUG
+    #ifndef LS_LOG_GL_ERR
+        #define LS_LOG_GL_ERR() ls::draw::print_gl_error(__func__, __LINE__, __FILE__)
+    #endif
+#else
+    #ifndef LS_LOG_GL_ERR
+        #define LS_LOG_GL_ERR()
+    #endif
 #endif
 
 

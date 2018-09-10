@@ -18,7 +18,8 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules" ${CMAKE_MODULE
 # Finders
 # -------------------------------------
 # Only using OpenGL for its libraries, not headers
-include(FindOpenGL)
+set(OpenGL_GL_PREFERENCE LEGACY)
+find_package(OpenGL REQUIRED)
 
 
 
