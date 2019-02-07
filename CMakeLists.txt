@@ -15,11 +15,40 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules" ${CMAKE_MODULE
 
 
 # -------------------------------------
+# Compiler Setup
+# -------------------------------------
+# MinGW doesn't always play nice with the Windows SDK
+if (MINGW)
+    set(CMAKE_SYSTEM_NAME Windows)
+
+    # These defines were made in Windows 2000
+    add_definitions(-D WINVER=0x0602)
+    add_definitions(-D_WIN32_WINNT=0x0602)
+elseif(WIN32)
+    add_definitions(-DWIN32_LEAN_AND_MEAN)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+endif()
+
+
+
+# -------------------------------------
 # Finders
 # -------------------------------------
 # Only using OpenGL for its libraries, not headers
 set(OpenGL_GL_PREFERENCE LEGACY)
 find_package(OpenGL REQUIRED)
+
+
+
+# -------------------------------------
+# 3rd-party libraries
+# -------------------------------------
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR};${CMAKE_MODULE_PATH}")
+include(assimpConfig.cmake)
+include(FreeImageConfig.cmake)
+include(Boost_RegexConfig.cmake)
+include(SDL2Config.cmake)
+include(freetypeConfig.cmake)
 
 
 
@@ -105,13 +134,24 @@ set(
     lsmath
 )
 
-set(
-    LS_DRAW_EXTERNAL_DEPS
-    ${OPENGL_gl_LIBRARY}
-    ${FREETYPE_LIBS}
-    ${ASSIMP_LIBS}
-    ${FREEIMAGE_LIBS}
-)
+if (NOT MSVC)
+    set(LS_DRAW_EXTERNAL_DEPS
+        ${OPENGL_gl_LIBRARY}
+        ${SDL2_LIBS}
+        ${FREETYPE_LIBRARIES}
+        ${ASSIMP_LIBRARIES}
+        ${FREEIMAGE_LIBRARIES}
+    )
+else()
+    set(LS_DRAW_EXTERNAL_DEPS
+        ${OPENGL_gl_LIBRARY}
+        ${SDL2_LIBS}
+        ${FREETYPE_LIBRARIES}
+        ${ASSIMP_LIBRARIES}
+        ${FREEIMAGE_LIBRARIES}
+        pthread
+    )
+endif()
 
 
 
@@ -122,7 +162,7 @@ set(
 add_library(${OUTPUT_NAME} STATIC ${LS_DRAW_SOURCES})
 
 # Internal dependencies
-add_dependencies(${OUTPUT_NAME} Boost_Regex)
+add_dependencies(${OUTPUT_NAME} Boost_REGEX_LIBRARY)
 
 # Linking Setup
 target_link_libraries(
