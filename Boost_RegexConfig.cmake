@@ -20,7 +20,7 @@ if(NOT Boost_REGEX_LIBRARY)
         set(BOOST_BOOTSTRAP ${EXTERNAL_PROJECT_PREFIX}/src/Boost_Regex/bootstrap.sh)
     endif()
 
-    set(BOOST_BJAM ${EXTERNAL_PROJECT_PREFIX}/src/Boost_Regex-build/bjam --build-dir=${EXTERNAL_PROJECT_PREFIX}/src/Boost_Regex-build --prefix=${EXTERNAL_PROJECT_PREFIX} link=shared threading=multi runtime-link=shared)
+    set(BOOST_B2 ${EXTERNAL_PROJECT_PREFIX}/src/Boost_Regex-build/b2 --prefix=${EXTERNAL_PROJECT_PREFIX} --build-type=minimal --build-dir=${EXTERNAL_PROJECT_PREFIX}/src/Boost_Regex-build --with-regex variant=release link=shared threading=single runtime-link=shared)
 
     # Include Boost
     ExternalProject_Add(
@@ -42,11 +42,11 @@ if(NOT Boost_REGEX_LIBRARY)
         CONFIGURE_COMMAND
             ${BOOST_BOOTSTRAP} --prefix=${EXTERNAL_PROJECT_PREFIX}
         BUILD_COMMAND
-            cd ${EXTERNAL_PROJECT_PREFIX}/src/Boost_Regex && ${BOOST_BJAM} stage
+            cd ${EXTERNAL_PROJECT_PREFIX}/src/Boost_Regex && ${BOOST_B2} stage
         INSTALL_DIR
             ${EXTERNAL_PROJECT_PREFIX}
         INSTALL_COMMAND
-            cd ${EXTERNAL_PROJECT_PREFIX}/src/Boost_Regex && ${BOOST_BJAM} install
+            cd ${EXTERNAL_PROJECT_PREFIX}/src/Boost_Regex && ${BOOST_B2} install
     )
 
     # Add the imported library target
