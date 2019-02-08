@@ -4,7 +4,7 @@
 # #####################################
 find_package(Freetype)
 
-if (NOT FREETYPE_INCLUDE_DIRS-NOTFOUND AND NOT FREETYPE_LIBRARIES-NOTFOUND)
+if (FREETYPE_INCLUDE_DIRS AND FREETYPE_LIBRARIES)
     include_directories(${FREETYPE_INCLUDE_DIRS})
 else()
     message("-- Building Freetype from source")
