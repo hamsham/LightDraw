@@ -285,7 +285,7 @@ bool ShaderObject::introspect_attributes() noexcept {
 
     rgx::regex fragRegex {attribPattern, rgx::regex::ECMAScript};
     const unsigned numSourceChars = strlen(shaderSource.get());
-    const rgx::cregex_iterator start{shaderSource, shaderSource+numSourceChars, fragRegex, rgx::regex_constants::match_any};
+    const rgx::cregex_iterator start{shaderSource.get(), shaderSource.get()+numSourceChars, fragRegex, rgx::regex_constants::match_any};
     const rgx::cregex_iterator end;
     unsigned numAttribs = 0;
 

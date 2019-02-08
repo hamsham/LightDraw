@@ -47,7 +47,6 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR};${CMAKE_MODULE_PATH}")
 include(assimpConfig.cmake)
 include(FreeImageConfig.cmake)
 include(Boost_RegexConfig.cmake)
-include(SDL2Config.cmake)
 include(freetypeConfig.cmake)
 
 
@@ -137,18 +136,18 @@ set(
 if (NOT MSVC)
     set(LS_DRAW_EXTERNAL_DEPS
         ${OPENGL_gl_LIBRARY}
-        ${SDL2_LIBS}
         ${FREETYPE_LIBRARIES}
         ${ASSIMP_LIBRARIES}
         ${FREEIMAGE_LIBRARIES}
+        ${Boost_REGEX_LIBRARY}
     )
 else()
     set(LS_DRAW_EXTERNAL_DEPS
         ${OPENGL_gl_LIBRARY}
-        ${SDL2_LIBS}
         ${FREETYPE_LIBRARIES}
         ${ASSIMP_LIBRARIES}
         ${FREEIMAGE_LIBRARIES}
+        ${Boost_REGEX_LIBRARY}
         pthread
     )
 endif()
@@ -160,9 +159,6 @@ endif()
 # -------------------------------------
 # Keeping LightDraw as a static library until Vulkan support is added.
 add_library(${OUTPUT_NAME} STATIC ${LS_DRAW_SOURCES})
-
-# Internal dependencies
-add_dependencies(${OUTPUT_NAME} Boost_REGEX_LIBRARY)
 
 # Linking Setup
 target_link_libraries(

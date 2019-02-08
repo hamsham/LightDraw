@@ -46,7 +46,7 @@ enum draw_mode_t : uint32_t {
  * Trivially-Copyable Parameters to render a single subset of geometry through
  * OpenGL.
 -----------------------------------------------------------------------------*/
-struct alignas(1) DrawCommandParams {
+struct alignas(8) DrawCommandParams {
     /**
      * Indexed location of *this draw command's material within a scene graph.
      */
