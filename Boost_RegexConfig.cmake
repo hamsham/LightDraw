@@ -3,7 +3,6 @@
 # External build for Boost-Regex
 # #####################################
 find_package(Boost COMPONENTS regex)
-#message("BOOOOOOOOST: ${Boost_REGEX_LIBRARY}")
 
 if(NOT Boost_REGEX_LIBRARY)
     message("-- Building Boost Regex from source")
