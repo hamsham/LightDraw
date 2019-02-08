@@ -103,9 +103,13 @@ inline unsigned print_gl_error(const char* const, int, const char*) noexcept {
     #ifndef WIN32_LEAN_AND_MEAN
         #define WIN32_LEAN_AND_MEAN
     #endif
+
     #include <windows.h>
     #include <GL/gl.h>
+
+    #ifndef LS_COMPILER_MSVC
     #include <GL/glext.h>
+    #endif
 
 
 /*-------------------------------------
