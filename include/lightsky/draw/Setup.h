@@ -18,7 +18,11 @@
 /*-------------------------------------
  * Debugging
 -------------------------------------*/
-#define LS_DRAW_FORCE_BACKEND_GL 1
+#ifdef LS_ARCH_ARM
+    #define LS_DRAW_FORCE_BACKEND_GL 0
+#else
+    #define LS_DRAW_FORCE_BACKEND_GL 1
+#endif
 
 
 
