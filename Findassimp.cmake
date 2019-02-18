@@ -65,7 +65,7 @@ if(MSVC)
 else()
 
     find_path(
-      assimp_INCLUDE_DIR
+      ASSIMP_INCLUDE_DIR
       NAMES
         assimp/postprocess.h
         assimp/scene.h
@@ -92,7 +92,7 @@ else()
         /sw/lib
         /opt/local/lib
     )
-    if(assimp_INCLUDE_DIR AND ASSIMP_LIBRARIES)
+    if(ASSIMP_INCLUDE_DIR AND ASSIMP_LIBRARIES)
         message("-- Found ASSIMP: ${ASSIMP_LIBRARIES}")
         set(ASSIMP_FOUND TRUE PARENT_SCOPE)
 

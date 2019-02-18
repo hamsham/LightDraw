@@ -6,7 +6,7 @@ find_package(assimp MODULE)
 # #####################################
 # External build for ASSIMP
 # #####################################
-if (ASSIMP_INCLUDE_DIR STREQUAL ASSIMP_INCLUDE_DIR-NOTFOUND OR ASSIMP_LIBRARIES STREQUAL ASSIMP_LIBRARIES-NOTFOUND)
+if (NOT ASSIMP_INCLUDE_DIR OR NOT ASSIMP_LIBRARIES)
 
     message("-- Building ASSIMP from source")
   
@@ -88,6 +88,4 @@ if (ASSIMP_INCLUDE_DIR STREQUAL ASSIMP_INCLUDE_DIR-NOTFOUND OR ASSIMP_LIBRARIES 
     add_dependencies(assimp IrrXML)
     set(ASSIMP_LIBRARIES assimp)
 
-
-
-endif ()
+endif()
