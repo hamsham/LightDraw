@@ -153,7 +153,11 @@ bool ShaderAttrib::set_name(const char* const attribName, const unsigned numSrcC
         return false;
     }
     
-    utils::fast_memcpy(name.get(), attribName, numDestChars);
+    //utils::fast_memcpy(name.get(), attribName, numDestChars);
+    for (unsigned i = 0; i < numDestChars; ++i)
+    {
+        name[i] = attribName[i];
+    }
     
     name[numDestChars] = '\0';
     
@@ -200,7 +204,7 @@ utils::Pointer<GLchar[]> draw::get_attrib_name(
     GLsizei varNameLen = 0;
     utils::Pointer<GLchar[]> varName{new GLchar[maxVarNameLen]};
     
-    utils::fast_memset(varName.get(), '\0', maxVarNameLen);
+    utils::fast_fill(varName.get(), '\0', maxVarNameLen);
 
     if (attribMaxLenFlag == GL_ACTIVE_UNIFORM_MAX_LENGTH) {
         glGetActiveUniform(prog.gpu_id(), index, maxVarNameLen, &varNameLen, &outVarSize, &outVarType, varName.get());

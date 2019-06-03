@@ -251,7 +251,7 @@ utils::Pointer<GLchar[]> ShaderObject::get_shader_string(
         return shaderStringData;
     }
     
-    utils::fast_memset(shaderStringData.get(), '\0', shaderStringLen+1);
+    utils::fast_fill(shaderStringData.get(), '\0', shaderStringLen+1);
 
     if (stringType == shader_string_t::SHADER_STRING_LOG) {
         glGetShaderInfoLog(shaderId, shaderStringLen, nullptr, shaderStringData.get());
