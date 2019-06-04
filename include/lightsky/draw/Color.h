@@ -259,22 +259,22 @@ typedef colorf_t color;
 /*-----------------------------------------------------------------------------
     Color Types
 -----------------------------------------------------------------------------*/
-static constexpr color blank = color{0.f, 0.f, 0.f, 0.f};
+static const color blank = color{0.f, 0.f, 0.f, 0.f};
 
 // Primary Colors
-static constexpr color red = color{1.f, 0.f, 0.f, 1.f};
-static constexpr color green = color{0.f, 1.f, 0.f, 1.f};
-static constexpr color blue = color{0.f, 0.f, 1.f, 1.f};
+static const color red = color{1.f, 0.f, 0.f, 1.f};
+static const color green = color{0.f, 1.f, 0.f, 1.f};
+static const color blue = color{0.f, 0.f, 1.f, 1.f};
 
 //Secondary Colors
-static constexpr color magenta = color{1.f, 0.f, 1.f, 1.f};
-static constexpr color yellow = color{1.f, 1.f, 0.f, 1.f};
-static constexpr color cyan = color{0.f, 1.f, 1.f, 1.f};
+static const color magenta = color{1.f, 0.f, 1.f, 1.f};
+static const color yellow = color{1.f, 1.f, 0.f, 1.f};
+static const color cyan = color{0.f, 1.f, 1.f, 1.f};
 
 // Monochrome
-static constexpr color black = color{0.f, 0.f, 0.f, 1.f};
-static constexpr color white = color{1.f, 1.f, 1.f, 1.f};
-static constexpr color gray = color{0.5f, 0.5f, 0.5f, 1.f};
+static const color black = color{0.f, 0.f, 0.f, 1.f};
+static const color white = color{1.f, 1.f, 1.f, 1.f};
+static const color gray = color{0.5f, 0.5f, 0.5f, 1.f};
 
 
 
@@ -346,7 +346,7 @@ constexpr pixel_id_t color_to_id(const colorub_t& col) noexcept {
 /*-------------------------------------
  * ID Conversion to Color
 -------------------------------------*/
-constexpr colorf_t id_to_color(const pixel_id_t id, const float normFactor = 1.f/255.f) noexcept {
+inline colorf_t id_to_color(const pixel_id_t id, const float normFactor = 1.f/255.f) noexcept {
     return colorf_t {
         (float)((id & 0x000000FF) >> 0) * normFactor,
         (float)((id & 0x0000FF00) >> 8) * normFactor,

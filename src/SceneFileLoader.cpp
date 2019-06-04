@@ -750,7 +750,7 @@ void SceneFileLoader::import_texture_path(
         const std::string& baseFileDir = preloader.baseFileDir;
         const std::string texPath{baseFileDir + inPath.C_Str()};
         std::unordered_map<std::string, unsigned>& texturePaths = preloader.texturePaths;
-        const std::unordered_map<std::string, unsigned>::const_iterator& iter = texturePaths.find(texPath);
+        const std::unordered_map<std::string, unsigned>::const_iterator iter = texturePaths.find(texPath);
         GLuint texId = 0;
 
         if (iter != texturePaths.cend()) {
