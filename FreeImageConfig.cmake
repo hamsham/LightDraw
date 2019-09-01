@@ -82,8 +82,7 @@ if (FREEIMAGE_INCLUDE_PATH STREQUAL FREEIMAGE_INCLUDE_PATH-NOTFOUND OR FREEIMAGE
     else()
         set(FREEIMAGE_LIBRARIES freeimage)
     endif()
-
-
-
+else()
+    include_directories(BEFORE SYSTEM ${FREEIMAGE_INCLUDE_PATH})
 endif()
   
