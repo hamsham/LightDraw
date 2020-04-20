@@ -246,14 +246,14 @@ class FontResource final : public ls::utils::Resource {
  * Load a font file using the default font size.
 -------------------------------------*/
 inline bool FontResource::load_file(const std::wstring& filename, unsigned pixelSize) {
-    return load_file(ls::utils::wide_to_mb_string(filename), pixelSize);
+    return load_file(ls::utils::to_str(filename), pixelSize);
 }
 
 /*-------------------------------------
  * Load a font file using the default font size.
 -------------------------------------*/
 inline bool FontResource::load_file(const std::wstring& filename) {
-    return load_file(ls::utils::wide_to_mb_string(filename));
+    return load_file(ls::utils::to_str(filename));
 }
 
 /*-------------------------------------
