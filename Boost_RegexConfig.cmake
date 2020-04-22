@@ -20,7 +20,12 @@ if(NOT Boost_REGEX_LIBRARY)
         set(BOOST_BOOTSTRAP ${EXTERNAL_PROJECT_PREFIX}/src/Boost_Regex/bootstrap.sh)
     endif()
 
-    set(BOOST_B2 ${EXTERNAL_PROJECT_PREFIX}/src/Boost_Regex-build/b2 --prefix=${EXTERNAL_PROJECT_PREFIX} --build-type=minimal --build-dir=${EXTERNAL_PROJECT_PREFIX}/src/Boost_Regex-build --with-regex variant=release link=shared threading=single runtime-link=shared)
+    set(BOOST_B2 ${EXTERNAL_PROJECT_PREFIX}/src/Boost_Regex/b2
+        --prefix=${EXTERNAL_PROJECT_PREFIX}
+        --build-type=minimal
+        --build-dir=${EXTERNAL_PROJECT_PREFIX}/src/Boost_Regex-build
+        --with-regex variant=release link=shared threading=single runtime-link=shared
+    )
 
     # Include Boost
     ExternalProject_Add(
