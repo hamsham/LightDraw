@@ -38,9 +38,9 @@ if(NOT Boost_REGEX_LIBRARY)
         GIT_SUBMODULES
             ""
         UPDATE_COMMAND
-            ${GIT_EXECUTABLE} fetch
+            ${GIT_EXECUTABLE} pull origin ${BOOST_BRANCH}
         CONFIGURE_COMMAND
-            ${BOOST_BOOTSTRAP} --prefix=${EXTERNAL_PROJECT_PREFIX}
+            cd ${EXTERNAL_PROJECT_PREFIX}/src/Boost_Regex && ${BOOST_BOOTSTRAP} --prefix=${EXTERNAL_PROJECT_PREFIX}
         BUILD_COMMAND
             cd ${EXTERNAL_PROJECT_PREFIX}/src/Boost_Regex && ${BOOST_B2} stage
         INSTALL_DIR
