@@ -107,8 +107,8 @@ inline unsigned print_gl_error(const char* const, int, const char*) noexcept {
     #include <windows.h>
     #include <GL/gl.h>
 
-    #ifndef LS_COMPILER_MSVC
-    #include <GL/glext.h>
+    #ifdef LS_COMPILER_MINGW
+        #include <GL/glext.h>
     #endif
 
 

@@ -33,11 +33,11 @@ uintptr_t get_gl_function(const char* const name) {
     uintptr_t p = (uintptr_t)wglGetProcAddress(name);
 
     if (p == 0x0
-        || (p == 0x1)
-        || (p == 0x2)
-        || (p == 0x3)
-        || (p == (uintptr_t) - 1)
-        ) {
+    || (p == 0x1)
+    || (p == 0x2)
+    || (p == 0x3)
+    || (p == (uintptr_t) - 1)
+    ) {
         const HMODULE ogllib = get_gl_library();
         p = (uintptr_t)GetProcAddress(ogllib, name);
     }
