@@ -35,8 +35,10 @@ endif()
 # Finders
 # -------------------------------------
 # Only using OpenGL for its libraries, not headers
-set(OpenGL_GL_PREFERENCE LEGACY)
+set(OpenGL_GL_PREFERENCE GLVND)
 find_package(OpenGL REQUIRED)
+
+find_package(Threads REQUIRED)
 
 
 
@@ -48,13 +50,6 @@ include(assimpConfig.cmake)
 include(FreeImageConfig.cmake)
 include(Boost_RegexConfig.cmake)
 include(freetypeConfig.cmake)
-
-
-
-# -------------------------------------
-# Include Paths
-# -------------------------------------
-include_directories(include)
 
 
 
@@ -124,47 +119,28 @@ set(LS_DRAW_SOURCES
 
 
 # -------------------------------------
-# Dependency Setup
-# -------------------------------------
-set(
-    LS_DRAW_INTERNAL_DEPS
-    lssetup
-    lsutils
-    lsmath
-)
-
-if (NOT MSVC)
-    set(LS_DRAW_EXTERNAL_DEPS
-        ${OPENGL_gl_LIBRARY}
-        ${FREETYPE_LIBRARIES}
-        ${ASSIMP_LIBRARIES}
-        ${FREEIMAGE_LIBRARIES}
-        ${Boost_REGEX_LIBRARY}
-    )
-else()
-    set(LS_DRAW_EXTERNAL_DEPS
-        ${OPENGL_gl_LIBRARY}
-        ${FREETYPE_LIBRARIES}
-        ${ASSIMP_LIBRARIES}
-        ${FREEIMAGE_LIBRARIES}
-        ${Boost_REGEX_LIBRARY}
-        pthread
-    )
-endif()
-
-
-
-# -------------------------------------
 # Library Setup
 # -------------------------------------
 # Keeping LightDraw as a static library until Vulkan support is added.
 add_library(${OUTPUT_NAME} STATIC ${LS_DRAW_SOURCES})
 
+target_include_directories(${OUTPUT_NAME}
+    PUBLIC include
+    PRIVATE BEFORE SYSTEM ${FREETYPE_INCLUDE_DIRS}
+)
+
 # Linking Setup
 target_link_libraries(
     ${OUTPUT_NAME}
-    ${LS_DRAW_INTERNAL_DEPS}
-    ${LS_DRAW_EXTERNAL_DEPS})
+    lssetup
+    lsutils
+    lsmath
+    OpenGL::GL
+    ${FREETYPE_LIBRARIES}
+    ${ASSIMP_LIBRARIES}
+    ${FREEIMAGE_LIBRARIES}
+    ${Boost_REGEX_LIBRARY}
+    Threads::Threads)
 
 
 

@@ -344,13 +344,13 @@ bool TextureAssembly::is_assembly_valid() const noexcept {
     else if (texMainType == tex_type_t::TEX_TYPE_CUBE) {
         LS_LOG_MSG("\tVerifying Cube texture parameters.");
 
-        if (texSubType != tex_2d_type_t::TEX_SUBTYPE_CUBE_RIGHT
-        || texSubType != tex_2d_type_t::TEX_SUBTYPE_CUBE_TOP
-        || texSubType != tex_2d_type_t::TEX_SUBTYPE_CUBE_BACK
-        || texSubType != tex_2d_type_t::TEX_SUBTYPE_CUBE_LEFT
-        || texSubType != tex_2d_type_t::TEX_SUBTYPE_CUBE_BOTTOM
-        || texSubType != tex_2d_type_t::TEX_SUBTYPE_CUBE_FRONT
-        ) {
+        if (!(texSubType == tex_2d_type_t::TEX_SUBTYPE_CUBE_RIGHT
+        ||  texSubType == tex_2d_type_t::TEX_SUBTYPE_CUBE_TOP
+        ||  texSubType == tex_2d_type_t::TEX_SUBTYPE_CUBE_BACK
+        ||  texSubType == tex_2d_type_t::TEX_SUBTYPE_CUBE_LEFT
+        ||  texSubType == tex_2d_type_t::TEX_SUBTYPE_CUBE_BOTTOM
+        ||  texSubType == tex_2d_type_t::TEX_SUBTYPE_CUBE_FRONT
+        )) {
             LS_LOG_ERR("\t\tMismatched Cube Texture subtype!\n");
             return false;
         }

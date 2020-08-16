@@ -4,11 +4,8 @@
 # #####################################
 find_package(Freetype)
 
-if (FREETYPE_INCLUDE_DIRS AND FREETYPE_LIBRARIES)
-    #get_filename_component(TEMP_FREETYPE_DIR ${FREETYPE_INCLUDE_DIRS} DIRECTORY)
-    include_directories(${FREETYPE_INCLUDE_DIRS})
-    #include_directories(BEFORE SYSTEM ${TEMP_FREETYPE_DIR})
-else()
+    #include_directories(${FREETYPE_INCLUDE_DIRS})
+if (NOT FREETYPE_INCLUDE_DIRS OR NOT FREETYPE_LIBRARIES)
     message("-- Building Freetype from source")
 
     set(FREETYPE_BRANCH "master" CACHE STRING "Git branch or tag for checking out FreeType.")
@@ -57,8 +54,7 @@ else()
     set_target_properties(freetype PROPERTIES IMPORTED_LOCATION ${EXTERNAL_PROJECT_PREFIX}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}freetype${CMAKE_STATIC_LIBRARY_SUFFIX})
     add_dependencies(freetype FreeType)
 
-    include_directories(BEFORE SYSTEM ${EXTERNAL_PROJECT_PREFIX}/include)
-
+    set(FREETYPE_INCLUDE_DIRS ${EXTERNAL_PROJECT_PREFIX}/include  ${EXTERNAL_PROJECT_PREFIX}/include/freetype2)
     set(FREETYPE_LIBRARIES freetype)
 
 endif()
