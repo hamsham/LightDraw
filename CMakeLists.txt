@@ -38,6 +38,9 @@ endif()
 set(OpenGL_GL_PREFERENCE GLVND)
 find_package(OpenGL REQUIRED)
 
+# ZLib is required for ASSIMP
+# find_package(ZLIB REQUIRED)
+
 find_package(Threads REQUIRED)
 
 
@@ -132,15 +135,44 @@ target_include_directories(${OUTPUT_NAME}
 # Linking Setup
 target_link_libraries(
     ${OUTPUT_NAME}
-    lssetup
-    lsutils
-    lsmath
-    OpenGL::GL
-    ${FREETYPE_LIBRARIES}
-    ${ASSIMP_LIBRARIES}
-    ${FREEIMAGE_LIBRARIES}
-    ${Boost_REGEX_LIBRARY}
-    Threads::Threads)
+        PUBLIC lssetup
+        PUBLIC lsutils
+        PUBLIC lsmath
+        PUBLIC ${FREETYPE_LIBRARIES}
+        PUBLIC ${ASSIMP_LIBRARIES}
+        PUBLIC ${FREEIMAGE_LIBRARIES}
+        PUBLIC ${Boost_REGEX_LIBRARY}
+        PUBLIC Threads::Threads
+        PUBLIC z)
+
+if (OpenGL::EGL AND OPENGL_opengl_LIBRARY)
+    message("-- Found EGL library: ${OPENGL_egl_LIBRARY}")
+    target_link_libraries(
+        ${OUTPUT_NAME}
+            PUBLIC OpenGL::EGL
+    )
+elseif(OpenGL::GLX)
+    message("-- Found GLX library: ${OPENGL_glx_LIBRARY}")
+    target_link_libraries(
+        ${OUTPUT_NAME}
+            PUBLIC OpenGL::GLX
+    )
+endif()
+
+if (OpenGL::EGL AND OpenGL::OpenGL)
+    message("-- Found GLVND GL driver library: ${OPENGL_opengl_LIBRARY}")
+    target_link_libraries(
+        ${OUTPUT_NAME}
+            PUBLIC OpenGL::OpenGL
+    )
+else()
+    message("-- Found Legacy GL driver library: ${OPENGL_gl_LIBRARY}")
+    target_link_libraries(
+        ${OUTPUT_NAME}
+            PUBLIC OpenGL::GL
+    )
+endif()
+
 
 
 

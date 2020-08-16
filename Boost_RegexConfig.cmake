@@ -7,7 +7,7 @@ find_package(Boost COMPONENTS regex)
 if(NOT Boost_REGEX_LIBRARY)
     message("-- Building Boost Regex from source")
 
-    set(BOOST_VERSION "1.69.0" CACHE STRING "Version of Boost to build.")
+    set(BOOST_VERSION "1.73.0" CACHE STRING "Version of Boost to build.")
     mark_as_advanced(BOOST_VERSION)
 
     set(BOOST_BRANCH "boost-${BOOST_VERSION}" CACHE STRING "Git branch or tag for checking out Boost.")

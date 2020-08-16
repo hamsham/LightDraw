@@ -6,10 +6,12 @@ find_package(FreeImage MODULE)
 # #####################################
 # External build for FreeImage
 # #####################################
-if (FREEIMAGE_INCLUDE_PATH STREQUAL FREEIMAGE_INCLUDE_PATH-NOTFOUND OR FREEIMAGE_LIBRARY STREQUAL FREEIMAGE_LIBRARY-NOTFOUND)
+option(BUILD_FREEIMAGE "Force FreeImage to build from source." OFF)
+
+if (BUILD_FREEIMAGE OR FREEIMAGE_INCLUDE_PATH STREQUAL FREEIMAGE_INCLUDE_PATH-NOTFOUND OR FREEIMAGE_LIBRARY STREQUAL FREEIMAGE_LIBRARY-NOTFOUND)
 
     message("-- Building FreeImage from source")
-  
+
     set(FREEIMAGE_VERSION "3.18.0" CACHE STRING "Version of the FreeImage static library to be built.")
     mark_as_advanced(FREEIMAGE_VERSION)
 
@@ -31,7 +33,7 @@ if (FREEIMAGE_INCLUDE_PATH STREQUAL FREEIMAGE_INCLUDE_PATH-NOTFOUND OR FREEIMAGE
             set(FREEIMAGE_PLATFORM "Win32")
             set(FREEIMAGE_DIST_DIR "x32")
         endif()
-        
+
         ExternalProject_Add(
             FreeImage
             PREFIX
@@ -63,7 +65,7 @@ if (FREEIMAGE_INCLUDE_PATH STREQUAL FREEIMAGE_INCLUDE_PATH-NOTFOUND OR FREEIMAGE
             CONFIGURE_COMMAND
                 ""
             BUILD_COMMAND
-                make
+                ${CMAKE_MAKE_PROGRAM}
             BUILD_IN_SOURCE
                 1
             INSTALL_COMMAND
@@ -77,12 +79,13 @@ if (FREEIMAGE_INCLUDE_PATH STREQUAL FREEIMAGE_INCLUDE_PATH-NOTFOUND OR FREEIMAGE
     set_target_properties(freeimage PROPERTIES IMPORTED_LOCATION ${EXTERNAL_PROJECT_PREFIX}/lib/${FREEIMAGE_LIB})
     add_dependencies(freeimage FreeImage)
 
+    set(FREEIMAGE_INCLUDE_PATH CACHE EPATH ${EXTERNAL_PROJECT_PREFIX}/include "The directory where FreeImage.h resides")
+
     if (WIN32)
         set(FREEIMAGE_LIBRARIES ${EXTERNAL_PROJECT_PREFIX}/lib/${FREEIMAGE_LIB} ws2_32)
     else()
         set(FREEIMAGE_LIBRARIES freeimage)
     endif()
-else()
-    include_directories(BEFORE SYSTEM ${FREEIMAGE_INCLUDE_PATH})
+
 endif()
-  
+
