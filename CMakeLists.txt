@@ -38,9 +38,6 @@ endif()
 set(OpenGL_GL_PREFERENCE GLVND)
 find_package(OpenGL REQUIRED)
 
-# ZLib is required for ASSIMP
-# find_package(ZLIB REQUIRED)
-
 find_package(Threads REQUIRED)
 
 
@@ -142,8 +139,7 @@ target_link_libraries(
         PUBLIC ${ASSIMP_LIBRARIES}
         PUBLIC ${FREEIMAGE_LIBRARIES}
         PUBLIC ${Boost_REGEX_LIBRARY}
-        PUBLIC Threads::Threads
-        PUBLIC z)
+        PUBLIC Threads::Threads)
 
 if (OpenGL::EGL AND OPENGL_opengl_LIBRARY)
     message("-- Found EGL library: ${OPENGL_egl_LIBRARY}")
