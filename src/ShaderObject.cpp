@@ -22,7 +22,7 @@
 /*-----------------------------------------------------------------------------
  Regex Setup
 -----------------------------------------------------------------------------*/
-#if defined(LS_COMPILER_GNU)
+#if 0//defined(LS_COMPILER_GNU)
     // std::regex support wasn't added to Clang until version 3.5.
     // A bug in Clang's libc++, prevents it from distinguishing escaped parenthesis in raw-string literals.
     #if defined(LS_COMPILER_CLANG)

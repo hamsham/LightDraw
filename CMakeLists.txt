@@ -48,9 +48,14 @@ find_package(Threads REQUIRED)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR};${CMAKE_MODULE_PATH}")
 include(assimpConfig.cmake)
 include(FreeImageConfig.cmake)
-include(Boost_RegexConfig.cmake)
 include(freetypeConfig.cmake)
 
+if (CMAKE_CXX_COMPILER_ID MATCHES Clang)
+    if (NOT CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "3.5")
+        set(LS_REQUIRE_BOOST_REGEX TRUE CACHE BOOL "Build LightDraw with boost::regex instead of std::regex.")
+        include(Boost_RegexConfig.cmake)
+    endif()
+endif()
 
 
 # -------------------------------------
@@ -138,8 +143,13 @@ target_link_libraries(
         PUBLIC ${FREETYPE_LIBRARIES}
         PUBLIC ${ASSIMP_LIBRARIES}
         PUBLIC ${FREEIMAGE_LIBRARIES}
-        PUBLIC ${Boost_REGEX_LIBRARY}
         PUBLIC Threads::Threads)
+
+if (LS_REQUIRE_BOOST_REGEX)
+    message("-- Building LS Draw with Boost::Regex support")
+    target_link_libraries(${OUTPUT_NAME} PUBLIC ${Boost_REGEX_LIBRARY})
+    target_compile_definitions(${OUTPUT_NAME} PUBLIC -DLS_REQUIRE_BOOST_REGEX)
+endif()
 
 if (OpenGL::EGL AND OPENGL_opengl_LIBRARY)
     message("-- Found EGL library: ${OPENGL_egl_LIBRARY}")
