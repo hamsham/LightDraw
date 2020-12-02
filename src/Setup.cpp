@@ -5,48 +5,49 @@
  * Created on November 15, 2013, 8:28 PM
  */
 
-#include "lightsky/draw/Setup.h"
+#include "lightsky/utils/DynamicLib.hpp"
+#include "lightsky/utils/Futex.hpp"
 #include "lightsky/utils/Log.h"
 
-/*-----------------------------------------------------------------------------
- * Windows OpenGL Function Loading
------------------------------------------------------------------------------*/
-#ifdef LS_OS_WINDOWS
-    #include <GL/wglext.h>
+#include "lightsky/draw/Setup.h"
 
 /*-------------------------------------
  * Windows-specific functions
 -------------------------------------*/
 namespace {
 
-/*-------------------------------------
- * OpenGL Library Initialization
--------------------------------------*/
-HMODULE get_gl_library() {
-    return LoadLibraryA("opengl32.dll");
-}
+#if defined(LS_OS_LINUX)
+    constexpr char LSGL_LIB_NAME[] = "libGL.so";
+    #define HLGLPROCADDRESS glxGetProcAddress
+#elif defined(LS_OS_OSX)
+    constexpr char LSGL_LIB_NAME[] = "libGL.dylib";
+    #define HLGLPROCADDRESS LSGLLIB.symbol
+#elif defined(LS_OS_WINDOWS)
+    constexpr char LSGL_LIB_NAME[] = "opengl32.dll";
+    #define HLGLPROCADDRESS wglGetProcAddress
+#else
+    #error "Unknown OS. Please update the OpenGL library names."
+#endif
+
+static ls::utils::Futex LSGLLOCK;
+static ls::utils::DynamicLib LSGLLIB;
 
 /*-------------------------------------
  * OpenGL Function Retrieval
 -------------------------------------*/
 uintptr_t get_gl_function(const char* const name) {
-    uintptr_t p = (uintptr_t)wglGetProcAddress(name);
+    uintptr_t p = (uintptr_t)HLGLPROCADDRESS(name);
 
-    if (p == 0x0
-    || (p == 0x1)
-    || (p == 0x2)
-    || (p == 0x3)
-    || (p == (uintptr_t) - 1)
-    ) {
-        const HMODULE ogllib = get_gl_library();
-        p = (uintptr_t)GetProcAddress(ogllib, name);
+    if (!p)
+    {
+        LS_LOG_ERR("ERROR: Unable to load GL function: ", name);
+        return 0;
     }
 
     return p;
 }
 
 } // end anonymous namespace
-#endif /* LS_OS_WINDOWS */
 
 namespace ls {
 
@@ -89,17 +90,6 @@ unsigned draw::print_gl_error(const char* const func, const int line, const char
     return errCount;
 }
 #endif
-
-/*-------------------------------------
- * LightSky OpenGL Function Initialization
--------------------------------------*/
-#ifndef LS_OS_WINDOWS
-
-int draw::init_eds_draw() {
-    return 1;
-}
-
-#else
 
 } // end ls namespace
 
@@ -855,6 +845,24 @@ namespace ls {
 
 int draw::init_eds_draw() {
     int ret = 0; /* Contains the number of functions initialized */
+
+    LSGLLOCK.lock();
+
+    // Allow re-initialization of OpenGL function pointers in case there are
+    // multiple contexts.
+    if (!LSGLLIB.loaded())
+    {
+        if (LSGLLIB.load(LSGL_LIB_NAME) != 0)
+        {
+            LS_LOG_ERR("Unable to find the OpenGL library.");
+            LSGLLOCK.unlock();
+            return false;
+        }
+        else
+        {
+            LS_LOG_MSG("Successfully found the OpenGL library: ", LSGLLIB.name());
+        }
+    }
 
     glDrawRangeElements = (PFNGLDRAWRANGEELEMENTSPROC)get_gl_function("glDrawRangeElements");
     if (glDrawRangeElements) {
@@ -3829,11 +3837,10 @@ int draw::init_eds_draw() {
         ++ret;
     }
 
+    LS_LOG_MSG("Successfully initialized ", ret, " OpenGL function pointers.");
+    LSGLLOCK.unlock();
+
     return ret;
 }
-
-
-
-#endif /* LS_OS_WINDOWS */
 
 } // end ls namespace

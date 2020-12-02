@@ -75,8 +75,13 @@ inline unsigned print_gl_error(const char* const, int, const char*) noexcept {
 /*-------------------------------------
  * OpenGL Headers & Functions
 -------------------------------------*/
-#ifdef LS_OS_OSX
+/*
+#ifndef GL_GLEXT_PROTOTYPES
     #define GL_GLEXT_PROTOTYPES
+#endif
+*/
+
+#ifdef LS_OS_OSX
     #define GL_DO_NOT_WARN_IF_MULTI_GL_VERSION_HEADERS_INCLUDED
     #include <OpenGL/gl.h>
     #include <OpenGL/gl3.h>
@@ -84,13 +89,10 @@ inline unsigned print_gl_error(const char* const, int, const char*) noexcept {
     #include <OpenGL/gl3ext.h>
 
 #elif defined (LS_OS_IOS) || defined (LS_OS_IOS_SIM)
-    #define GL_GLEXT_PROTOTYPES
     #include <OpenGLES/ES3/gl.h>
     #include <OpenGLES/ES3/glext.h>
 
 #elif defined (LS_OS_LINUX)
-    #define GL_GLEXT_PROTOTYPES
-    
     #ifndef LS_DRAW_FORCE_BACKEND_GL
         #include <GLES3/gl3.h>
         #include <GLES3/gl3ext.h>
@@ -101,15 +103,21 @@ inline unsigned print_gl_error(const char* const, int, const char*) noexcept {
 
 #elif defined (LS_OS_WINDOWS)
     #ifndef WIN32_LEAN_AND_MEAN
-        #define WIN32_LEAN_AND_MEAN
+        #define WIN32_LEAN_AND_MEAN 1
+    #endif
+
+    #ifndef NOMINMAX
+        #define NOMINMAX 1
     #endif
 
     #include <windows.h>
     #include <GL/gl.h>
+    #include <GL/glext.h>
 
-    #ifdef LS_COMPILER_MINGW
-        #include <GL/glext.h>
-    #endif
+#else
+    #error "An unsupported OS is currently being used."
+#endif /* OS Support */
+
 
 
 /*-------------------------------------
@@ -866,10 +874,6 @@ extern PFNGLPIXELSTOREXPROC glPixelStorex;
 #ifdef __cplusplus
 }
 #endif
-
-#else
-    #error "An unsupported OS is currently being used."
-#endif /* OS Support */
 
 
 

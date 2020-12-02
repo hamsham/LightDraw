@@ -58,6 +58,76 @@ if (CMAKE_CXX_COMPILER_ID MATCHES Clang)
 endif()
 
 
+
+# -------------------------------------
+# Header Paths
+# -------------------------------------
+set(LS_DRAW_HEADERS
+    include/lightsky/draw/Animation.h
+    include/lightsky/draw/AnimationChannel.h
+    include/lightsky/draw/AnimationKeyList.h
+    include/lightsky/draw/AnimationPlayer.h
+    include/lightsky/draw/AnimationProperty.h
+    include/lightsky/draw/Atlas.h
+    include/lightsky/draw/BlendObject.h
+    include/lightsky/draw/BoundingBox.h
+    include/lightsky/draw/BufferObject.h
+    include/lightsky/draw/Camera.h
+    include/lightsky/draw/Color.h
+    include/lightsky/draw/DepthObject.h
+    include/lightsky/draw/Draw.h
+    include/lightsky/draw/DrawBatch.h
+    include/lightsky/draw/DrawParams.h
+    include/lightsky/draw/FBOAssembly.h
+    include/lightsky/draw/FBOAttrib.h
+    include/lightsky/draw/FontResource.h
+    include/lightsky/draw/FrameBuffer.h
+    include/lightsky/draw/GeometryUtils.h
+    include/lightsky/draw/GLContext.h
+    include/lightsky/draw/GLQuery.h
+    include/lightsky/draw/GLSLCommon.h
+    include/lightsky/draw/ImageBuffer.h
+    include/lightsky/draw/IndexBuffer.h
+    include/lightsky/draw/MatrixStack.h
+    include/lightsky/draw/OcclusionMeshLoader.h
+    include/lightsky/draw/PackedVertex.h
+    include/lightsky/draw/PixelBuffer.h
+    include/lightsky/draw/RBOAssembly.h
+    include/lightsky/draw/RenderBuffer.h
+    include/lightsky/draw/RenderPass.h
+    include/lightsky/draw/RenderValidation.h
+    include/lightsky/draw/SceneFileLoader.h
+    include/lightsky/draw/SceneFileUtility.h
+    include/lightsky/draw/SceneGraph.h
+    include/lightsky/draw/SceneMaterial.h
+    include/lightsky/draw/SceneMesh.h
+    include/lightsky/draw/SceneNode.h
+    include/lightsky/draw/SceneRenderData.h
+    include/lightsky/draw/Setup.h
+    include/lightsky/draw/ShaderAssembly.h
+    include/lightsky/draw/ShaderAttrib.h
+    include/lightsky/draw/ShaderAttribArray.h
+    include/lightsky/draw/ShaderBlockAttrib.h
+    include/lightsky/draw/ShaderObject.h
+    include/lightsky/draw/ShaderProgram.h
+    include/lightsky/draw/ShaderUniform.h
+    include/lightsky/draw/TextMeshLoader.h
+    include/lightsky/draw/Texture.h
+    include/lightsky/draw/TextureAssembly.h
+    include/lightsky/draw/TextureAttrib.h
+    include/lightsky/draw/Transform.h
+    include/lightsky/draw/UniformBuffer.h
+    include/lightsky/draw/VAOAssembly.h
+    include/lightsky/draw/VAOAttrib.h
+    include/lightsky/draw/VBOAttrib.h
+    include/lightsky/draw/Vertex.h
+    include/lightsky/draw/VertexArray.h
+    include/lightsky/draw/VertexBuffer.h
+    include/lightsky/draw/VertexUtils.h
+)
+
+
+
 # -------------------------------------
 # Source Paths
 # -------------------------------------
@@ -127,10 +197,11 @@ set(LS_DRAW_SOURCES
 # Library Setup
 # -------------------------------------
 # Keeping LightDraw as a static library until Vulkan support is added.
-add_library(${OUTPUT_NAME} STATIC ${LS_DRAW_SOURCES})
+add_library(${OUTPUT_NAME} STATIC ${LS_DRAW_HEADERS} ${LS_DRAW_SOURCES})
 
 target_include_directories(${OUTPUT_NAME}
     PUBLIC include
+    PRIVATE BEFORE SYSTEM external/include
     PRIVATE BEFORE SYSTEM ${FREETYPE_INCLUDE_DIRS}
 )
 
