@@ -4,8 +4,12 @@
 
 #include <vector>
 
-namespace ls {
-namespace draw {
+
+
+namespace ls
+{
+namespace draw
+{
 
 
 
@@ -13,10 +17,15 @@ namespace draw {
  * Forward Declarations
 -----------------------------------------------------------------------------*/
 class BlendObject;
+
 class DepthObject;
+
 class IndexBuffer;
+
 class Texture;
+
 class VertexArray;
+
 class VertexBuffer;
 
 
@@ -24,35 +33,36 @@ class VertexBuffer;
 /**----------------------------------------------------------------------------
  * SceneRenderData Class
 -----------------------------------------------------------------------------*/
-struct SceneRenderData {
+struct SceneRenderData
+{
     std::vector<VertexArray> vaos;
-    
+
     std::vector<VertexBuffer> vbos;
-    
+
     std::vector<IndexBuffer> ibos;
-    
+
     std::vector<Texture> textures;
-    
+
     std::vector<BlendObject> blendModes;
-    
+
     std::vector<DepthObject> depthModes;
-    
-    
-    
+
+
+
     /**
      * @brief Destructor
      * 
      * Calls 'terminate()' to delete all CPU and GPU-side resources.
      */
     ~SceneRenderData() noexcept;
-    
+
     /**
      * Constructor
      * 
      * Initializes all members in *this to their default values.
      */
     SceneRenderData() noexcept;
-    
+
     /**
      * Copy Constructor
      * 
@@ -64,7 +74,7 @@ struct SceneRenderData {
      * dynamically allocated resources on both the CPU and GPU.
      */
     SceneRenderData(const SceneRenderData& r) noexcept;
-    
+
     /**
      * Move Constructor
      * 
@@ -76,7 +86,7 @@ struct SceneRenderData {
      * be moved into *this.
      */
     SceneRenderData(SceneRenderData&& r) noexcept;
-    
+
     /**
      * Copy Constructor
      * 
@@ -90,7 +100,7 @@ struct SceneRenderData {
      * @return A reference to *this.
      */
     SceneRenderData& operator=(const SceneRenderData& r) noexcept;
-    
+
     /**
      * Move Operator
      * 
@@ -104,16 +114,13 @@ struct SceneRenderData {
      * @return A reference to *this.
      */
     SceneRenderData& operator=(SceneRenderData&& r) noexcept;
-    
+
     /**
      * @brief Terminate A SceneRenderData object by cleaning up all CPu and
      * GPU-side resources.
      */
     void terminate() noexcept;
 };
-
-
-
 } // end draw namespace
 } // end ls namespace
 

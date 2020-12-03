@@ -16,8 +16,12 @@
 #include "lightsky/draw/TextureAttrib.h"
 #include "lightsky/draw/FBOAttrib.h"
 
-namespace ls {
-namespace draw {
+
+
+namespace ls
+{
+namespace draw
+{
 
 
 
@@ -29,7 +33,8 @@ namespace draw {
  * default buffer residing within a render context. Framebuffer objects can
  * be used to render to a texture as well.
 -----------------------------------------------------------------------------*/
-class FrameBuffer final {
+class FrameBuffer final
+{
     friend class FBOAssembly;
 
   public:
@@ -51,7 +56,7 @@ class FrameBuffer final {
     static void bind_default_framebuffer(
         const fbo_access_t access = FBO_ACCESS_RW,
         const bool rasterize = true
-        ) noexcept;
+    ) noexcept;
 
     /**
      * @brief Blit (draw) this frame buffer onto another.
@@ -90,7 +95,7 @@ class FrameBuffer final {
     static void blit(
         const math::vec2i& srcOffset, const math::vec2i& srcSize,
         const math::vec2i& dstOffset, const math::vec2i& dstSize,
-        const fbo_mask_t mask = (fbo_mask_t) (fbo_mask_t::FBO_COLOR_BIT | fbo_mask_t::FBO_DEPTH_BIT),
+        const fbo_mask_t mask = (fbo_mask_t)(fbo_mask_t::FBO_COLOR_BIT | fbo_mask_t::FBO_DEPTH_BIT),
         const tex_filter_t filtr = TEX_FILTER_LINEAR
     ) noexcept;
 
@@ -100,7 +105,7 @@ class FrameBuffer final {
      * @param A bitmask of type fbo_mask_t.
      */
     static void clear_buffers(
-        const GLbitfield mask = (fbo_mask_t) fbo_mask_t::FBO_COLOR_BIT | fbo_mask_t::FBO_DEPTH_STENCIL_BIT
+        const GLbitfield mask = (fbo_mask_t)fbo_mask_t::FBO_COLOR_BIT | fbo_mask_t::FBO_DEPTH_STENCIL_BIT
     ) noexcept;
 
     static void clear_color_buffer(const fbo_attach_t attachIndex, const color::color& clearVal = color::black) noexcept;
@@ -357,18 +362,20 @@ inline void FrameBuffer::blit(
     const math::vec2i& srcOrig, const math::vec2i& srcSize,
     const math::vec2i& dstOrig, const math::vec2i& dstSize,
     fbo_mask_t mask, tex_filter_t filter
-) noexcept {
+) noexcept
+{
     glBlitFramebuffer(
         srcOrig[0], srcOrig[1], srcSize[0], srcSize[1],
         dstOrig[0], dstOrig[1], dstSize[0], dstSize[1],
-        (GLbitfield) mask, (GLenum) filter
+        (GLbitfield)mask, (GLenum)filter
     );
 }
 
 /*-------------------------------------
     Get the maximum number of supported color attachments.
 -------------------------------------*/
-inline int FrameBuffer::get_max_num_attachments() noexcept {
+inline int FrameBuffer::get_max_num_attachments() noexcept
+{
     int numAttachments;
     glGetIntegerv(GL_MAX_DRAW_BUFFERS, &numAttachments);
     return numAttachments;
@@ -377,52 +384,60 @@ inline int FrameBuffer::get_max_num_attachments() noexcept {
 /*-------------------------------------
     Clear the color attachment indicated by the input parameter.
 -------------------------------------*/
-inline void FrameBuffer::clear_buffers(const GLbitfield mask) noexcept {
+inline void FrameBuffer::clear_buffers(const GLbitfield mask) noexcept
+{
     glClear(mask);
 }
 
 /*-------------------------------------
 -------------------------------------*/
-inline void FrameBuffer::clear_color_buffer(const fbo_attach_t attachIndex, const color::color& clearVal) noexcept {
-    glClearBufferfv(GL_COLOR, attachIndex-fbo_attach_t::FBO_ATTACHMENT_0, clearVal.v);
+inline void FrameBuffer::clear_color_buffer(const fbo_attach_t attachIndex, const color::color& clearVal) noexcept
+{
+    glClearBufferfv(GL_COLOR, attachIndex - fbo_attach_t::FBO_ATTACHMENT_0, clearVal.v);
 }
 
 /*-------------------------------------
 -------------------------------------*/
-inline void FrameBuffer::clear_depth_buffer(const float clearVal) noexcept {
+inline void FrameBuffer::clear_depth_buffer(const float clearVal) noexcept
+{
     glClearBufferfv(GL_DEPTH, 0, &clearVal);
 }
 
 /*-------------------------------------
 -------------------------------------*/
-inline void FrameBuffer::clear_stencil_buffer(const int clearVal) noexcept {
+inline void FrameBuffer::clear_stencil_buffer(const int clearVal) noexcept
+{
     glClearBufferiv(GL_STENCIL, 0, &clearVal);
 }
 
 /*-------------------------------------
 -------------------------------------*/
-inline void FrameBuffer::clear_depth_stencil_buffer(const float depthClearVal, const int stencilClearVal) noexcept {
+inline void FrameBuffer::clear_depth_stencil_buffer(const float depthClearVal, const int stencilClearVal) noexcept
+{
     glClearBufferfi(GL_DEPTH_STENCIL, 0, depthClearVal, stencilClearVal);
 }
 
 /*-------------------------------------
     Get the GPU-Assigned ID that this object references.
 -------------------------------------*/
-inline unsigned FrameBuffer::gpu_id() const noexcept {
+inline unsigned FrameBuffer::gpu_id() const noexcept
+{
     return gpuId;
 }
 
 /*-------------------------------------
  * Determine if *this is a valid FBO
 -------------------------------------*/
-inline bool FrameBuffer::is_valid() const noexcept {
+inline bool FrameBuffer::is_valid() const noexcept
+{
     return gpu_id() != 0;
 }
 
 /*-------------------------------------
     Bind the current framebuffer to OpenGL
 -------------------------------------*/
-inline void FrameBuffer::bind(const fbo_access_t a) noexcept {
+inline void FrameBuffer::bind(const fbo_access_t a) noexcept
+{
     access = a;
     glBindFramebuffer(access, gpuId);
 }
@@ -430,157 +445,182 @@ inline void FrameBuffer::bind(const fbo_access_t a) noexcept {
 /*-------------------------------------
     Unbind the current framebuffer to OpenGL
 -------------------------------------*/
-inline void FrameBuffer::unbind() const noexcept {
+inline void FrameBuffer::unbind() const noexcept
+{
     glBindFramebuffer(access, 0);
 }
 
 /*-------------------------------------
     Get the framebuffer acccess type.
 -------------------------------------*/
-inline fbo_access_t FrameBuffer::get_access_type() const noexcept {
+inline fbo_access_t FrameBuffer::get_access_type() const noexcept
+{
     return access;
 }
 
 /*-------------------------------------
  * get the depth clear color value
 -------------------------------------*/
-inline float FrameBuffer::get_depth_clear_value() const noexcept {
+inline float FrameBuffer::get_depth_clear_value() const noexcept
+{
     return clearDepthVal;
 }
 
 /*-------------------------------------
  * set the depth clear color value
 -------------------------------------*/
-inline void FrameBuffer::set_depth_clear_value(const float v) noexcept {
+inline void FrameBuffer::set_depth_clear_value(const float v) noexcept
+{
     clearDepthVal = v;
 }
 
 /*-------------------------------------
  * get the stencil clear color value
 -------------------------------------*/
-inline float FrameBuffer::get_stencil_clear_value() const noexcept {
+inline float FrameBuffer::get_stencil_clear_value() const noexcept
+{
     return clearStencilVal;
 }
 
 /*-------------------------------------
  * set the stencil clear color value
 -------------------------------------*/
-inline void FrameBuffer::set_stencil_clear_value(const int v) noexcept {
+inline void FrameBuffer::set_stencil_clear_value(const int v) noexcept
+{
     clearStencilVal = v;
 }
 
 /*-------------------------------------
  * get the clear color value
 -------------------------------------*/
-inline const color::color& FrameBuffer::get_color_clear_value() const noexcept {
+inline const color::color& FrameBuffer::get_color_clear_value() const noexcept
+{
     return clearColorVal;
 }
 
 /*-------------------------------------
  * set the clear color value
 -------------------------------------*/
-inline void FrameBuffer::set_color_clear_value(const color::color& v) noexcept {
+inline void FrameBuffer::set_color_clear_value(const color::color& v) noexcept
+{
     clearColorVal = v;
 }
 
 /*-------------------------------------
  * Get the size of the largest attachment
 -------------------------------------*/
-inline const math::vec3i& FrameBuffer::get_size() const noexcept {
+inline const math::vec3i& FrameBuffer::get_size() const noexcept
+{
     return largestSize;
 }
 
 /*-------------------------------------
  Get the current number of attribs.
 -------------------------------------*/
-inline unsigned FrameBuffer::get_num_attribs() const noexcept {
+inline unsigned FrameBuffer::get_num_attribs() const noexcept
+{
     return numAttribs;
 }
 
 /*-------------------------------------
  Get the current attrib list.
 -------------------------------------*/
-inline const FBOAttrib* FrameBuffer::get_attribs() const noexcept {
+inline const FBOAttrib* FrameBuffer::get_attribs() const noexcept
+{
     return attribs.get();
 }
 
 /*-------------------------------------
     Set the current draw targets to be used by this.
 -------------------------------------*/
-inline void FrameBuffer::set_draw_targets(unsigned numTargets, const fbo_attach_t* targets) const noexcept {
-    glDrawBuffers(numTargets, (const GLenum*) targets);
+inline void FrameBuffer::set_draw_targets(unsigned numTargets, const fbo_attach_t* targets) const noexcept
+{
+    glDrawBuffers(numTargets, (const GLenum*)targets);
     LS_LOG_GL_ERR();
 }
 
 /*-----------------------------------------------------------------------------
  * Framebuffer Object Utility functions
 -----------------------------------------------------------------------------*/
-inline GLuint get_current_read_fbo() noexcept {
+inline GLuint get_current_read_fbo() noexcept
+{
     return get_gl_int(GL_READ_FRAMEBUFFER_BINDING);
 }
 
-inline GLuint get_current_write_fbo() noexcept {
+inline GLuint get_current_write_fbo() noexcept
+{
     return get_gl_int(GL_DRAW_FRAMEBUFFER_BINDING);
 }
 
-inline bool is_fbo_raster_enabled() noexcept {
+inline bool is_fbo_raster_enabled() noexcept
+{
     return get_gl_bool(GL_RASTERIZER_DISCARD);
 }
 
-constexpr GLuint get_max_fbo_attachments() noexcept {
+constexpr GLuint get_max_fbo_attachments() noexcept
+{
     // Defined in Desktop GL as a minimum of 16
     // Defined in Mobile GL as a minimum of 4
     return fbo_attach_t::FBO_ATTACHMENT_MAX_COLORS;
 }
 
-constexpr GLint get_max_fbo_width() noexcept {
+constexpr GLint get_max_fbo_width() noexcept
+{
     //return get_gl_int(GL_MAX_FRAMEBUFFER_WIDTH);
     return 16384; // GLES 3.0 spec minimum
 }
 
-constexpr GLint get_max_fbo_height() noexcept {
+constexpr GLint get_max_fbo_height() noexcept
+{
     //return get_gl_int(GL_MAX_FRAMEBUFFER_HEIGHT);
     return 16384; // GLES 3.0 spec minimum
 }
 
-constexpr math::vec2i get_max_fbo_size() noexcept {
+constexpr math::vec2i get_max_fbo_size() noexcept
+{
     return math::vec2i{get_max_fbo_width(), get_max_fbo_height()};
 }
 
-constexpr GLuint get_max_fbo_samples() noexcept {
+constexpr GLuint get_max_fbo_samples() noexcept
+{
     //return get_gl_uint(GL_MAX_FRAMEBUFFER_SAMPLES);
     return 4; // GLES 3.0 spec minimum
 }
 
-inline GLuint get_current_fbo_red_bits() noexcept {
+inline GLuint get_current_fbo_red_bits() noexcept
+{
     return get_gl_uint(GL_RED_BITS);
 }
 
-inline GLuint get_current_fbo_green_bits() noexcept {
+inline GLuint get_current_fbo_green_bits() noexcept
+{
     return get_gl_uint(GL_GREEN_BITS);
 }
 
-inline GLuint get_current_fbo_blue_bits() noexcept {
+inline GLuint get_current_fbo_blue_bits() noexcept
+{
     return get_gl_uint(GL_BLUE_BITS);
 }
 
-inline GLuint get_current_fbo_alpha_bits() noexcept {
+inline GLuint get_current_fbo_alpha_bits() noexcept
+{
     return get_gl_uint(GL_ALPHA_BITS);
 }
 
-inline GLuint get_current_fbo_depth_bits() noexcept {
+inline GLuint get_current_fbo_depth_bits() noexcept
+{
     return get_gl_uint(GL_DEPTH_BITS);
 }
 
-inline GLuint get_current_fbo_stencil_bits() noexcept {
+inline GLuint get_current_fbo_stencil_bits() noexcept
+{
     return get_gl_uint(GL_STENCIL_BITS);
 }
 
-inline GLuint get_current_fbo_sample_buffers() noexcept {
+inline GLuint get_current_fbo_sample_buffers() noexcept
+{
     return get_gl_uint(GL_SAMPLE_BUFFERS);
 }
-
-
 } // end draw namespace
 } // end ls namespace
 

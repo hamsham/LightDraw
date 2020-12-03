@@ -14,8 +14,11 @@
 #include "lightsky/draw/BufferObject.h"
 
 
-namespace ls {
-namespace draw {
+
+namespace ls
+{
+namespace draw
+{
 
 /*-----------------------------------------------------------------------------
  * Forward Declarations
@@ -28,7 +31,8 @@ enum index_element_t : GLint; // found in VertexUtils.h
  * @brief This structure contains basic attribute data management for Index
  * Buffer Objects.
 -----------------------------------------------------------------------------*/
-class IBOAttrib {
+class IBOAttrib
+{
   private:
     /**
      * Total number of these attributes.
@@ -66,7 +70,7 @@ class IBOAttrib {
 
     index_element_t get_attrib_type() const noexcept;
 
-    void set_attrib_offset(const GLvoid * const numOffsetBytes) noexcept;
+    void set_attrib_offset(const GLvoid* const numOffsetBytes) noexcept;
 
     const GLvoid* get_attrib_offset() const noexcept;
 };
@@ -74,42 +78,48 @@ class IBOAttrib {
 /*-------------------------------------
  * Set the number of IBO indices
 -------------------------------------*/
-inline void IBOAttrib::set_attrib_count(const unsigned numIndices) noexcept {
+inline void IBOAttrib::set_attrib_count(const unsigned numIndices) noexcept
+{
     count = numIndices;
 }
 
 /*-------------------------------------
  * Get the current count of indices
 -------------------------------------*/
-inline unsigned IBOAttrib::get_attrib_count() const noexcept {
+inline unsigned IBOAttrib::get_attrib_count() const noexcept
+{
     return count;
 }
 
 /*-------------------------------------
  * Set the IBO attrib data type
 -------------------------------------*/
-inline void IBOAttrib::set_attrib_type(const index_element_t idxType) noexcept {
+inline void IBOAttrib::set_attrib_type(const index_element_t idxType) noexcept
+{
     indexType = idxType;
 }
 
 /*-------------------------------------
  * Get the current attrib type
 -------------------------------------*/
-inline index_element_t IBOAttrib::get_attrib_type() const noexcept {
+inline index_element_t IBOAttrib::get_attrib_type() const noexcept
+{
     return indexType;
 }
 
 /*-------------------------------------
  * Assign the offset to the current IBO Attribute
 -------------------------------------*/
-inline void IBOAttrib::set_attrib_offset(const GLvoid * const numOffsetBytes) noexcept {
+inline void IBOAttrib::set_attrib_offset(const GLvoid* const numOffsetBytes) noexcept
+{
     offset = numOffsetBytes;
 }
 
 /*-------------------------------------
  * Retrieve the offset to the current IBO Attribute
 -------------------------------------*/
-inline const GLvoid* IBOAttrib::get_attrib_offset() const noexcept {
+inline const GLvoid* IBOAttrib::get_attrib_offset() const noexcept
+{
     return offset;
 }
 
@@ -119,7 +129,8 @@ inline const GLvoid* IBOAttrib::get_attrib_offset() const noexcept {
  * @Brief This class represents a Vertex Buffer Object from OpenGL. It can be
  * used to manage VBO data and attributes.
 -----------------------------------------------------------------------------*/
-class IndexBuffer final : public BufferObject {
+class IndexBuffer final : public BufferObject
+{
     friend class BufferObject;
 
   protected:
@@ -127,7 +138,7 @@ class IndexBuffer final : public BufferObject {
      * @brief pAttribs contains a CPU-side representation of the per-index
      * attributes used by each element in *this object's GPU memory.
      */
-    utils::Pointer<IBOAttrib[] > pAttribs;
+    utils::Pointer<IBOAttrib[]> pAttribs;
 
     /**
      * @brief numAttribs should contain the number of attributes/members per
@@ -280,40 +291,42 @@ class IndexBuffer final : public BufferObject {
 /*-------------------------------------
  * Retrieve the buffer type
 -------------------------------------*/
-inline buffer_use_t IndexBuffer::get_type() const noexcept {
+inline buffer_use_t IndexBuffer::get_type() const noexcept
+{
     return buffer_use_t::VBO_BUFFER_ELEMENT;
 }
 
 /*-------------------------------------
  * Retrieve the buffer's attribs
 -------------------------------------*/
-inline unsigned IndexBuffer::get_num_attribs() const noexcept {
+inline unsigned IndexBuffer::get_num_attribs() const noexcept
+{
     return numAttribs;
 }
 
 /*-------------------------------------
  * Retrieve a pointer to the list of internal IBOAttribs
 -------------------------------------*/
-inline const IBOAttrib* IndexBuffer::get_attribs() const noexcept {
+inline const IBOAttrib* IndexBuffer::get_attribs() const noexcept
+{
     return pAttribs;
 }
 
 /*-------------------------------------
  * Retrieve a reference to a single IndexAttrib contained within *this.
 -------------------------------------*/
-inline const IBOAttrib& IndexBuffer::get_attrib(const unsigned index) const noexcept {
+inline const IBOAttrib& IndexBuffer::get_attrib(const unsigned index) const noexcept
+{
     return pAttribs[index];
 }
 
 /*-------------------------------------
  * Retrieve a reference to a single IndexAttrib contained within *this.
 -------------------------------------*/
-inline IBOAttrib& IndexBuffer::get_attrib(const unsigned index) noexcept {
+inline IBOAttrib& IndexBuffer::get_attrib(const unsigned index) noexcept
+{
     return pAttribs[index];
 }
-
-
-
 } // end draw namespace
 } // end ls namespace
 

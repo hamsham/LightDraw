@@ -11,8 +11,10 @@
 
 
 
-namespace ls {
-namespace draw {
+namespace ls
+{
+namespace draw
+{
 
 
 
@@ -20,7 +22,8 @@ namespace draw {
  * @brief Basic structure to contain information about mesh geometry
  * residing on the GPU.
 -----------------------------------------------------------------------------*/
-struct MeshMetaData {
+struct MeshMetaData
+{
     /**
      * numSubmeshes contains the number of individually renderable blocks of
      * geometry contained within a SceneMesh.
@@ -94,7 +97,7 @@ struct MeshMetaData {
      * stored in a mesh object's VBO & IBO, respectively.
      */
     uint32_t calc_total_bytes() const noexcept;
-    
+
     /**
      * @brief Reset all internal variables to their default values.
      */
@@ -104,35 +107,40 @@ struct MeshMetaData {
 /*-------------------------------------
  * Get the current vertex stride
 -------------------------------------*/
-inline uint32_t MeshMetaData::calc_vertex_stride() const noexcept {
+inline uint32_t MeshMetaData::calc_vertex_stride() const noexcept
+{
     return draw::get_vertex_byte_size(vertTypes);
 }
 
 /*-------------------------------------
  * Get the total number of bytes used by a meshes vertices.
 -------------------------------------*/
-inline uint32_t MeshMetaData::calc_total_vertex_bytes() const noexcept {
+inline uint32_t MeshMetaData::calc_total_vertex_bytes() const noexcept
+{
     return calc_vertex_stride() * totalVerts;
 }
 
 /*-------------------------------------
  * Get the current index stride
 -------------------------------------*/
-inline uint32_t MeshMetaData::calc_index_stride() const noexcept {
+inline uint32_t MeshMetaData::calc_index_stride() const noexcept
+{
     return draw::get_index_byte_size(indexType);
 }
 
 /*-------------------------------------
  * Get the total number of bytes used by a meshes indices.
 -------------------------------------*/
-inline uint32_t MeshMetaData::calc_total_index_bytes() const noexcept {
+inline uint32_t MeshMetaData::calc_total_index_bytes() const noexcept
+{
     return calc_index_stride() * totalIndices;
 }
 
 /*-------------------------------------
  * Get the total number of bytes used by a mesh.
 -------------------------------------*/
-inline uint32_t MeshMetaData::calc_total_bytes() const noexcept {
+inline uint32_t MeshMetaData::calc_total_bytes() const noexcept
+{
     return calc_total_vertex_bytes() + calc_total_index_bytes();
 }
 
@@ -141,7 +149,8 @@ inline uint32_t MeshMetaData::calc_total_bytes() const noexcept {
 /*-----------------------------------------------------------------------------
  * Meta-information and render parameters for a Mesh to be drawn with OpenGL.
 -----------------------------------------------------------------------------*/
-struct SceneMesh {
+struct SceneMesh
+{
     /**
      * @brief Trivially copyable parameters which allow for a mesh to be drawn.
      * These parameters contain indices for a piece of geometry contained
@@ -158,21 +167,18 @@ struct SceneMesh {
      * Non-owning reference to the IBO which *this object uses for rendering.
      */
     uint32_t iboId;
-    
+
     /**
      * Meta-information about a single mesh object's VBO/IBO information.
      */
     MeshMetaData metaData;
-    
+
     /**
      * @brief Function to reset all parameters in *this to their default
      * values.
      */
     void reset() noexcept;
 };
-
-
-
 } // end draw namespace
 } // end ls namespace
 

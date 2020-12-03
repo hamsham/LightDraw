@@ -14,8 +14,12 @@
 #include "lightsky/draw/BufferObject.h"
 #include "lightsky/draw/VertexUtils.h"
 
-namespace ls {
-namespace draw {
+
+
+namespace ls
+{
+namespace draw
+{
 
 /*-----------------------------------------------------------------------------
  * BufferObject Member Functions
@@ -23,28 +27,31 @@ namespace draw {
 /*-------------------------------------
  * Destructor
 -------------------------------------*/
-BufferObject::~BufferObject() noexcept {
+BufferObject::~BufferObject() noexcept
+{
 }
 
 /*-------------------------------------
  * Constructor
 -------------------------------------*/
 BufferObject::BufferObject() noexcept :
-    gpuId {0}
-{}
+    gpuId{0}
+{
+}
 
 /*-------------------------------------
  * Copy Constructor
 -------------------------------------*/
 BufferObject::BufferObject(const BufferObject& b) noexcept :
-    gpuId {b.gpuId}
-{}
+    gpuId{b.gpuId}
+{
+}
 
 /*-------------------------------------
  * Move Constructor
 -------------------------------------*/
 BufferObject::BufferObject(BufferObject&& b) noexcept :
-gpuId {b.gpuId}
+    gpuId{b.gpuId}
 {
     b.gpuId = 0;
 }
@@ -52,7 +59,8 @@ gpuId {b.gpuId}
 /*-------------------------------------
  * Copy Operator
 -------------------------------------*/
-BufferObject& BufferObject::operator =(const BufferObject& b) noexcept {
+BufferObject& BufferObject::operator=(const BufferObject& b) noexcept
+{
     this->gpuId = b.gpuId;
 
     return *this;
@@ -61,7 +69,8 @@ BufferObject& BufferObject::operator =(const BufferObject& b) noexcept {
 /*-------------------------------------
  * Move Operator
 -------------------------------------*/
-BufferObject& BufferObject::operator =(BufferObject&& b) noexcept {
+BufferObject& BufferObject::operator=(BufferObject&& b) noexcept
+{
     this->gpuId = b.gpuId;
     b.gpuId = 0;
 
@@ -71,10 +80,12 @@ BufferObject& BufferObject::operator =(BufferObject&& b) noexcept {
 /*-------------------------------------
  * Buffer initialization
 -------------------------------------*/
-bool BufferObject::init() noexcept {
+bool BufferObject::init() noexcept
+{
     LS_DEBUG_ASSERT(this->is_valid() == false); // insurance
-    
-    if (!gpuId) {
+
+    if (!gpuId)
+    {
         glGenBuffers(1, &gpuId);
     }
 
@@ -84,8 +95,10 @@ bool BufferObject::init() noexcept {
 /*-------------------------------------
  * Terminate the vertex buffer and release all of its resources back to the GPU.
 -------------------------------------*/
-void BufferObject::terminate() noexcept {
-    if (gpuId) {
+void BufferObject::terminate() noexcept
+{
+    if (gpuId)
+    {
         glDeleteBuffers(1, &gpuId);
         gpuId = 0;
     }
@@ -96,10 +109,12 @@ void BufferObject::terminate() noexcept {
 /*-------------------------------------
     Determine if *this Buffer Object is currently active.
 -------------------------------------*/
-bool BufferObject::is_bound() const noexcept {
+bool BufferObject::is_bound() const noexcept
+{
     GLint typeToCheck = 0;
 
-    switch (get_type()) {
+    switch (get_type())
+    {
         case buffer_use_t::VBO_BUFFER_ARRAY:
             typeToCheck = GL_ARRAY_BUFFER_BINDING;
             break;
@@ -132,7 +147,8 @@ bool BufferObject::is_bound() const noexcept {
 /*-------------------------------------
  * Copy data from one buffer into another.
 -------------------------------------*/
-bool BufferObject::copy_data(const BufferObject& from) noexcept {
+bool BufferObject::copy_data(const BufferObject& from) noexcept
+{
     LS_DEBUG_ASSERT(from.gpuId != this->gpuId);
     LS_DEBUG_ASSERT(this->is_valid());
     LS_DEBUG_ASSERT(from.is_valid());
@@ -145,10 +161,12 @@ bool BufferObject::copy_data(const BufferObject& from) noexcept {
     buffer_access_t usage = buffer_access_t::VBO_STATIC_DRAW;
 
     glGetBufferParameteriv(VBO_COPY_READ, GL_BUFFER_SIZE, &numBytes);
-    glGetBufferParameteriv(VBO_COPY_READ, GL_BUFFER_USAGE, (GLint*) & usage);
+    glGetBufferParameteriv(VBO_COPY_READ, GL_BUFFER_USAGE, (GLint*)&usage);
 
-    if (numBytes != 0 && !this->gpuId) {
-        if (!init()) {
+    if (numBytes != 0 && !this->gpuId)
+    {
+        if (!init())
+        {
             terminate();
             return false;
         }
@@ -167,9 +185,6 @@ bool BufferObject::copy_data(const BufferObject& from) noexcept {
 
     return true;
 }
-
-
-
 } // end draw namespace
 /*-----------------------------------------------------------------------------
  * Loose utility functions to run with BufferObjects. All of these functions
@@ -179,7 +194,8 @@ bool BufferObject::copy_data(const BufferObject& from) noexcept {
 /*-------------------------------------
  * Get the read/write access pattern of a buffer.
 -------------------------------------*/
-GLint draw::get_buffer_access(const buffer_use_t bufferType) {
+GLint draw::get_buffer_access(const buffer_use_t bufferType)
+{
     GLint usage = 0;
     glGetBufferParameteriv(bufferType, GL_BUFFER_ACCESS_FLAGS, &usage);
     return usage;
@@ -188,7 +204,8 @@ GLint draw::get_buffer_access(const buffer_use_t bufferType) {
 /*-------------------------------------
  * Determine if a buffer is currently mapped to the CPU.
 -------------------------------------*/
-bool draw::is_buffer_mapped(const buffer_use_t bufferType) {
+bool draw::is_buffer_mapped(const buffer_use_t bufferType)
+{
     GLint isMapped = 0;
     glGetBufferParameteriv(bufferType, GL_BUFFER_MAPPED, &isMapped);
     return isMapped == GL_TRUE;
@@ -197,7 +214,8 @@ bool draw::is_buffer_mapped(const buffer_use_t bufferType) {
 /*-------------------------------------
  * Get the amount of bytes that have been mapped from the GPU to CPU.
 -------------------------------------*/
-GLint64 draw::get_buffer_map_length(const buffer_use_t bufferType) {
+GLint64 draw::get_buffer_map_length(const buffer_use_t bufferType)
+{
     GLint64 mapLen = 0;
     glGetBufferParameteri64v(bufferType, GL_BUFFER_MAP_LENGTH, &mapLen);
     return mapLen;
@@ -206,7 +224,8 @@ GLint64 draw::get_buffer_map_length(const buffer_use_t bufferType) {
 /*-------------------------------------
  * Query the offset from the start of a mapped buffer.
 -------------------------------------*/
-GLint64 draw::get_buffer_map_offset(const buffer_use_t bufferType) {
+GLint64 draw::get_buffer_map_offset(const buffer_use_t bufferType)
+{
     GLint64 offset = 0;
     glGetBufferParameteri64v(bufferType, GL_BUFFER_MAP_OFFSET, &offset);
     return offset;
@@ -215,7 +234,8 @@ GLint64 draw::get_buffer_map_offset(const buffer_use_t bufferType) {
 /*-------------------------------------
  * Query a buffer's size on the GPU.
 -------------------------------------*/
-GLint64 draw::get_buffer_size(const buffer_use_t bufferType) {
+GLint64 draw::get_buffer_size(const buffer_use_t bufferType)
+{
     GLint64 size = 0;
     glGetBufferParameteri64v(bufferType, GL_BUFFER_SIZE, &size);
     return size;
@@ -224,10 +244,10 @@ GLint64 draw::get_buffer_size(const buffer_use_t bufferType) {
 /*-------------------------------------
  * Retrieve a buffer's usage pattern.
 -------------------------------------*/
-draw::buffer_access_t draw::get_buffer_usage(const buffer_use_t bufferType) {
+draw::buffer_access_t draw::get_buffer_usage(const buffer_use_t bufferType)
+{
     GLint usage = 0;
     glGetBufferParameteriv(bufferType, GL_BUFFER_USAGE, &usage);
     return (buffer_access_t)usage;
 }
-
 } // end ls namespace

@@ -9,8 +9,10 @@
 
 
 
-namespace ls {
-namespace draw {
+namespace ls
+{
+namespace draw
+{
 
 
 
@@ -32,7 +34,8 @@ typedef std::deque<SceneNode*> scene_node_list_t;
 /*-----------------------------------------------------------------------------
  * Enumerations
 -----------------------------------------------------------------------------*/
-enum class scene_node_t : uint32_t {
+enum class scene_node_t : uint32_t
+{
     NODE_TYPE_EMPTY,
     NODE_TYPE_MESH,
     NODE_TYPE_CAMERA
@@ -51,13 +54,14 @@ enum class scene_node_t : uint32_t {
  * helps to ensure that other objects contained within a SceneGraph can be
  * managed separately from the node.
 -----------------------------------------------------------------------------*/
-struct alignas(sizeof(uint32_t)) SceneNode final {
+struct alignas(sizeof(size_t)) SceneNode final
+{
     /**
      * @brief Enumeration containing the type of scene node which *this
      * represents.
      */
     scene_node_t type;
-    
+
     /**
      * @brief nodeId contains the index of a node's name, and transform within
      * a SceneGraph.
@@ -74,7 +78,7 @@ struct alignas(sizeof(uint32_t)) SceneNode final {
      *      - modelMatrices
      *      - nodeNames
      */
-    uint32_t nodeId;
+    size_t nodeId;
 
     /**
      * @brief The dataId parameter contains the indexed location of data for a
@@ -87,24 +91,21 @@ struct alignas(sizeof(uint32_t)) SceneNode final {
      * 
      * Camera Nodes will reference the "cameras" member of a SceneGraph.
      */
-    uint32_t dataId;
-    
+    size_t dataId;
+
     /**
      * This member represents an index into the parent SceneGraph's "nodeAnims"
      * member. Use this to retrieve a single animation track related to the
      * current node.
      */
-    uint32_t animListId;
-    
+    size_t animListId;
+
     /**
      * @brief reset() assigns a default value of '0' to all internal members.
      */
     void reset() noexcept;
 };
-
-
-
 } // end draw namespace
 } // end ls namespace
 
-#endif	/* __LS_DRAW_SCENE_NODE_H__ */
+#endif    /* __LS_DRAW_SCENE_NODE_H__ */

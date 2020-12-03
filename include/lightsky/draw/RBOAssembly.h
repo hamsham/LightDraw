@@ -15,15 +15,18 @@
 
 
 
-namespace ls {
-namespace draw {
+namespace ls
+{
+namespace draw
+{
 
 
 
 /**----------------------------------------------------------------------------
  * Assembler of Render Buffer Objects
 -----------------------------------------------------------------------------*/
-class RBOAssembly {
+class RBOAssembly
+{
   private:
     math::vec2i size;
 
@@ -54,9 +57,6 @@ class RBOAssembly {
 
     bool assemble(RenderBuffer& rbo) const noexcept;
 };
-
-
-
 } // end draw namespace
 } // end ls namespace
 

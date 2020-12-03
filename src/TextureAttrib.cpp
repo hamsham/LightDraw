@@ -12,40 +12,49 @@
 
 #include "lightsky/draw/TextureAttrib.h"
 
-namespace ls {
-namespace draw {
+
+
+namespace ls
+{
+namespace draw
+{
 
 /*-------------------------------------
  * Destructor
 -------------------------------------*/
-TextureAttrib::~TextureAttrib() noexcept {
+TextureAttrib::~TextureAttrib() noexcept
+{
 }
 
 /*-------------------------------------
  * Constructor
 -------------------------------------*/
-TextureAttrib::TextureAttrib() noexcept {
+TextureAttrib::TextureAttrib() noexcept
+{
     reset_attribs();
 }
 
 /*-------------------------------------
  * Copy Constructor
 -------------------------------------*/
-TextureAttrib::TextureAttrib(const TextureAttrib& a) noexcept {
+TextureAttrib::TextureAttrib(const TextureAttrib& a) noexcept
+{
     *this = a;
 }
 
 /*-------------------------------------
  * Move Constructor
 -------------------------------------*/
-TextureAttrib::TextureAttrib(TextureAttrib&& a) noexcept {
+TextureAttrib::TextureAttrib(TextureAttrib&& a) noexcept
+{
     *this = std::move(a);
 }
 
 /*-------------------------------------
  * Copy Operator
 -------------------------------------*/
-TextureAttrib& TextureAttrib::operator =(const TextureAttrib& a) noexcept {
+TextureAttrib& TextureAttrib::operator=(const TextureAttrib& a) noexcept
+{
     colorType = a.colorType;
     basicFormat = a.basicFormat;
     internalFormat = a.internalFormat;
@@ -71,7 +80,8 @@ TextureAttrib& TextureAttrib::operator =(const TextureAttrib& a) noexcept {
 /*-------------------------------------
  * Move Operator
 -------------------------------------*/
-TextureAttrib& TextureAttrib::operator =(TextureAttrib&& a) noexcept {
+TextureAttrib& TextureAttrib::operator=(TextureAttrib&& a) noexcept
+{
     *this = a;
     a.reset_attribs();
 
@@ -81,7 +91,8 @@ TextureAttrib& TextureAttrib::operator =(TextureAttrib&& a) noexcept {
 /*-------------------------------------
  * Reset all attributes to their OpenGL defaults
 -------------------------------------*/
-void TextureAttrib::reset_attribs() noexcept {
+void TextureAttrib::reset_attribs() noexcept
+{
     colorType = color_type_t::COLOR_TYPE_DEFAULT;
     basicFormat = pixel_layout_t::COLOR_LAYOUT_DEFAULT_RGB;
     internalFormat = pixel_format_t::COLOR_FMT_DEFAULT_RGB;
@@ -105,7 +116,8 @@ void TextureAttrib::reset_attribs() noexcept {
 /*-------------------------------------
  * Introspection (most) of a Texture Attributes
 -------------------------------------*/
-bool TextureAttrib::introspect_attribs(const tex_type_t texType) noexcept {
+bool TextureAttrib::introspect_attribs(const tex_type_t texType) noexcept
+{
     // TODO: Figure out how to retrieve the color type, pixel layout, and
     // pixel format of a texture.
 
@@ -130,20 +142,24 @@ bool TextureAttrib::introspect_attribs(const tex_type_t texType) noexcept {
 /*-------------------------------------
  * Set the texture's clamping/wrapping mode
 -------------------------------------*/
-void TextureAttrib::set_wrap_mode(const tex_param_t wrapParam, const tex_wrap_t wrapVal) noexcept {
+void TextureAttrib::set_wrap_mode(const tex_param_t wrapParam, const tex_wrap_t wrapVal) noexcept
+{
     LS_DEBUG_ASSERT(
         (wrapParam == tex_param_t::TEX_PARAM_WRAP_S) ||
         (wrapParam == tex_param_t::TEX_PARAM_WRAP_T) ||
         (wrapParam == tex_param_t::TEX_PARAM_WRAP_R)
-        );
+    );
 
-    if (wrapParam == tex_param_t::TEX_PARAM_WRAP_S) {
+    if (wrapParam == tex_param_t::TEX_PARAM_WRAP_S)
+    {
         wrapS = wrapVal;
     }
-    else if (wrapParam == tex_param_t::TEX_PARAM_WRAP_T) {
+    else if (wrapParam == tex_param_t::TEX_PARAM_WRAP_T)
+    {
         wrapT = wrapVal;
     }
-    else {
+    else
+    {
         wrapR = wrapVal;
     }
 }
@@ -151,17 +167,20 @@ void TextureAttrib::set_wrap_mode(const tex_param_t wrapParam, const tex_wrap_t 
 /*-------------------------------------
  * Retrieve the texture's clamping/wrapping mode
 -------------------------------------*/
-tex_wrap_t TextureAttrib::get_wrap_mode(const tex_param_t wrapParam) const noexcept {
+tex_wrap_t TextureAttrib::get_wrap_mode(const tex_param_t wrapParam) const noexcept
+{
     LS_DEBUG_ASSERT(
         (wrapParam == tex_param_t::TEX_PARAM_WRAP_S) ||
         (wrapParam == tex_param_t::TEX_PARAM_WRAP_T) ||
         (wrapParam == tex_param_t::TEX_PARAM_WRAP_R)
-        );
+    );
 
-    if (wrapParam == tex_param_t::TEX_PARAM_WRAP_S) {
+    if (wrapParam == tex_param_t::TEX_PARAM_WRAP_S)
+    {
         return wrapS;
     }
-    else if (wrapParam == tex_param_t::TEX_PARAM_WRAP_T) {
+    else if (wrapParam == tex_param_t::TEX_PARAM_WRAP_T)
+    {
         return wrapT;
     }
 
@@ -171,15 +190,17 @@ tex_wrap_t TextureAttrib::get_wrap_mode(const tex_param_t wrapParam) const noexc
 /*-------------------------------------
  * Set a particular swizzle for a texture
 -------------------------------------*/
-void TextureAttrib::set_swizzle_mode(const tex_param_t swizzleParam, const pixel_swizzle_t swizzle) noexcept {
+void TextureAttrib::set_swizzle_mode(const tex_param_t swizzleParam, const pixel_swizzle_t swizzle) noexcept
+{
     LS_DEBUG_ASSERT(
         (swizzleParam == tex_param_t::TEX_PARAM_SWIZZLE_R) ||
         (swizzleParam == tex_param_t::TEX_PARAM_SWIZZLE_G) ||
         (swizzleParam == tex_param_t::TEX_PARAM_SWIZZLE_B) ||
         (swizzleParam == tex_param_t::TEX_PARAM_SWIZZLE_A)
-        );
+    );
 
-    switch (swizzleParam) {
+    switch (swizzleParam)
+    {
         case tex_param_t::TEX_PARAM_SWIZZLE_R:
             swizzleR = swizzle;
             break;
@@ -204,8 +225,10 @@ void TextureAttrib::set_swizzle_mode(const tex_param_t swizzleParam, const pixel
 /*-------------------------------------
  * Retrieve a particular swizzle for a texture
 -------------------------------------*/
-pixel_swizzle_t TextureAttrib::get_swizzle_mode(const tex_param_t swizzle) const noexcept {
-    switch (swizzle) {
+pixel_swizzle_t TextureAttrib::get_swizzle_mode(const tex_param_t swizzle) const noexcept
+{
+    switch (swizzle)
+    {
         case tex_param_t::TEX_PARAM_SWIZZLE_R:
             return swizzleR;
 
@@ -227,7 +250,7 @@ pixel_swizzle_t TextureAttrib::get_swizzle_mode(const tex_param_t swizzle) const
         (swizzle == tex_param_t::TEX_PARAM_SWIZZLE_G) ||
         (swizzle == tex_param_t::TEX_PARAM_SWIZZLE_B) ||
         (swizzle == tex_param_t::TEX_PARAM_SWIZZLE_A)
-        );
+    );
 
     return (pixel_swizzle_t)tex_param_t::TEX_PARAM_INVALID;
 }
@@ -235,7 +258,8 @@ pixel_swizzle_t TextureAttrib::get_swizzle_mode(const tex_param_t swizzle) const
 /*-------------------------------------
  * Set the maximum & minimum mipmapping LOD bias
 -------------------------------------*/
-void TextureAttrib::set_lod(const float minimum, const float maximum) noexcept {
+void TextureAttrib::set_lod(const float minimum, const float maximum) noexcept
+{
     LS_DEBUG_ASSERT(minimum < maximum);
     set_min_lod(minimum);
     set_max_lod(maximum);
@@ -244,35 +268,40 @@ void TextureAttrib::set_lod(const float minimum, const float maximum) noexcept {
 /*-------------------------------------
  * Set the maximum mipmapping LOD bias
 -------------------------------------*/
-void TextureAttrib::set_min_lod(const float minimum) noexcept {
+void TextureAttrib::set_min_lod(const float minimum) noexcept
+{
     minLod = minimum;
 }
 
 /*-------------------------------------
  * Set the maximum mipmapping LOD bias
 -------------------------------------*/
-void TextureAttrib::set_max_lod(const float maximum) noexcept {
+void TextureAttrib::set_max_lod(const float maximum) noexcept
+{
     maxLod = maximum;
 }
 
 /*-------------------------------------
  * Get the minimum mipmapping LOD bias
 -------------------------------------*/
-float TextureAttrib::get_min_lod() const noexcept {
+float TextureAttrib::get_min_lod() const noexcept
+{
     return minLod;
 }
 
 /*-------------------------------------
  * Get the maximum mipmapping LOD bias
 -------------------------------------*/
-float TextureAttrib::get_max_lod() const noexcept {
+float TextureAttrib::get_max_lod() const noexcept
+{
     return maxLod;
 }
 
 /*-------------------------------------
  * Set the texture's filtering modes
 -------------------------------------*/
-void TextureAttrib::set_filtering(const tex_filter_t minification, const tex_filter_t magnification) noexcept {
+void TextureAttrib::set_filtering(const tex_filter_t minification, const tex_filter_t magnification) noexcept
+{
     set_min_filter(minification);
     set_mag_filter(magnification);
 }
@@ -280,42 +309,48 @@ void TextureAttrib::set_filtering(const tex_filter_t minification, const tex_fil
 /*-------------------------------------
  * Set a texture's minification mode
 -------------------------------------*/
-void TextureAttrib::set_min_filter(const tex_filter_t minification) noexcept {
+void TextureAttrib::set_min_filter(const tex_filter_t minification) noexcept
+{
     minFilter = minification;
 }
 
 /*-------------------------------------
  * Set a texture's magnification mode
 -------------------------------------*/
-void TextureAttrib::set_mag_filter(const tex_filter_t magnification) noexcept {
+void TextureAttrib::set_mag_filter(const tex_filter_t magnification) noexcept
+{
     magFilter = magnification;
 }
 
 /*-------------------------------------
  * Get the minification type
 -------------------------------------*/
-tex_filter_t TextureAttrib::get_min_filter() const noexcept {
+tex_filter_t TextureAttrib::get_min_filter() const noexcept
+{
     return minFilter;
 }
 
 /*-------------------------------------
  * Get the magnification type
 -------------------------------------*/
-tex_filter_t TextureAttrib::get_mag_filter() const noexcept {
+tex_filter_t TextureAttrib::get_mag_filter() const noexcept
+{
     return magFilter;
 }
 
 /*-------------------------------------
  * Retrieve the coloring information of a texture's pixels
 -------------------------------------*/
-color_type_t TextureAttrib::get_color_type() const noexcept {
+color_type_t TextureAttrib::get_color_type() const noexcept
+{
     return colorType;
 }
 
 /*-------------------------------------
  * Set the data format of a texture's pixels
 -------------------------------------*/
-void TextureAttrib::set_internal_format(const pixel_format_t gpuFormat) noexcept {
+void TextureAttrib::set_internal_format(const pixel_format_t gpuFormat) noexcept
+{
     internalFormat = gpuFormat;
     basicFormat = draw::get_color_layout(internalFormat);
     colorType = draw::get_color_type(internalFormat);
@@ -324,18 +359,17 @@ void TextureAttrib::set_internal_format(const pixel_format_t gpuFormat) noexcept
 /*-------------------------------------
  * Retrieve the data format of a texture's pixels
 -------------------------------------*/
-pixel_format_t TextureAttrib::get_internal_format() const noexcept {
+pixel_format_t TextureAttrib::get_internal_format() const noexcept
+{
     return internalFormat;
 }
 
 /*-------------------------------------
  * Retrieve the layout of a texture's pixels.
 -------------------------------------*/
-pixel_layout_t TextureAttrib::get_basic_format() const noexcept {
+pixel_layout_t TextureAttrib::get_basic_format() const noexcept
+{
     return basicFormat;
 }
-
-
-
 } // end draw namespace
 } // end ls namespace

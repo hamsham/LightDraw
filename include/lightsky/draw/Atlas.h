@@ -12,8 +12,12 @@
 
 #include "lightsky/draw/Texture.h"
 
-namespace ls {
-namespace draw {
+
+
+namespace ls
+{
+namespace draw
+{
 
 
 
@@ -30,7 +34,8 @@ class FontResource;
  * An AtlasGlyph contains the coordinates of individual glyphs within a texture
  * atlas.
 -----------------------------------------------------------------------------*/
-struct AtlasGlyph {
+struct AtlasGlyph
+{
     /**
      * Size corresponds to the vertex width and height of a glyph.
      */
@@ -61,7 +66,8 @@ struct AtlasGlyph {
  * A texture atlas contains a collection of textures which may be loaded into
  * GPU memory as a single texture.
 -----------------------------------------------------------------------------*/
-class Atlas {
+class Atlas
+{
   private:
 
     /**
@@ -247,47 +253,50 @@ class Atlas {
 /*-------------------------------------
  * Retrieve the GPU id of the texture used by *this.
 -------------------------------------*/
-inline unsigned Atlas::gpu_id() const noexcept {
+inline unsigned Atlas::gpu_id() const noexcept
+{
     return atlasTex.gpu_id();
 }
 
 /*-------------------------------------
  * Bind the atlas texture to the current OpenGL context.
 -------------------------------------*/
-inline void Atlas::bind() const noexcept {
+inline void Atlas::bind() const noexcept
+{
     atlasTex.bind();
 }
 
 /*-------------------------------------
  * Unbind the atlas texture to the current OpenGL context.
 -------------------------------------*/
-inline void Atlas::unbind() const noexcept {
+inline void Atlas::unbind() const noexcept
+{
     atlasTex.unbind();
 }
 
 /*-------------------------------------
  * Retrieve the texture used by *this.
 -------------------------------------*/
-inline const Texture& Atlas::get_texture() const noexcept {
+inline const Texture& Atlas::get_texture() const noexcept
+{
     return atlasTex;
 }
 
 /*-------------------------------------
  * Retrieve the number of glyphs used by *this atlas.
 -------------------------------------*/
-inline unsigned Atlas::get_num_glyphs() const noexcept {
+inline unsigned Atlas::get_num_glyphs() const noexcept
+{
     return numEntries;
 }
 
 /*-------------------------------------
  * Retrieve the pointer to the list of glyphs used by *this atlas.
 -------------------------------------*/
-inline const utils::Pointer<AtlasGlyph[]>& Atlas::get_glyphs() const noexcept {
+inline const utils::Pointer<AtlasGlyph[]>& Atlas::get_glyphs() const noexcept
+{
     return pEntries;
 }
-
-
-
 } // end draw namespace
 } // end ls namespace
 

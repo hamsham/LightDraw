@@ -18,8 +18,12 @@
 #include "lightsky/draw/VertexBuffer.h"
 #include "lightsky/draw/IndexBuffer.h"
 
-namespace ls {
-namespace draw {
+
+
+namespace ls
+{
+namespace draw
+{
 
 
 
@@ -27,6 +31,7 @@ namespace draw {
  * Forward Declarations
 -----------------------------------------------------------------------------*/
 class VAOAttrib;
+
 class VertexArray;
 
 
@@ -37,7 +42,8 @@ class VertexArray;
  * and assign them values so they can be manipulated or queried much easier
  * than using standard OpenGL.
 -----------------------------------------------------------------------------*/
-class VAOAssembly {
+class VAOAssembly
+{
     /**
      * Typedef to declare the type which manages a VBO and its index within a
      * VAO.
@@ -383,14 +389,16 @@ class VAOAssembly {
 /*-------------------------------------
  * Check if an IBO has been assigned to a VAO attrib location.
 -------------------------------------*/
-inline bool VAOAssembly::is_ibo_set() const noexcept {
+inline bool VAOAssembly::is_ibo_set() const noexcept
+{
     return pIndexBuffer != nullptr;
 }
 
 /*-------------------------------------
  * Check if a VBO has been assigned to a VAO attrib location.
 -------------------------------------*/
-inline bool VAOAssembly::is_vbo_set(unsigned vaoIndex) const noexcept {
+inline bool VAOAssembly::is_vbo_set(unsigned vaoIndex) const noexcept
+{
     LS_DEBUG_ASSERT(vaoIndex < VAO_MAX_VERTEX_ATTRIBS);
     return vboIndices[vaoIndex].first != nullptr;
 }
@@ -398,25 +406,29 @@ inline bool VAOAssembly::is_vbo_set(unsigned vaoIndex) const noexcept {
 /*-------------------------------------
  * Assign an index buffer object to be used with a VAO during assembly
 -------------------------------------*/
-inline void VAOAssembly::set_ibo_attrib(const IndexBuffer& ibo) noexcept {
+inline void VAOAssembly::set_ibo_attrib(const IndexBuffer& ibo) noexcept
+{
     pIndexBuffer = &ibo;
 }
 
 /*-------------------------------------
  * Assign a VAO attrib a name.
 -------------------------------------*/
-template<typename std_string_type>
-bool VAOAssembly::set_attrib_name(const unsigned attribIndex, std_string_type&& name) noexcept {
+template <typename std_string_type>
+bool VAOAssembly::set_attrib_name(const unsigned attribIndex, std_string_type&& name) noexcept
+{
     LS_LOG_MSG("Assigning the name \"", name, "\" to VAO Assembly attribute ", attribIndex, '.');
 
     LS_DEBUG_ASSERT(attribIndex < VAO_MAX_VERTEX_ATTRIBS);
 
-    if (name.empty()) {
+    if (name.empty())
+    {
         LS_LOG_MSG("\tFailed. Attempted to use an empty string as the name for ", attribIndex, ".\n");
         return false;
     }
 
-    if (vboIndices[attribIndex].first == nullptr) {
+    if (vboIndices[attribIndex].first == nullptr)
+    {
         LS_LOG_MSG("\tFailed. No attribute exists at index ", attribIndex, ".\n");
         return false;
     }
@@ -431,12 +443,10 @@ bool VAOAssembly::set_attrib_name(const unsigned attribIndex, std_string_type&& 
 /*-------------------------------------
  * Remove the currently bound index buffer object
 -------------------------------------*/
-inline void VAOAssembly::clear_ibo() noexcept {
+inline void VAOAssembly::clear_ibo() noexcept
+{
     pIndexBuffer = nullptr;
 }
-
-
-
 } // end draw namespace
 } // end ls namespace
 

@@ -26,8 +26,10 @@
 
 
 
-namespace ls {
-namespace draw {
+namespace ls
+{
+namespace draw
+{
 
 
 
@@ -42,16 +44,15 @@ int init_eds_draw();
  * Debugging Various Messages.
 -------------------------------------*/
 #ifdef LS_DEBUG
-    unsigned print_gl_error(const char* const func, const int line, const char* const file) noexcept;
+
+unsigned print_gl_error(const char* const func, const int line, const char* const file) noexcept;
+
 #else
 
 inline unsigned print_gl_error(const char* const, int, const char*) noexcept {
     return 0;
 }
 #endif
-
-
-
 } // end draw namespace
 } // end ls namespace
 
@@ -113,6 +114,8 @@ inline unsigned print_gl_error(const char* const, int, const char*) noexcept {
     #include <windows.h>
     #include <GL/gl.h>
     #include <GL/glext.h>
+
+
 
 #else
     #error "An unsupported OS is currently being used."
@@ -882,10 +885,10 @@ extern PFNGLPIXELSTOREXPROC glPixelStorex;
 -------------------------------------*/
 #if defined(GL_ES_VERSION_3_0) && !defined(LS_DRAW_FORCE_BACKEND_GL)
     #define LS_DRAW_BACKEND_GLES
-    
+
 #elif defined(GL_VERSION_3_3) || defined(LS_DRAW_FORCE_BACKEND_GL)
     #define LS_DRAW_BACKEND_GL
-    
+
 #else
     #error "An unknown or unsupported of OpenGL is being used."
 #endif

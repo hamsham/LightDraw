@@ -24,22 +24,23 @@
  * These meshes were hand-selected through much trial & error. Do not touch
  * unless you want a swarm of bees hidden in your breakfast cereal box.
 -------------------------------------*/
-enum : unsigned int {
+enum : unsigned int
+{
     SCENE_FILE_IMPORT_FLAGS = 0
-        | aiProcess_Triangulate
-        | aiProcess_OptimizeMeshes
-        | aiProcess_FindInstances
-        | aiProcess_SortByPType
-        | aiProcess_RemoveComponent
-        | aiProcess_JoinIdenticalVertices
-        | aiProcess_FindDegenerates
-        | aiProcess_FixInfacingNormals
-        | aiProcess_FindInvalidData
-        | aiProcess_ValidateDataStructure
-        | aiProcess_ImproveCacheLocality
-        | aiProcess_TransformUVCoords
-        | aiProcess_RemoveRedundantMaterials
-        | 0
+                              | aiProcess_Triangulate
+                              | aiProcess_OptimizeMeshes
+                              | aiProcess_FindInstances
+                              | aiProcess_SortByPType
+                              | aiProcess_RemoveComponent
+                              | aiProcess_JoinIdenticalVertices
+                              | aiProcess_FindDegenerates
+                              | aiProcess_FixInfacingNormals
+                              | aiProcess_FindInvalidData
+                              | aiProcess_ValidateDataStructure
+                              | aiProcess_ImproveCacheLocality
+                              | aiProcess_TransformUVCoords
+                              | aiProcess_RemoveRedundantMaterials
+                              | 0
 };
 
 
@@ -48,7 +49,8 @@ enum : unsigned int {
  * Convert an Assimp vector to an internal one
 -------------------------------------*/
 template <typename num_t>
-ls::math::vec2_t<num_t> convert_assimp_vector(const aiVector2t<num_t>& inVec) noexcept {
+ls::math::vec2_t<num_t> convert_assimp_vector(const aiVector2t<num_t>& inVec) noexcept
+{
     return ls::math::vec2_t<num_t>{inVec.x, inVec.y};
 }
 
@@ -58,12 +60,14 @@ ls::math::vec2_t<num_t> convert_assimp_vector(const aiVector2t<num_t>& inVec) no
  * Convert an Assimp vector to an internal one
 -------------------------------------*/
 template <typename num_t>
-ls::math::vec3_t<num_t> convert_assimp_vector(const aiVector3t<num_t>& inVec) noexcept {
+ls::math::vec3_t<num_t> convert_assimp_vector(const aiVector3t<num_t>& inVec) noexcept
+{
     return ls::math::vec3_t<num_t>{inVec.x, inVec.y, inVec.z};
 }
 
 template <typename num_t>
-int32_t convert_assimp_normal(const aiVector3t<num_t>& inVec) noexcept {
+int32_t convert_assimp_normal(const aiVector3t<num_t>& inVec) noexcept
+{
     return ls::draw::pack_vertex_normal(ls::math::vec3_t<num_t>{inVec.x, inVec.y, inVec.z});
 }
 
@@ -73,7 +77,8 @@ int32_t convert_assimp_normal(const aiVector3t<num_t>& inVec) noexcept {
  * Convert an Assimp vector to an internal one
 -------------------------------------*/
 template <typename num_t>
-ls::math::quat_t<num_t> convert_assimp_quaternion(const aiQuaterniont<num_t>& inQuat) noexcept {
+ls::math::quat_t<num_t> convert_assimp_quaternion(const aiQuaterniont<num_t>& inQuat) noexcept
+{
     return ls::math::quat_t<num_t>{inQuat.x, inQuat.y, inQuat.z, inQuat.w};
 }
 
@@ -83,7 +88,8 @@ ls::math::quat_t<num_t> convert_assimp_quaternion(const aiQuaterniont<num_t>& in
  * Convert an Assimp color to an internal one
 -------------------------------------*/
 template <typename num_t>
-ls::draw::color::colorf_t convert_assimp_color(const aiColor4t<num_t>& inColor) noexcept {
+ls::draw::color::colorf_t convert_assimp_color(const aiColor4t<num_t>& inColor) noexcept
+{
     return ls::draw::color::colorf_t{inColor.r, inColor.g, inColor.b, inColor.a};
 }
 
@@ -93,7 +99,8 @@ ls::draw::color::colorf_t convert_assimp_color(const aiColor4t<num_t>& inColor) 
  * Convert an Assimp matrix to an internal one
 -------------------------------------*/
 template <typename num_t>
-ls::math::mat3_t<num_t> convert_assimp_matrix(const aiMatrix3x3t<num_t>& inMat) noexcept {
+ls::math::mat3_t<num_t> convert_assimp_matrix(const aiMatrix3x3t<num_t>& inMat) noexcept
+{
     return ls::math::mat3_t<num_t>{
         inMat.a1, inMat.b1, inMat.c1,
         inMat.a2, inMat.b2, inMat.c2,
@@ -107,7 +114,8 @@ ls::math::mat3_t<num_t> convert_assimp_matrix(const aiMatrix3x3t<num_t>& inMat) 
  * Convert an Assimp matrix to an internal one
 -------------------------------------*/
 template <typename num_t>
-ls::math::mat4_t<num_t> convert_assimp_matrix(const aiMatrix4x4t<num_t>& inMat) noexcept {
+ls::math::mat4_t<num_t> convert_assimp_matrix(const aiMatrix4x4t<num_t>& inMat) noexcept
+{
     return ls::math::mat4_t<num_t>{
         inMat.a1, inMat.b1, inMat.c1, inMat.d1,
         inMat.a2, inMat.b2, inMat.c2, inMat.d2,
@@ -228,14 +236,17 @@ unsigned is_node_type(
     const aiNode* const pNode,
     const assimp_data_t* const* const pItems,
     const unsigned itemCount
-) noexcept {
+) noexcept
+{
     const aiString& nodeName = pNode->mName;
 
-    for (unsigned i = 0; i < itemCount; ++i) {
+    for (unsigned i = 0; i < itemCount; ++i)
+    {
         const assimp_data_t* const pItem = pItems[i];
         const aiString& itemName = pItem->mName;
 
-        if (strcmp(nodeName.C_Str(), itemName.C_Str()) == 0) {
+        if (strcmp(nodeName.C_Str(), itemName.C_Str()) == 0)
+        {
             return i;
         }
     }
@@ -246,7 +257,8 @@ unsigned is_node_type(
 
 
 template <>
-inline unsigned is_node_type<aiMesh>(const aiNode* const pNode, const aiMesh* const* const, const unsigned) noexcept {
+inline unsigned is_node_type<aiMesh>(const aiNode* const pNode, const aiMesh* const* const, const unsigned) noexcept
+{
     return pNode->mNumMeshes > 0;
 }
 

@@ -19,41 +19,51 @@
 #include "lightsky/draw/FrameBuffer.h"
 #include "lightsky/draw/FBOAssembly.h"
 
-namespace ls {
-namespace draw {
+
+
+namespace ls
+{
+namespace draw
+{
 
 /*-------------------------------------
  * Destructor
 -------------------------------------*/
-FBOAssembly::~FBOAssembly() noexcept {
+FBOAssembly::~FBOAssembly() noexcept
+{
 }
 
 /*-------------------------------------
  * Constructor
 -------------------------------------*/
-FBOAssembly::FBOAssembly() noexcept {
+FBOAssembly::FBOAssembly() noexcept
+{
     clear();
 }
 
 /*-------------------------------------
  * Copy Constructor
 -------------------------------------*/
-FBOAssembly::FBOAssembly(const FBOAssembly& a) noexcept {
+FBOAssembly::FBOAssembly(const FBOAssembly& a) noexcept
+{
     *this = a;
 }
 
 /*-------------------------------------
  * Move Constructor
 -------------------------------------*/
-FBOAssembly::FBOAssembly(FBOAssembly&& a) noexcept {
+FBOAssembly::FBOAssembly(FBOAssembly&& a) noexcept
+{
     *this = std::move(a);
 }
 
 /*-------------------------------------
  * Copy Operator
 -------------------------------------*/
-FBOAssembly& FBOAssembly::operator =(const FBOAssembly& a) noexcept {
-    for (unsigned i = 0; i < LS_ARRAY_SIZE(a.attribs); ++i) {
+FBOAssembly& FBOAssembly::operator=(const FBOAssembly& a) noexcept
+{
+    for (unsigned i = 0; i < LS_ARRAY_SIZE(a.attribs); ++i)
+    {
         attribs[i] = a.attribs[i];
     }
 
@@ -63,8 +73,10 @@ FBOAssembly& FBOAssembly::operator =(const FBOAssembly& a) noexcept {
 /*-------------------------------------
  * Move Operator
 -------------------------------------*/
-FBOAssembly& FBOAssembly::operator =(FBOAssembly&& a) noexcept {
-    for (unsigned i = 0; i < LS_ARRAY_SIZE(a.attribs); ++i) {
+FBOAssembly& FBOAssembly::operator=(FBOAssembly&& a) noexcept
+{
+    for (unsigned i = 0; i < LS_ARRAY_SIZE(a.attribs); ++i)
+    {
         attribs[i] = a.attribs[i];
         a.attribs[i].reset_attribs();
     }
@@ -75,35 +87,43 @@ FBOAssembly& FBOAssembly::operator =(FBOAssembly&& a) noexcept {
 /*-------------------------------------
  * Pack all internal attributes to the front of the attrib array.
 -------------------------------------*/
-void FBOAssembly::pack_vbo_attribs() noexcept {
+void FBOAssembly::pack_vbo_attribs() noexcept
+{
     LS_LOG_MSG("Repacking FBO Assembly attributes.");
 
     // can't use the "is_attrib_valid()" function here. That function also
     // checks for valid attachment types, which is not necessary here.
-    const auto isVerifiable = [&](const FBOAttrib & a)->bool {
-        if (a.get_texture() != nullptr && a.get_texture()->is_valid()) {
+    const auto isVerifiable = [&](const FBOAttrib& a) -> bool
+    {
+        if (a.get_texture() != nullptr && a.get_texture()->is_valid())
+        {
             return true;
         }
 
-        if (a.get_renderbuffer() != nullptr && a.get_renderbuffer()->is_valid()) {
+        if (a.get_renderbuffer() != nullptr && a.get_renderbuffer()->is_valid())
+        {
             return true;
         }
 
         return false;
     };
 
-    for (unsigned i = 0; i < get_num_attribs(); ++i) {
+    for (unsigned i = 0; i < get_num_attribs(); ++i)
+    {
         FBOAttrib& current = attribs[i];
 
         // don't bother modifying valid attribs.
-        if (isVerifiable(current)) {
+        if (isVerifiable(current))
+        {
             continue;
         }
 
-        for (unsigned j = i + 1; j < get_num_attribs(); ++j) {
+        for (unsigned j = i + 1; j < get_num_attribs(); ++j)
+        {
             FBOAttrib& next = attribs[j];
 
-            if (isVerifiable(next) == false) {
+            if (isVerifiable(next) == false)
+            {
                 continue;
             }
 
@@ -116,33 +136,35 @@ void FBOAssembly::pack_vbo_attribs() noexcept {
     }
 
     LS_LOG_MSG("\tDone.\n");
-
 }
 
 /*-------------------------------------
  * Validate the render target in an attribute
 -------------------------------------*/
-bool FBOAssembly::attrib_has_targets(const FBOAttrib& a) noexcept {
+bool FBOAssembly::attrib_has_targets(const FBOAttrib& a) noexcept
+{
     return (a.get_texture() != nullptr && a.get_texture()->is_valid())
-        || (a.get_renderbuffer() != nullptr && a.get_renderbuffer()->is_valid());
+           || (a.get_renderbuffer() != nullptr && a.get_renderbuffer()->is_valid());
 }
 
 /*-------------------------------------
  * Validate the color attachment in an attribute
 -------------------------------------*/
-bool FBOAssembly::attrib_has_attachments(const FBOAttrib& a) noexcept {
+bool FBOAssembly::attrib_has_attachments(const FBOAttrib& a) noexcept
+{
     const fbo_attach_t attachment = a.get_attach_type();
 
     return (attachment == fbo_attach_t::FBO_ATTACHMENT_DEPTH)
-        || (attachment == fbo_attach_t::FBO_ATTACHMENT_DEPTH_STENCIL)
-        || (attachment == fbo_attach_t::FBO_ATTACHMENT_STENCIL)
-        || (attachment >= fbo_attach_t::FBO_ATTACHMENT_0 && attachment < fbo_attach_t::FBO_ATTACHMENT_0 + draw::get_max_fbo_attachments());
+           || (attachment == fbo_attach_t::FBO_ATTACHMENT_DEPTH_STENCIL)
+           || (attachment == fbo_attach_t::FBO_ATTACHMENT_STENCIL)
+           || (attachment >= fbo_attach_t::FBO_ATTACHMENT_0 && (unsigned)attachment < (unsigned)fbo_attach_t::FBO_ATTACHMENT_0 + (unsigned)draw::get_max_fbo_attachments());
 }
 
 /*-------------------------------------
     Attach a texture to the currently bound framebuffer
 -------------------------------------*/
-bool FBOAssembly::attach_target_texture(const FBOAttrib& attrib) const noexcept {
+bool FBOAssembly::attach_target_texture(const FBOAttrib& attrib) const noexcept
+{
     const fbo_attach_t attach = attrib.get_attach_type();
     const unsigned level = attrib.get_texture_level();
     const Texture& tex = *attrib.get_texture();
@@ -153,15 +175,18 @@ bool FBOAssembly::attach_target_texture(const FBOAttrib& attrib) const noexcept 
     tex.bind();
     LS_LOG_GL_ERR();
 
-    if (texType == tex_type_t::TEX_TYPE_2D || texType == tex_type_t::TEX_TYPE_CUBE) {
+    if (texType == tex_type_t::TEX_TYPE_2D || texType == tex_type_t::TEX_TYPE_CUBE)
+    {
         glFramebufferTexture2D(fbo_access_t::FBO_ACCESS_RW, attach, attrib.get_texture_type(), texId, level);
         LS_LOG_GL_ERR();
     }
-    else if (texType == tex_type_t::TEX_TYPE_3D || texType == tex_type_t::TEX_TYPE_2D_ARRAY) {
+    else if (texType == tex_type_t::TEX_TYPE_3D || texType == tex_type_t::TEX_TYPE_2D_ARRAY)
+    {
         glFramebufferTextureLayer(fbo_access_t::FBO_ACCESS_RW, attach, texId, level, attrib.get_texture_layer());
         LS_LOG_GL_ERR();
     }
-    else {
+    else
+    {
         // sunspots made this branch happen.
         LS_DEBUG_ASSERT(false);
         ret = false;
@@ -176,7 +201,8 @@ bool FBOAssembly::attach_target_texture(const FBOAttrib& attrib) const noexcept 
 /*-------------------------------------
     Attach a renderbuffer to the currently bound framebuffer
 -------------------------------------*/
-bool FBOAssembly::attach_target_renderbuffer(const FBOAttrib& attrib) const noexcept {
+bool FBOAssembly::attach_target_renderbuffer(const FBOAttrib& attrib) const noexcept
+{
     const RenderBuffer& rbo = *attrib.get_renderbuffer();
     const unsigned rboId = rbo.gpu_id();
 
@@ -195,11 +221,13 @@ bool FBOAssembly::attach_target_renderbuffer(const FBOAttrib& attrib) const noex
 /*-------------------------------------
  * Check the framebuffer's completion
 -------------------------------------*/
-bool FBOAssembly::check_fbo_completion(const unsigned fboId) const noexcept {
+bool FBOAssembly::check_fbo_completion(const unsigned fboId) const noexcept
+{
     const GLenum err = glCheckFramebufferStatus(fbo_access_t::FBO_ACCESS_RW);
     LS_LOG_GL_ERR();
 
-    switch (err) {
+    switch (err)
+    {
         case FBO_COMPLETE:
             break;
 
@@ -236,13 +264,16 @@ bool FBOAssembly::check_fbo_completion(const unsigned fboId) const noexcept {
 /*-------------------------------------
  * Get the total number of verifiable attributes
 -------------------------------------*/
-unsigned FBOAssembly::get_num_verifiable_attribs() const noexcept {
+unsigned FBOAssembly::get_num_verifiable_attribs() const noexcept
+{
     unsigned i = 0;
 
-    for (; i < get_num_attribs(); ++i) {
+    for (; i < get_num_attribs(); ++i)
+    {
         const FBOAttrib& a = attribs[i];
 
-        if (!attrib_has_targets(a) && !attrib_has_attachments(a)) {
+        if (!attrib_has_targets(a) && !attrib_has_attachments(a))
+        {
             return i;
         }
     }
@@ -253,8 +284,10 @@ unsigned FBOAssembly::get_num_verifiable_attribs() const noexcept {
 /*-------------------------------------
  * Assign a texture as an FBO Attribute
 -------------------------------------*/
-bool FBOAssembly::set_attrib(const unsigned attribIndex, Texture& attachment, const fbo_attach_t type) noexcept {
-    if (attribIndex >= get_num_attribs()) {
+bool FBOAssembly::set_attrib(const unsigned attribIndex, Texture& attachment, const fbo_attach_t type) noexcept
+{
+    if (attribIndex >= get_num_attribs())
+    {
         LS_DEBUG_ASSERT(attribIndex >= get_num_attribs());
         return false;
     }
@@ -269,8 +302,10 @@ bool FBOAssembly::set_attrib(const unsigned attribIndex, Texture& attachment, co
 /*-------------------------------------
  * Assign a render buffer as an FBO Attribute
 -------------------------------------*/
-bool FBOAssembly::set_attrib(const unsigned attribIndex, RenderBuffer& attachment, const fbo_attach_t type) noexcept {
-    if (attribIndex >= get_num_attribs()) {
+bool FBOAssembly::set_attrib(const unsigned attribIndex, RenderBuffer& attachment, const fbo_attach_t type) noexcept
+{
+    if (attribIndex >= get_num_attribs())
+    {
         LS_DEBUG_ASSERT(attribIndex >= get_num_attribs());
         return false;
     }
@@ -285,16 +320,20 @@ bool FBOAssembly::set_attrib(const unsigned attribIndex, RenderBuffer& attachmen
 /*-------------------------------------
  * Assign a pre-assembled attrib as an attribute
 -------------------------------------*/
-bool FBOAssembly::set_attrib(const unsigned attribIndex, const FBOAttrib& attachment) noexcept {
-    if (attribIndex >= get_num_attribs()) {
+bool FBOAssembly::set_attrib(const unsigned attribIndex, const FBOAttrib& attachment) noexcept
+{
+    if (attribIndex >= get_num_attribs())
+    {
         LS_DEBUG_ASSERT(attribIndex >= get_num_attribs());
         return false;
     }
 
-    if (!attrib_has_attachments(attachment) || !attrib_has_targets(attachment)) {
+    if (!attrib_has_attachments(attachment) || !attrib_has_targets(attachment))
+    {
         return false;
     }
-    else {
+    else
+    {
         attribs[attribIndex] = attachment;
     }
 
@@ -306,7 +345,8 @@ bool FBOAssembly::set_attrib(const unsigned attribIndex, const FBOAttrib& attach
 /*-------------------------------------
  * Retrieve an attrib
 -------------------------------------*/
-const FBOAttrib& FBOAssembly::get_attrib(const unsigned attribIndex) const noexcept {
+const FBOAttrib& FBOAssembly::get_attrib(const unsigned attribIndex) const noexcept
+{
     LS_ASSERT(attribIndex < get_num_attribs());
 
     return attribs[attribIndex];
@@ -315,13 +355,16 @@ const FBOAttrib& FBOAssembly::get_attrib(const unsigned attribIndex) const noexc
 /*-------------------------------------
  * Retrieve an attrib's attachment type
 -------------------------------------*/
-fbo_attach_t FBOAssembly::get_attrib_attach_type(const unsigned attribIndex) const noexcept {
-    if (attribIndex >= get_num_attribs()) {
+fbo_attach_t FBOAssembly::get_attrib_attach_type(const unsigned attribIndex) const noexcept
+{
+    if (attribIndex >= get_num_attribs())
+    {
         LS_DEBUG_ASSERT(attribIndex >= get_num_attribs());
         return fbo_attach_t::FBO_ATTACHMENT_INVALID;
     }
 
-    if (!is_attrib_valid(attribIndex)) {
+    if (!is_attrib_valid(attribIndex))
+    {
         return fbo_attach_t::FBO_ATTACHMENT_INVALID;
     }
 
@@ -331,12 +374,15 @@ fbo_attach_t FBOAssembly::get_attrib_attach_type(const unsigned attribIndex) con
 /*-------------------------------------
  * Set an attrib's attachment type
 -------------------------------------*/
-bool FBOAssembly::set_attrib_attach_type(const unsigned attribIndex, const fbo_attach_t type) noexcept {
-    if (attribIndex >= get_num_attribs()) {
+bool FBOAssembly::set_attrib_attach_type(const unsigned attribIndex, const fbo_attach_t type) noexcept
+{
+    if (attribIndex >= get_num_attribs())
+    {
         LS_DEBUG_ASSERT(attribIndex >= get_num_attribs());
         return false;
     }
-    else {
+    else
+    {
         attribs[attribIndex].set_attach_type(type);
     }
 
@@ -346,8 +392,10 @@ bool FBOAssembly::set_attrib_attach_type(const unsigned attribIndex, const fbo_a
 /*-------------------------------------
  * Get an attrib's attachment type
 -------------------------------------*/
-fbo_target_t FBOAssembly::get_attrib_target_type(const unsigned attribIndex) const noexcept {
-    if (attribIndex >= get_num_attribs()) {
+fbo_target_t FBOAssembly::get_attrib_target_type(const unsigned attribIndex) const noexcept
+{
+    if (attribIndex >= get_num_attribs())
+    {
         LS_DEBUG_ASSERT(attribIndex >= get_num_attribs());
         return fbo_target_t::FBO_TARGET_INVALID;
     }
@@ -358,7 +406,8 @@ fbo_target_t FBOAssembly::get_attrib_target_type(const unsigned attribIndex) con
 /*-------------------------------------
  * Check to see if an attribute can be used at all
 -------------------------------------*/
-bool FBOAssembly::is_attrib_valid(const unsigned attribIndex) const noexcept {
+bool FBOAssembly::is_attrib_valid(const unsigned attribIndex) const noexcept
+{
     LS_DEBUG_ASSERT(attribIndex < get_num_attribs());
 
     const FBOAttrib& attrib = attribs[attribIndex];
@@ -368,16 +417,19 @@ bool FBOAssembly::is_attrib_valid(const unsigned attribIndex) const noexcept {
 /*-------------------------------------
  * Remove all data from *this.
 -------------------------------------*/
-void FBOAssembly::clear() noexcept {
-    for (FBOAttrib& attrib : attribs) {
-        attrib = FBOAttrib {};
+void FBOAssembly::clear() noexcept
+{
+    for (FBOAttrib& attrib : attribs)
+    {
+        attrib = FBOAttrib{};
     }
 }
 
 /*-------------------------------------
  * Validate the current assembly
 -------------------------------------*/
-bool FBOAssembly::is_assembly_valid() const noexcept {
+bool FBOAssembly::is_assembly_valid() const noexcept
+{
     // using first FBO_ATTACHMENT_MAX_COLORS for set bits and the last bit to
     // indicate a failure.
     uint32_t validatedColors = 0x0;
@@ -390,19 +442,23 @@ bool FBOAssembly::is_assembly_valid() const noexcept {
 
     const unsigned availableAttribs = get_num_verifiable_attribs();
 
-    if (availableAttribs < 1) {
+    if (availableAttribs < 1)
+    {
         LS_LOG_ERR("\tNo valid attributes are currently available in an FBO Assembly.\n");
         return false;
     }
 
-    for (unsigned i = 0; i < availableAttribs; ++i) {
+    for (unsigned i = 0; i < availableAttribs; ++i)
+    {
         const FBOAttrib& attrib = attribs[i];
         const fbo_attach_t attachment = attrib.get_attach_type();
 
-        if (attachment == fbo_attach_t::FBO_ATTACHMENT_DEPTH) {
+        if (attachment == fbo_attach_t::FBO_ATTACHMENT_DEPTH)
+        {
             ++depthCount;
 
-            if (depthCount > 1) {
+            if (depthCount > 1)
+            {
                 LS_LOG_ERR("\tDuplicate depth attachment found in an FBO Assembly at attrib index ", i, '.');
                 ret = false;
             }
@@ -410,16 +466,19 @@ bool FBOAssembly::is_assembly_valid() const noexcept {
             continue;
         }
 
-        if (attachment == fbo_attach_t::FBO_ATTACHMENT_DEPTH_STENCIL) {
+        if (attachment == fbo_attach_t::FBO_ATTACHMENT_DEPTH_STENCIL)
+        {
             ++depthCount;
             ++stencilCount;
 
-            if (depthCount > 1) {
+            if (depthCount > 1)
+            {
                 LS_LOG_ERR("\tDuplicate depth attachment found in an FBO Assembly at attrib index ", i, '.');
                 ret = false;
             }
 
-            if (stencilCount > 1) {
+            if (stencilCount > 1)
+            {
                 LS_LOG_ERR("\tDuplicate stencil attachment found in an FBO Assembly at attrib index ", i, '.');
                 ret = false;
             }
@@ -427,9 +486,11 @@ bool FBOAssembly::is_assembly_valid() const noexcept {
             continue;
         }
 
-        if (attachment == fbo_attach_t::FBO_ATTACHMENT_STENCIL) {
+        if (attachment == fbo_attach_t::FBO_ATTACHMENT_STENCIL)
+        {
             ++stencilCount;
-            if (stencilCount > 1) {
+            if (stencilCount > 1)
+            {
                 LS_LOG_ERR("\tDuplicate stencil attachment found in an FBO Assembly at attrib index ", i, '.');
                 ret = false;
             }
@@ -440,15 +501,18 @@ bool FBOAssembly::is_assembly_valid() const noexcept {
         // Get the enumeration of the highest color attachment + 1
         constexpr unsigned maxColAttachment = fbo_attach_t::FBO_ATTACHMENT_0 + draw::get_max_fbo_attachments();
 
-        if (attachment >= fbo_attach_t::FBO_ATTACHMENT_0 && attachment < maxColAttachment) {
+        if (attachment >= fbo_attach_t::FBO_ATTACHMENT_0 && (unsigned)attachment < maxColAttachment)
+        {
             unsigned colorBit = 1 << (attachment - fbo_attach_t::FBO_ATTACHMENT_0);
 
-            if (validatedColors & colorBit) {
+            if (validatedColors & colorBit)
+            {
                 LS_LOG_ERR("\tDuplicate color attachment found in an FBO Assembly at attrib index ", i, '.');
                 validatedColors |= failedColor;
                 ret = false;
             }
-            else {
+            else
+            {
                 validatedColors |= colorBit;
             }
 
@@ -459,21 +523,24 @@ bool FBOAssembly::is_assembly_valid() const noexcept {
         ret = false;
     }
 
-    if (depthCount < 1) {
+    if (depthCount < 1)
+    {
         LS_LOG_ERR("\tNo depth buffer is currently available in an FBO assembly.");
         ret = false;
     }
 
-    if (ret == true) {
+    if (ret == true)
+    {
         LS_LOG_MSG(
             "\tSuccessfully validated an FBO assembly:",
             "\n\t\tDepth Attachments:   ", depthCount,
             "\n\t\tStencil Attachments: ", stencilCount,
             "\n\t\tColor Attachments:   ", math::count_set_bits(validatedColors),
             '\n'
-            );
+        );
     }
-    else {
+    else
+    {
         LS_LOG_ERR("\tFailed to validate an FBO assembly.\n");
     }
 
@@ -483,13 +550,16 @@ bool FBOAssembly::is_assembly_valid() const noexcept {
 /*-------------------------------------
  * Assemble a framebuffer object using all of the internal attachments.
 -------------------------------------*/
-bool FBOAssembly::assemble(FrameBuffer& fbo) const noexcept {
-    if (fbo.gpu_id() != 0) {
+bool FBOAssembly::assemble(FrameBuffer& fbo) const noexcept
+{
+    if (fbo.gpu_id() != 0)
+    {
         LS_LOG_ERR("Attempted to assemble a preexisting FBO object.\n");
         return false;
     }
 
-    if (!is_assembly_valid()) {
+    if (!is_assembly_valid())
+    {
         return false;
     }
 
@@ -499,7 +569,8 @@ bool FBOAssembly::assemble(FrameBuffer& fbo) const noexcept {
     glGenFramebuffers(1, &fboId);
     LS_LOG_GL_ERR();
 
-    if (!fboId) {
+    if (!fboId)
+    {
         LS_LOG_ERR("\tFailed to create a new framebuffer during assembly.\n");
         return false;
     }
@@ -507,13 +578,15 @@ bool FBOAssembly::assemble(FrameBuffer& fbo) const noexcept {
     glBindFramebuffer(fbo_access_t::FBO_ACCESS_RW, fboId);
 
     const unsigned attribCount = get_num_verifiable_attribs();
-    math::vec3i size {0, 0, 1};
+    math::vec3i size{0, 0, 1};
 
-    for (unsigned i = 0; i < attribCount; ++i) {
+    for (unsigned i = 0; i < attribCount; ++i)
+    {
         const FBOAttrib& attrib = attribs[i];
         bool didAttach = false;
 
-        if (attrib.get_target_type() == fbo_target_t::FBO_TARGET_TEXTURE) {
+        if (attrib.get_target_type() == fbo_target_t::FBO_TARGET_TEXTURE)
+        {
             didAttach = attach_target_texture(attrib);
 
             const math::vec3i& texSize = attrib.get_texture()->get_size();
@@ -521,7 +594,8 @@ bool FBOAssembly::assemble(FrameBuffer& fbo) const noexcept {
             size[1] = math::max(size[1], texSize[1]);
             size[2] = math::max(size[2], texSize[2]);
         }
-        else {
+        else
+        {
             didAttach = attach_target_renderbuffer(attrib);
 
             const math::vec2i& texSize = attrib.get_renderbuffer()->get_size();
@@ -529,7 +603,8 @@ bool FBOAssembly::assemble(FrameBuffer& fbo) const noexcept {
             size[1] = math::max(size[1], texSize[1]);
         }
 
-        if (!didAttach) {
+        if (!didAttach)
+        {
             LS_LOG_ERR("\tAn error occurred while attempting to attach FBOAttrib ", i, " to a framebuffer.\n");
             glDeleteFramebuffers(1, &fboId);
             return false;
@@ -537,7 +612,8 @@ bool FBOAssembly::assemble(FrameBuffer& fbo) const noexcept {
     }
 
     LS_LOG_MSG("\tQuerying OpenGL to check FBO completion.");
-    if (!check_fbo_completion(fboId)) {
+    if (!check_fbo_completion(fboId))
+    {
         glDeleteFramebuffers(1, &fboId);
         LS_LOG_GL_ERR();
         return false;
@@ -547,14 +623,17 @@ bool FBOAssembly::assemble(FrameBuffer& fbo) const noexcept {
     LS_LOG_GL_ERR();
 
     LS_LOG_MSG("\tCopying attributes from an FBO assembly into a new framebuffer object.");
-    utils::Pointer < FBOAttrib[] > tempAttribs {new(std::nothrow) FBOAttrib[attribCount]};
-    if (!tempAttribs) {
+    utils::Pointer<FBOAttrib[]> tempAttribs{new(std::nothrow) FBOAttrib[attribCount]};
+    if (!tempAttribs)
+    {
         LS_LOG_ERR("\t\tAn error occurred while allocating room in a FBO for attribute information.\n");
         glDeleteFramebuffers(1, &fboId);
         return false;
     }
-    else {
-        for (unsigned i = 0; i < attribCount; ++i) {
+    else
+    {
+        for (unsigned i = 0; i < attribCount; ++i)
+        {
             tempAttribs[i] = attribs[i];
         }
         LS_LOG_MSG("\t\tDone. Copied ", attribCount, " attributes into a new framebuffer object.");
@@ -575,7 +654,7 @@ bool FBOAssembly::assemble(FrameBuffer& fbo) const noexcept {
         "\n\t\tTotal Attachments:   ", attribCount,
         "\n\t\tDimensions:          ", size[0], " x ", size[1], " x ", size[2],
         '\n'
-        );
+    );
 
     return true;
 }

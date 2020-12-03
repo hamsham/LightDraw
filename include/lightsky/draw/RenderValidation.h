@@ -9,8 +9,10 @@
 #ifndef __LS_DRAW_RENDER_VALIDATION_H__
 #define __LS_DRAW_RENDER_VALIDATION_H__
 
-namespace ls {
-namespace draw {
+namespace ls
+{
+namespace draw
+{
 
 
 
@@ -18,7 +20,9 @@ namespace draw {
  * Forward Declarations
 -----------------------------------------------------------------------------*/
 class VertexArray;
+
 class ShaderProgram;
+
 class UniformBuffer;
 
 
@@ -73,9 +77,6 @@ bool are_attribs_compatible(const ShaderProgram& prog, const VertexArray& vao) n
  * returned if the input attributes do not match.
  */
 int are_attribs_compatible(const ShaderProgram& prog, const unsigned blockIndex, const UniformBuffer& ubo) noexcept;
-
-
-
 } // end draw namespace
 } // end ls namespace
 

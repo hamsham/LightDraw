@@ -14,8 +14,12 @@
 #include "lightsky/draw/VAOAttrib.h"
 #include "VertexBuffer.h"
 
-namespace ls {
-namespace draw {
+
+
+namespace ls
+{
+namespace draw
+{
 
 /*-----------------------------------------------------------------------------
  * Forward Declarations
@@ -30,7 +34,8 @@ class VAOAssembly;
  * Represents a single VAO within OpenGL. VAO object store the state of
  * multiple vertex buffer object attributes into one container.
 -----------------------------------------------------------------------------*/
-class VertexArray {
+class VertexArray
+{
     friend class VAOAssembly;
 
   private:
@@ -271,7 +276,8 @@ class VertexArray {
     Terminate the vertex array and release all of its resources back to
     the GPU.
 -------------------------------------*/
-inline void VertexArray::terminate() noexcept {
+inline void VertexArray::terminate() noexcept
+{
     glDeleteVertexArrays(1, &gpuId);
     gpuId = 0;
 }
@@ -279,49 +285,56 @@ inline void VertexArray::terminate() noexcept {
 /*-------------------------------------
     Determine if there is data used by this object
 -------------------------------------*/
-inline bool VertexArray::is_valid() const noexcept {
+inline bool VertexArray::is_valid() const noexcept
+{
     return gpuId != 0 && attribs.get_num_attribs() > 0;
 }
 
 /*-------------------------------------
     Get the GPU-assigned ID for this VAO
 -------------------------------------*/
-inline unsigned VertexArray::gpu_id() const noexcept {
+inline unsigned VertexArray::gpu_id() const noexcept
+{
     return gpuId;
 }
 
 /*-------------------------------------
     Enable an attribute contained within the vertex array.
 -------------------------------------*/
-inline void VertexArray::enable_attrib(const unsigned index) noexcept {
+inline void VertexArray::enable_attrib(const unsigned index) noexcept
+{
     glEnableVertexAttribArray(index);
 }
 
 /*-------------------------------------
     Disable an attribute contained in the array.
 -------------------------------------*/
-inline void VertexArray::disable_attrib(const unsigned index) noexcept {
+inline void VertexArray::disable_attrib(const unsigned index) noexcept
+{
     glDisableVertexAttribArray(index);
 }
 
 /*-------------------------------------
  * Retrieve the VAO attrib object associated with *this.
 -------------------------------------*/
-inline const VAOAttrib& VertexArray::get_attribs() const noexcept {
+inline const VAOAttrib& VertexArray::get_attribs() const noexcept
+{
     return attribs;
 }
 
 /*-------------------------------------
  * Convenience method to retrieve the current attrib count.
 -------------------------------------*/
-inline unsigned VertexArray::get_num_attribs() const noexcept {
+inline unsigned VertexArray::get_num_attribs() const noexcept
+{
     return attribs.get_num_attribs();
 }
 
 /*-------------------------------------
  * Convenience method to retrieve a single VBO attrib descriptor in *this.
 -------------------------------------*/
-inline const VBOAttrib& VertexArray::get_attrib(const unsigned attribIndex) const noexcept {
+inline const VBOAttrib& VertexArray::get_attrib(const unsigned attribIndex) const noexcept
+{
     LS_DEBUG_ASSERT(attribIndex < attribs.get_num_attribs());
     return attribs.get_attrib(attribIndex);
 }
@@ -330,7 +343,8 @@ inline const VBOAttrib& VertexArray::get_attrib(const unsigned attribIndex) cons
     Set the rate at which an attribute should repeat during instanced
     draw calls on the GPU.
 -------------------------------------*/
-inline void VertexArray::set_attrib_instance_rate(const unsigned index, const unsigned instancesPerAttrib) noexcept {
+inline void VertexArray::set_attrib_instance_rate(const unsigned index, const unsigned instancesPerAttrib) noexcept
+{
     attribs.get_attrib(index).set_instance_rate(instancesPerAttrib);
     glVertexAttribDivisor(index, instancesPerAttrib);
 }
@@ -338,14 +352,16 @@ inline void VertexArray::set_attrib_instance_rate(const unsigned index, const un
 /*-------------------------------------
     Bind this vertex array to the current global rendering context.
 -------------------------------------*/
-inline void VertexArray::bind() const noexcept {
+inline void VertexArray::bind() const noexcept
+{
     glBindVertexArray(gpuId);
 }
 
 /*-------------------------------------
     Determine if *this VAO is currently active.
 -------------------------------------*/
-inline bool VertexArray::is_bound() const noexcept {
+inline bool VertexArray::is_bound() const noexcept
+{
     GLint currentVao = 0;
     glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &currentVao);
     return currentVao == (GLint)this->gpuId;
@@ -354,10 +370,10 @@ inline bool VertexArray::is_bound() const noexcept {
 /*-------------------------------------
     Unbind this vertex array object from the current render context.
 -------------------------------------*/
-inline void VertexArray::unbind() const noexcept {
+inline void VertexArray::unbind() const noexcept
+{
     glBindVertexArray(0);
 }
-
 } // end draw namespace
 } // end ls namespace
 

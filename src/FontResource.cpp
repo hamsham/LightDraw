@@ -18,37 +18,50 @@
     FreeType Error Handling
 -------------------------------------*/
 #undef __FTERRORS_H__
-#define FT_ERRORDEF( e, v, s )  { e, s },
+#define FT_ERRORDEF(e, v, s)  { e, s },
 #define FT_ERROR_START_LIST     {
 #define FT_ERROR_END_LIST       { 0, 0 } };
 
 
 
-const struct {
+const struct
+{
     int code;
     const char* message;
 } FT_Errors[] =
+
 #include FT_ERRORS_H
 
-    void foo() {
+
+
+    void
+
+foo()
+{
     // empty function to keep IntelliSense from going crazy.
 }
 
 #include "lightsky/draw/FontResource.h"
 
+
+
 using ls::utils::Resource;
 
-namespace ls {
-namespace draw {
+namespace ls
+{
+namespace draw
+{
 
 /**----------------------------------------------------------------------------
  *  Helper function to load a glyph
 -----------------------------------------------------------------------------*/
-bool copy_glyph(FontGlyph& pGlyph, const FT_GlyphSlot ftGlyph) {
+bool copy_glyph(FontGlyph& pGlyph, const FT_GlyphSlot ftGlyph)
+{
     const FT_Glyph_Metrics& metrics = ftGlyph->metrics;
     const FT_Bitmap& ftBitmap = ftGlyph->bitmap;
 
-    if (ftBitmap.width > INT_MAX || ftBitmap.rows > INT_MAX) {
+    if (ftBitmap.width > INT_MAX || ftBitmap.rows > INT_MAX)
+    {
         return false;
     }
 
@@ -72,7 +85,7 @@ bool copy_glyph(FontGlyph& pGlyph, const FT_GlyphSlot ftGlyph) {
     Constructor
 -------------------------------------*/
 FontResource::FontResource() :
-    Resource {}
+    Resource{}
 {
 }
 
@@ -80,22 +93,24 @@ FontResource::FontResource() :
     Move Constructor
 -------------------------------------*/
 FontResource::FontResource(FontResource&& f) :
-    Resource {}
+    Resource{}
 {
-    this->operator =(std::move(f));
+    this->operator=(std::move(f));
 }
 
 /*-------------------------------------
     Destructor
 -------------------------------------*/
-FontResource::~FontResource() {
+FontResource::~FontResource()
+{
     unload();
 }
 
 /*-------------------------------------
     Move operator
 -------------------------------------*/
-FontResource& FontResource::operator =(FontResource&& f) {
+FontResource& FontResource::operator=(FontResource&& f)
+{
     unload();
 
     pData = f.pData;
@@ -119,9 +134,10 @@ FontResource& FontResource::operator =(FontResource&& f) {
 /*-------------------------------------
     Unload all resources
 -------------------------------------*/
-void FontResource::unload() {
+void FontResource::unload()
+{
     // Re-cast to a glyph pointer to avoid a crash caused by CLang.
-    delete [] reinterpret_cast<FontGlyph*>(pData);
+    delete[] reinterpret_cast<FontGlyph*>(pData);
     pData = nullptr;
 
     dataSize = 0;
@@ -136,7 +152,8 @@ void FontResource::unload() {
 /*-------------------------------------
     Load a font file
 -------------------------------------*/
-bool FontResource::load_file(const std::string& filename, unsigned pixelSize) {
+bool FontResource::load_file(const std::string& filename, unsigned pixelSize)
+{
     FT_Library ftLib;
     FT_Face ftFace;
     FT_Error ftErr;
@@ -147,38 +164,41 @@ bool FontResource::load_file(const std::string& filename, unsigned pixelSize) {
 
     // Initialize Freetype
     ftErr = FT_Init_FreeType(&ftLib);
-    if (ftErr) {
+    if (ftErr)
+    {
         LS_LOG_ERR(
             "\tAn error occurred while attempting to initialize FreeType.",
             "\n\tFunction:   FT_Init_FreeType",
             "\n\tError Code: ", FT_Errors[ftErr].code,
             "\n\tFT Error:   ", FT_Errors[ftErr].message, '\n'
-            );
+        );
         return false;
     }
 
     // Load the font face
     ftErr = FT_New_Face(ftLib, filename.c_str(), 0, &ftFace);
-    if (ftErr) {
+    if (ftErr)
+    {
         LS_LOG_ERR(
             "\tUnable to load the font ", filename, '.',
             "\n\tFunction:   FT_New_Face",
             "\n\tError Code: ", FT_Errors[ftErr].code,
             "\n\tFT Error:   ", FT_Errors[ftErr].message, '\n'
-            );
+        );
         FT_Done_FreeType(ftLib);
         return false;
     }
 
     // Load Unicode characters
     ftErr = FT_Select_Charmap(ftFace, FT_ENCODING_UNICODE);
-    if (ftErr) {
+    if (ftErr)
+    {
         LS_LOG_ERR(
             "\tAn error occurred while selecting Unicode characters within ", filename, '.',
             "\n\tFunction:   FT_Select_Charmap",
             "\n\tError Code: ", FT_Errors[ftErr].code,
             "\n\tFT Error:   ", FT_Errors[ftErr].message, '\n'
-            );
+        );
         FT_Done_Face(ftFace);
         FT_Done_FreeType(ftLib);
         return false;
@@ -186,12 +206,13 @@ bool FontResource::load_file(const std::string& filename, unsigned pixelSize) {
 
     // Set the pixel size for each character in the font
     ftErr = FT_Set_Pixel_Sizes(ftFace, 0, pixelSize);
-    if (ftErr) {
+    if (ftErr)
+    {
         LS_LOG_ERR("\tUnable to set the pixel size of the font ", filename, '.',
-            "\n\tFunction:   FT_Set_Pixel_Sizes",
-            "\n\tError Code: ", FT_Errors[ftErr].code,
-            "\n\tFT Error:   ", FT_Errors[ftErr].message, '\n'
-            );
+                   "\n\tFunction:   FT_Set_Pixel_Sizes",
+                   "\n\tError Code: ", FT_Errors[ftErr].code,
+                   "\n\tFT Error:   ", FT_Errors[ftErr].message, '\n'
+        );
         FT_Done_Face(ftFace);
         FT_Done_FreeType(ftLib);
         return false;
@@ -203,19 +224,21 @@ bool FontResource::load_file(const std::string& filename, unsigned pixelSize) {
     FT_Done_Face(ftFace);
     FT_Done_FreeType(ftLib);
 
-    if (ret == false) {
+    if (ret == false)
+    {
         LS_LOG_ERR(
             "\tAn error occurred while attempting to load the font file ", filename, ".\n"
-            );
+        );
     }
-    else {
+    else
+    {
         glyphSize = pixelSize;
         LS_LOG_MSG("\tData Address:  ", this->pData,
-            "\n\tByte Size:       ", this->dataSize,
-            "\n\tGlyph Size:      ", this->glyphSize,
-            "\n\tNum Glyphs:      ", this->numGlyphs,
-            "\n\tSuccessfully loaded the font file ", filename, ".\n"
-            );
+                   "\n\tByte Size:       ", this->dataSize,
+                   "\n\tGlyph Size:      ", this->glyphSize,
+                   "\n\tNum Glyphs:      ", this->numGlyphs,
+                   "\n\tSuccessfully loaded the font file ", filename, ".\n"
+        );
     }
 
     return ret;
@@ -227,41 +250,46 @@ bool FontResource::load_file(const std::string& filename, unsigned pixelSize) {
     Most of this information was found at MBSoftworks' OpenGL tutorials.
     http://www.mbsoftworks.sk/index.php?page=tutorials&series=1&tutorial=12
 -------------------------------------*/
-bool FontResource::load_glyphs(FT_FaceRec_* ftFace) {
+bool FontResource::load_glyphs(FT_FaceRec_* ftFace)
+{
     const unsigned ftNumGlyphs = (unsigned)ftFace->num_glyphs;
-    FontGlyph * const pGlyphs = new(std::nothrow) FontGlyph[ftNumGlyphs];
+    FontGlyph* const pGlyphs = new(std::nothrow) FontGlyph[ftNumGlyphs];
 
     // Dynamic array error
-    if (pGlyphs == nullptr) {
+    if (pGlyphs == nullptr)
+    {
         return false;
     }
 
-    for (unsigned i = 0; i < ftNumGlyphs; ++i) {
+    for (unsigned i = 0; i < ftNumGlyphs; ++i)
+    {
         FT_Error ftErr;
         unsigned charIndex = FT_Get_Char_Index(ftFace, i);
 
         ftErr = FT_Load_Glyph(ftFace, charIndex, FT_LOAD_TARGET_LIGHT); // delayed bitmap generation
 
-        if (ftErr) {
+        if (ftErr)
+        {
             LS_LOG_ERR(
                 "\tUnable to load a glyph at index ", charIndex,
                 "\n\tFunction:   FT_Load_Glyph",
                 "\n\tError Code: ", FT_Errors[ftErr].code,
                 "\n\tFT Error:   ", FT_Errors[ftErr].message
-                );
-            delete [] pGlyphs;
+            );
+            delete[] pGlyphs;
             return false;
         }
 
         ftErr = FT_Render_Glyph(ftFace->glyph, FT_RENDER_MODE_LIGHT);
-        if (ftErr) {
+        if (ftErr)
+        {
             LS_LOG_ERR(
                 "\tUnable to render the glyph at index ", charIndex,
                 "\n\tFunction:   FT_Render_Glyph",
                 "\n\tError Code: ", FT_Errors[ftErr].code,
                 "\n\tFT Error:   ", FT_Errors[ftErr].message
-                );
-            delete [] pGlyphs;
+            );
+            delete[] pGlyphs;
             return false;
         }
 
@@ -269,23 +297,25 @@ bool FontResource::load_glyphs(FT_FaceRec_* ftFace) {
         const FT_Bitmap* ftBitmap = &ftGlyph->bitmap;
         const math::vec2i bmpSize = {(int)ftBitmap->width, (int)ftBitmap->rows};
         const int byteSize = bmpSize[0] * bmpSize[1];
-        char* const data = new (std::nothrow) char[byteSize];
+        char* const data = new(std::nothrow) char[byteSize];
 
-        if (data == nullptr) {
+        if (data == nullptr)
+        {
             LS_LOG_ERR("\tUnable to allocate ", byteSize, " bytes for glyph data.");
             dataSize = 0;
-            maxGlyphSize = math::vec2i {0, 0};
-            delete [] pGlyphs;
+            maxGlyphSize = math::vec2i{0, 0};
+            delete[] pGlyphs;
             return false;
         }
 
         pGlyphs[i].pData = data;
 
-        if (!copy_glyph(pGlyphs[i], ftGlyph)) {
+        if (!copy_glyph(pGlyphs[i], ftGlyph))
+        {
             LS_LOG_ERR("\tGlyph data is too large to be used for a texture.");
             dataSize = 0;
-            maxGlyphSize = math::vec2i {0, 0};
-            delete [] pGlyphs;
+            maxGlyphSize = math::vec2i{0, 0};
+            delete[] pGlyphs;
             return false;
         }
 
@@ -304,9 +334,9 @@ bool FontResource::load_glyphs(FT_FaceRec_* ftFace) {
 /*-------------------------------------
     Save a file
 -------------------------------------*/
-bool FontResource::save_file(const std::string&) const {
+bool FontResource::save_file(const std::string&) const
+{
     return false;
 }
-
 } // end draw namespace
 } // end ls namespace

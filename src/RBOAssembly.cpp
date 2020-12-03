@@ -12,8 +12,10 @@
 
 
 
-namespace ls {
-namespace draw {
+namespace ls
+{
+namespace draw
+{
 
 
 
@@ -24,17 +26,18 @@ namespace draw {
 /*-------------------------------------
  * Destructor
 -------------------------------------*/
-RBOAssembly::~RBOAssembly() noexcept {
+RBOAssembly::~RBOAssembly() noexcept
+{
 }
 
 /*-------------------------------------
  * Constructor
 -------------------------------------*/
 RBOAssembly::RBOAssembly() noexcept :
-size {
-    0
-},
-attribs {}
+    size{
+        0
+    },
+    attribs{}
 {
 }
 
@@ -42,10 +45,10 @@ attribs {}
  * Copy Constructor
 -------------------------------------*/
 RBOAssembly::RBOAssembly(const RBOAssembly& rbo) noexcept :
-size {
-    rbo.size
-},
-attribs {rbo.attribs}
+    size{
+        rbo.size
+    },
+    attribs{rbo.attribs}
 {
 }
 
@@ -53,17 +56,18 @@ attribs {rbo.attribs}
  * Move Constructor
 -------------------------------------*/
 RBOAssembly::RBOAssembly(RBOAssembly&& a) noexcept :
-size {
-    std::move(a.size)
-},
-attribs {std::move(a.attribs)}
+    size{
+        std::move(a.size)
+    },
+    attribs{std::move(a.attribs)}
 {
 }
 
 /*-------------------------------------
  * Copy Operator
 -------------------------------------*/
-RBOAssembly& RBOAssembly::operator =(const RBOAssembly& a) noexcept {
+RBOAssembly& RBOAssembly::operator=(const RBOAssembly& a) noexcept
+{
     size = a.size;
     attribs = a.attribs;
 
@@ -73,7 +77,8 @@ RBOAssembly& RBOAssembly::operator =(const RBOAssembly& a) noexcept {
 /*-------------------------------------
  * Move Operator
 -------------------------------------*/
-RBOAssembly& RBOAssembly::operator =(RBOAssembly&& a) noexcept {
+RBOAssembly& RBOAssembly::operator=(RBOAssembly&& a) noexcept
+{
     size = std::move(a.size);
     attribs = std::move(a.attribs);
 
@@ -82,14 +87,16 @@ RBOAssembly& RBOAssembly::operator =(RBOAssembly&& a) noexcept {
 
 /*-------------------------------------
 -------------------------------------*/
-bool RBOAssembly::set_attribs(const RBOAttrib& a) noexcept {
+bool RBOAssembly::set_attribs(const RBOAttrib& a) noexcept
+{
     attribs = a;
     return true;
 }
 
 /*-------------------------------------
 -------------------------------------*/
-bool RBOAssembly::set_format_attrib(const rbo_format_t internalFormat) noexcept {
+bool RBOAssembly::set_format_attrib(const rbo_format_t internalFormat) noexcept
+{
     attribs.set_internal_format(internalFormat);
 
     return true;
@@ -97,7 +104,8 @@ bool RBOAssembly::set_format_attrib(const rbo_format_t internalFormat) noexcept 
 
 /*-------------------------------------
 -------------------------------------*/
-bool RBOAssembly::set_size_attrib(const math::vec2i& texSize) noexcept {
+bool RBOAssembly::set_size_attrib(const math::vec2i& texSize) noexcept
+{
     size[0] = texSize[0];
     size[1] = texSize[1];
 
@@ -106,18 +114,21 @@ bool RBOAssembly::set_size_attrib(const math::vec2i& texSize) noexcept {
 
 /*-------------------------------------
 -------------------------------------*/
-void RBOAssembly::clear() noexcept {
-    size = math::vec2i {0};
+void RBOAssembly::clear() noexcept
+{
+    size = math::vec2i{0};
     attribs.reset_attribs();
 }
 
 /*-------------------------------------
 -------------------------------------*/
-bool RBOAssembly::is_assembly_valid() const noexcept {
+bool RBOAssembly::is_assembly_valid() const noexcept
+{
     LS_LOG_MSG("Validating a render buffer assembly");
 
     LS_LOG_MSG("\tVerifying Renderbuffer size.");
-    if (size[0] <= 0 || size[1] <= 0) {
+    if (size[0] <= 0 || size[1] <= 0)
+    {
         LS_LOG_ERR("\t\tInvalid render buffer size!\n");
         return false;
     }
@@ -126,7 +137,8 @@ bool RBOAssembly::is_assembly_valid() const noexcept {
     LS_LOG_MSG("\tVerifying renderbuffer data format.");
     const rbo_format_t internalFormat = attribs.get_internal_format();
 
-    switch (internalFormat) {
+    switch (internalFormat)
+    {
         case RBO_FMT_DEPTH_STENCIL_24_8:
         case RBO_FMT_DEPTH_STENCIL_32_8:
         case RBO_FMT_DEPTH_16:
@@ -174,27 +186,32 @@ bool RBOAssembly::is_assembly_valid() const noexcept {
 
 /*-------------------------------------
 -------------------------------------*/
-bool RBOAssembly::assemble(RenderBuffer& rbo) const noexcept {
-    if (!is_assembly_valid()) {
+bool RBOAssembly::assemble(RenderBuffer& rbo) const noexcept
+{
+    if (!is_assembly_valid())
+    {
         return false;
     }
 
     LS_LOG_MSG("Attempting to assemble a render buffer object.");
     GLuint gpuId = 0;
 
-    if (!rbo.gpu_id()) {
+    if (!rbo.gpu_id())
+    {
         LS_LOG_MSG("\tGenerating a handle to a new render buffer object on the GPU.");
         glGenRenderbuffers(1, &gpuId);
         LS_LOG_GL_ERR();
 
-        if (!gpuId) {
+        if (!gpuId)
+        {
             LS_LOG_ERR("\tFailed to generate a render buffer object on the GPU.");
             return false;
         }
 
         LS_LOG_MSG("\t\tDone. Successfully generated a render buffer on the GPU: ", gpuId);
     }
-    else {
+    else
+    {
         gpuId = rbo.gpu_id();
         LS_LOG_MSG("\tAssembling data for a preexisting render buffer: ", gpuId);
     }
@@ -217,14 +234,11 @@ bool RBOAssembly::assemble(RenderBuffer& rbo) const noexcept {
         "\n\t\tPixel Format:  ", rbo.attribs.get_internal_format(),
         "\n\t\tDimensions:    ", rbo.size[0], " x ", rbo.size[1],
         "\n"
-        );
+    );
 
     glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
     return true;
 }
-
-
-
 } // end draw namespace
 } // end ls namespace

@@ -17,15 +17,20 @@
 #include "lightsky/draw/UniformBuffer.h"
 #include "lightsky/draw/VertexUtils.h"
 
-namespace ls {
-namespace draw {
+
+
+namespace ls
+{
+namespace draw
+{
 
 
 
 /*-------------------------------------
     Destructor
 -------------------------------------*/
-ShaderProgram::~ShaderProgram() noexcept {
+ShaderProgram::~ShaderProgram() noexcept
+{
 }
 
 
@@ -40,14 +45,16 @@ ShaderProgram::ShaderProgram() noexcept :
     uniforms{},
     vertAttribs{},
     fragAttribs{}
-{}
+{
+}
 
 
 
 /*-------------------------------------
     Copy Constructor
 -------------------------------------*/
-ShaderProgram::ShaderProgram(const ShaderProgram& sp) noexcept {
+ShaderProgram::ShaderProgram(const ShaderProgram& sp) noexcept
+{
     *this = sp;
 }
 
@@ -56,7 +63,8 @@ ShaderProgram::ShaderProgram(const ShaderProgram& sp) noexcept {
 /*-------------------------------------
     Move Constructor
 -------------------------------------*/
-ShaderProgram::ShaderProgram(ShaderProgram&& sp) noexcept {
+ShaderProgram::ShaderProgram(ShaderProgram&& sp) noexcept
+{
     *this = std::move(sp);
 }
 
@@ -65,20 +73,24 @@ ShaderProgram::ShaderProgram(ShaderProgram&& sp) noexcept {
 /*-------------------------------------
     Copy Operator
 -------------------------------------*/
-ShaderProgram& ShaderProgram::operator =(const ShaderProgram& sp) noexcept {
+ShaderProgram& ShaderProgram::operator=(const ShaderProgram& sp) noexcept
+{
     gpuId = sp.gpuId;
     numUniformBlocks = sp.numUniformBlocks;
-    
-    if (numUniformBlocks) {
+
+    if (numUniformBlocks)
+    {
         uniformBlocks.reset(new(std::nothrow) ShaderBlockAttrib[numUniformBlocks]);
-        for (unsigned i = 0; i < numUniformBlocks; ++i) {
+        for (unsigned i = 0; i < numUniformBlocks; ++i)
+        {
             uniformBlocks[i] = sp.uniformBlocks[i];
         }
     }
-    else {
+    else
+    {
         uniformBlocks.reset();
     }
-    
+
     uniforms = sp.uniforms;
     vertAttribs = sp.vertAttribs;
     fragAttribs = sp.fragAttribs;
@@ -91,13 +103,14 @@ ShaderProgram& ShaderProgram::operator =(const ShaderProgram& sp) noexcept {
 /*-------------------------------------
     Move Operator
 -------------------------------------*/
-ShaderProgram& ShaderProgram::operator =(ShaderProgram&& sp) noexcept {
+ShaderProgram& ShaderProgram::operator=(ShaderProgram&& sp) noexcept
+{
     gpuId = sp.gpuId;
     sp.gpuId = 0;
-    
+
     numUniformBlocks = sp.numUniformBlocks;
     sp.numUniformBlocks = 0;
-    
+
     uniformBlocks = std::move(sp.uniformBlocks);
     uniforms = std::move(sp.uniforms);
     vertAttribs = std::move(sp.vertAttribs);
@@ -111,7 +124,8 @@ ShaderProgram& ShaderProgram::operator =(ShaderProgram&& sp) noexcept {
 /*-------------------------------------
     Termination
 -------------------------------------*/
-void ShaderProgram::terminate() noexcept {
+void ShaderProgram::terminate() noexcept
+{
     glDeleteProgram(gpuId);
     gpuId = 0;
     numUniformBlocks = 0;
@@ -126,8 +140,10 @@ void ShaderProgram::terminate() noexcept {
 /*-------------------------------------
  * Retrieve an attached shader object ID
 -------------------------------------*/
-GLuint ShaderProgram::get_attached_shader_id(const shader_stage_t shaderType) const noexcept {
-    if (!gpu_id()) {
+GLuint ShaderProgram::get_attached_shader_id(const shader_stage_t shaderType) const noexcept
+{
+    if (!gpu_id())
+    {
         return 0;
     }
 
@@ -150,21 +166,25 @@ GLuint ShaderProgram::get_attached_shader_id(const shader_stage_t shaderType) co
 
     glGetProgramiv(gpu_id(), GL_ATTACHED_SHADERS, &maxNumShaders);
     LS_LOG_GL_ERR();
-    if (maxNumShaders == 0) {
+    if (maxNumShaders == 0)
+    {
         return 0;
     }
 
     glGetAttachedShaders(gpu_id(), maxNumShaders, &numShaders, allShaders);
-    if (numShaders == 0) {
+    if (numShaders == 0)
+    {
         return 0;
     }
 
-    while (numShaders--) {
+    while (numShaders--)
+    {
         GLint typeQuery = 0;
         glGetShaderiv(allShaders[numShaders], GL_SHADER_TYPE, &typeQuery);
         LS_LOG_GL_ERR();
 
-        if (typeQuery == shaderType) {
+        if (typeQuery == shaderType)
+        {
             return allShaders[numShaders];
         }
     }
@@ -177,17 +197,21 @@ GLuint ShaderProgram::get_attached_shader_id(const shader_stage_t shaderType) co
 /*-------------------------------------
  * Retrieve the index of a CPU-Side shader block attribute (C-String)
 -------------------------------------*/
-int ShaderProgram::get_matching_uniform_block_index(const char* const blockName) const noexcept {
-    if (!numUniformBlocks || !blockName) {
+int ShaderProgram::get_matching_uniform_block_index(const char* const blockName) const noexcept
+{
+    if (!numUniformBlocks || !blockName)
+    {
         return -1;
     }
-    
-    for (unsigned i = 0; i < numUniformBlocks; ++i) {
-        if (uniformBlocks[i].get_block_name() == blockName) {
+
+    for (unsigned i = 0; i < numUniformBlocks; ++i)
+    {
+        if (uniformBlocks[i].get_block_name() == blockName)
+        {
             return (int)i;
         }
     }
-    
+
     return -1;
 }
 
@@ -196,17 +220,21 @@ int ShaderProgram::get_matching_uniform_block_index(const char* const blockName)
 /*-------------------------------------
  * Retrieve the index of a CPU-Side shader block attribute
 -------------------------------------*/
-int ShaderProgram::get_matching_uniform_block_index(const std::string& blockName) const noexcept {
-    if (!numUniformBlocks) {
+int ShaderProgram::get_matching_uniform_block_index(const std::string& blockName) const noexcept
+{
+    if (!numUniformBlocks)
+    {
         return -1;
     }
-    
-    for (unsigned i = 0; i < numUniformBlocks; ++i) {
-        if (uniformBlocks[i].get_block_name() == blockName) {
+
+    for (unsigned i = 0; i < numUniformBlocks; ++i)
+    {
+        if (uniformBlocks[i].get_block_name() == blockName)
+        {
             return (int)i;
         }
     }
-    
+
     return -1;
 }
 
@@ -215,11 +243,9 @@ int ShaderProgram::get_matching_uniform_block_index(const std::string& blockName
 /*-------------------------------------
  * Retrieve the index of a CPU-Side shader block attribute
 -------------------------------------*/
-int ShaderProgram::get_matching_uniform_block_index(const UniformBuffer& ubo) const noexcept {
+int ShaderProgram::get_matching_uniform_block_index(const UniformBuffer& ubo) const noexcept
+{
     return get_matching_uniform_block_index(ubo.get_attribs().get_block_name());
 }
-
-
-
 } // end draw namespace
 } // end ls namespace

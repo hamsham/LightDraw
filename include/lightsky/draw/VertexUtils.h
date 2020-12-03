@@ -19,8 +19,12 @@
 #include "lightsky/draw/Setup.h"
 #include "lightsky/draw/VAOAttrib.h"
 
-namespace ls {
-namespace draw {
+
+
+namespace ls
+{
+namespace draw
+{
 
 /*-----------------------------------------------------------------------------
  * Vertex Meta Types
@@ -32,29 +36,30 @@ typedef std::vector<VAOAttrib> VertexDescriptor;
 /*-----------------------------------------------------------------------------
  * Common Vertex Types, Natively Supported By LS_Draw
 -----------------------------------------------------------------------------*/
-enum common_vertex_t : uint32_t {
-    POSITION_VERTEX     = 0x10000000,
-    TEXTURE_VERTEX      = 0x20000000,
-    COLOR_VERTEX        = 0x40000000,
+enum common_vertex_t : uint32_t
+{
+    POSITION_VERTEX = 0x10000000,
+    TEXTURE_VERTEX = 0x20000000,
+    COLOR_VERTEX = 0x40000000,
 
-    NORMAL_VERTEX       = 0x80000000,
-    TANGENT_VERTEX      = 0x01000000,
-    BITANGENT_VERTEX    = 0x02000000,
+    NORMAL_VERTEX = 0x80000000,
+    TANGENT_VERTEX = 0x01000000,
+    BITANGENT_VERTEX = 0x02000000,
 
-    MODEL_MAT_VERTEX    = 0x04000000,
+    MODEL_MAT_VERTEX = 0x04000000,
 
-    BONE_ID_VERTEX      = 0x08000000,
-    BONE_WEIGHT_VERTEX  = 0x00100000,
+    BONE_ID_VERTEX = 0x08000000,
+    BONE_WEIGHT_VERTEX = 0x00100000,
 
-    AMBIENT_VERTEX      = 0x00200000,
-    DIFFUSE_VERTEX      = 0x00400000,
-    SPECULAR_VERTEX     = 0x00800000,
-    ROUGHNESS_VERTEX    = 0x00010000,
-    METALLIC_VERTEX     = 0x00020000,
+    AMBIENT_VERTEX = 0x00200000,
+    DIFFUSE_VERTEX = 0x00400000,
+    SPECULAR_VERTEX = 0x00800000,
+    ROUGHNESS_VERTEX = 0x00010000,
+    METALLIC_VERTEX = 0x00020000,
 
-    INDEX_VERTEX        = 0x00040000,
-    BBOX_TRR_VERTEX     = 0x00080000,
-    BBOX_BFL_VERTEX     = 0x00001000,
+    INDEX_VERTEX = 0x00040000,
+    BBOX_TRR_VERTEX = 0x00080000,
+    BBOX_BFL_VERTEX = 0x00001000,
 
 
     /**
@@ -62,20 +67,20 @@ enum common_vertex_t : uint32_t {
      * individual base types within the rendering framework.
      */
     STANDARD_VERTEX = (0
-    | POSITION_VERTEX
-    | TEXTURE_VERTEX
-    | NORMAL_VERTEX
-    | 0),
-    
+                       | POSITION_VERTEX
+                       | TEXTURE_VERTEX
+                       | NORMAL_VERTEX
+                       | 0),
+
     /**
      * @brief A bone vertex allows for a single vertex type to contain enough
      * information to perform skeletal animation/skinning.
      */
     BONE_VERTEX = (0
-    | BONE_ID_VERTEX
-    | BONE_WEIGHT_VERTEX
-    | 0),
-    
+                   | BONE_ID_VERTEX
+                   | BONE_WEIGHT_VERTEX
+                   | 0),
+
     /**
      * @brief An Occlusion vertex only provides information about positions to
      * GLSL. Occlusion vertices are intended to have a certain number of
@@ -83,10 +88,10 @@ enum common_vertex_t : uint32_t {
      * model matrix.
      */
     OCCLUSION_VERTEX = (0
-    | POSITION_VERTEX
-    | BBOX_TRR_VERTEX
-    | BBOX_BFL_VERTEX
-    | 0),
+                        | POSITION_VERTEX
+                        | BBOX_TRR_VERTEX
+                        | BBOX_BFL_VERTEX
+                        | 0),
 };
 
 
@@ -114,7 +119,7 @@ constexpr common_vertex_t COMMON_VERTEX_FLAGS_LIST[] = {
     common_vertex_t::METALLIC_VERTEX,
 
     common_vertex_t::INDEX_VERTEX,
-    
+
     common_vertex_t::BBOX_TRR_VERTEX,
     common_vertex_t::BBOX_BFL_VERTEX
 };
@@ -125,7 +130,7 @@ constexpr unsigned COMMON_VERTEX_FLAGS_COUNT = LS_ARRAY_SIZE(COMMON_VERTEX_FLAGS
 static_assert(
     COMMON_VERTEX_FLAGS_COUNT == COMMON_VERTEX_TYPES_COUNT,
     "Unable to match the commonly used vertex types to their attributes in Vertex.h."
-    );
+);
 
 
 
@@ -221,7 +226,6 @@ constexpr char VERT_ATTRIB_NAME_BBOX_BFL[] = "bboxBFLAttrib";
 
 
 
-
 /**
  * @Brief the COMMON_VERTEX_NAMES_LIST array helps to keep track of all vertex
  * names and make iteration over them easier in client code.
@@ -229,7 +233,6 @@ constexpr char VERT_ATTRIB_NAME_BBOX_BFL[] = "bboxBFLAttrib";
 const char* const* get_common_vertex_names() noexcept;
 
 constexpr unsigned COMMON_VERTEX_NAMES_COUNT = COMMON_VERTEX_FLAGS_COUNT;
-
 
 
 
@@ -261,11 +264,13 @@ unsigned get_vertex_attrib_offset(const common_vertex_t vertFlags, const common_
  *
  * @return The size, in bytes, of a flexible-vertex-format.
 -------------------------------------*/
-inline unsigned get_vertex_byte_size(const common_vertex_t vertexTypes) {
-    return get_vertex_attrib_offset(vertexTypes, (common_vertex_t) 0);
+inline unsigned get_vertex_byte_size(const common_vertex_t vertexTypes)
+{
+    return get_vertex_attrib_offset(vertexTypes, (common_vertex_t)0);
 }
 
-inline unsigned get_vertex_stride(const common_vertex_t vertexTypes) {
+inline unsigned get_vertex_stride(const common_vertex_t vertexTypes)
+{
     return get_vertex_byte_size(vertexTypes);
 }
 
@@ -286,12 +291,13 @@ typedef unsigned int draw_index_t;
  *      1. What the data type is for indices stored in the GPU/
  *      2. If a draw command should run use glDrawArrays() or glDrawElements().
 -------------------------------------*/
-enum index_element_t : int32_t {
-    INDEX_TYPE_UBYTE    = GL_UNSIGNED_BYTE,
-    INDEX_TYPE_USHORT   = GL_UNSIGNED_SHORT,
-    INDEX_TYPE_UINT     = GL_UNSIGNED_INT,
-    INDEX_TYPE_DEFAULT  = GL_UNSIGNED_INT,
-    INDEX_TYPE_NONE     = -1
+enum index_element_t : int32_t
+{
+    INDEX_TYPE_UBYTE = GL_UNSIGNED_BYTE,
+    INDEX_TYPE_USHORT = GL_UNSIGNED_SHORT,
+    INDEX_TYPE_UINT = GL_UNSIGNED_INT,
+    INDEX_TYPE_DEFAULT = GL_UNSIGNED_INT,
+    INDEX_TYPE_NONE = -1
 };
 
 
@@ -310,7 +316,8 @@ enum index_element_t : int32_t {
  * For a call to glDrawElements(...), this pair indicates the "indices*" and
  * "count" parameters, in that order.
 -------------------------------------*/
-struct alignas(8) IndexRange {
+struct alignas(8) IndexRange
+{
     /**
      * @brief Contains the index of the first vertex to be drawn in an OpenGL
      * draw call and the total number of vertices to be rendered.
@@ -407,7 +414,8 @@ struct alignas(8) IndexRange {
 constexpr IndexRange::IndexRange(const unsigned f, const unsigned c) :
     first{f},
     count{c}
-{}
+{
+}
 
 /*-------------------------------------
  * IndexRange Copy Constructor
@@ -415,7 +423,8 @@ constexpr IndexRange::IndexRange(const unsigned f, const unsigned c) :
 constexpr IndexRange::IndexRange(const IndexRange& ir) :
     first{ir.first},
     count{ir.count}
-{}
+{
+}
 
 /*-------------------------------------
  *  Move Constructor
@@ -423,12 +432,14 @@ constexpr IndexRange::IndexRange(const IndexRange& ir) :
 constexpr IndexRange::IndexRange(IndexRange&& ir) :
     first{ir.first},
     count{ir.count}
-{}
+{
+}
 
 /*-------------------------------------
  * IndexRange Copy Operator
 -------------------------------------*/
-inline IndexRange& IndexRange::operator=(const IndexRange& ir) {
+inline IndexRange& IndexRange::operator=(const IndexRange& ir)
+{
     first = ir.first;
     count = ir.count;
     return *this;
@@ -437,7 +448,8 @@ inline IndexRange& IndexRange::operator=(const IndexRange& ir) {
 /*-------------------------------------
  * IndexRange Move Operator
 -------------------------------------*/
-inline IndexRange& IndexRange::operator=(IndexRange&& ir) {
+inline IndexRange& IndexRange::operator=(IndexRange&& ir)
+{
     first = ir.first;
     count = ir.count;
     return *this;
@@ -467,9 +479,6 @@ index_element_t get_required_index_type(const unsigned numVertices);
  * @return The size, in bytes, of a flexible-index-format.
 -------------------------------------*/
 unsigned get_index_byte_size(const index_element_t indexType);
-
-
-
 } // end draw namespace
 } // end ls namespace
 

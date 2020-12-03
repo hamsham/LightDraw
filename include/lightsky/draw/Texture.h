@@ -15,8 +15,12 @@
 #include "lightsky/draw/GLQuery.h"
 #include "lightsky/draw/TextureAttrib.h"
 
-namespace ls {
-namespace draw {
+
+
+namespace ls
+{
+namespace draw
+{
 
 
 
@@ -24,6 +28,7 @@ namespace draw {
  * Forward Declarations
 -----------------------------------------------------------------------------*/
 class TextureAssembly;
+
 class PixelBuffer;
 
 
@@ -31,7 +36,8 @@ class PixelBuffer;
 /*-----------------------------------------------------------------------------
  * Texture Bindings
 -----------------------------------------------------------------------------*/
-enum active_texture_t {
+enum active_texture_t
+{
     ACTIVE_TEXURE0 = 0x01,
     ACTIVE_TEXURE1 = 0x02,
     ACTIVE_TEXURE2 = 0x04,
@@ -51,7 +57,8 @@ enum active_texture_t {
 /**----------------------------------------------------------------------------
  * Texture Objects
 -----------------------------------------------------------------------------*/
-class Texture {
+class Texture
+{
     friend class TextureAssembly;
 
   private:
@@ -209,7 +216,7 @@ class Texture {
         const int modifySize,
         const void* const data,
         const int level = 0
-        ) noexcept;
+    ) noexcept;
 
     /**
      * Modify the internal data of a texture using a PBO.
@@ -238,7 +245,7 @@ class Texture {
         const int modifySize,
         const PixelBuffer& pbo,
         const int level = 0
-        ) noexcept;
+    ) noexcept;
 
     /**
      * Modify the internal data of a texture.
@@ -267,7 +274,7 @@ class Texture {
         const math::vec2i& modifySize,
         const void* const data,
         const int level = 0
-        ) noexcept;
+    ) noexcept;
 
     /**
      * Modify the internal data of a texture.
@@ -296,7 +303,7 @@ class Texture {
         const math::vec2i& modifySize,
         const PixelBuffer& pbo,
         const int level = 0
-        ) noexcept;
+    ) noexcept;
 
     /**
      * Modify the internal data of a texture.
@@ -325,7 +332,7 @@ class Texture {
         const math::vec3i& modifySize,
         const void* const data,
         const int level = 0
-        ) noexcept;
+    ) noexcept;
 
     /**
      * Modify the internal data of a texture.
@@ -354,7 +361,7 @@ class Texture {
         const math::vec3i& modifySize,
         const PixelBuffer& pbo,
         const int level = 0
-        ) noexcept;
+    ) noexcept;
 
     /**
      * Release all memory referenced by *this.
@@ -377,49 +384,56 @@ class Texture {
 /*-------------------------------------
     Get the GPU-Assigned ID used by *this.
 -------------------------------------*/
-inline unsigned Texture::gpu_id() const noexcept {
+inline unsigned Texture::gpu_id() const noexcept
+{
     return gpuId;
 }
 
 /*-------------------------------------
  Determine if *this can be used during rendering operations.
 -------------------------------------*/
-inline bool Texture::is_valid() const noexcept {
+inline bool Texture::is_valid() const noexcept
+{
     return gpu_id() != 0;
 }
 
 /*-------------------------------------
     Bind the current texture to OpenGL
 -------------------------------------*/
-inline void Texture::bind() const noexcept {
+inline void Texture::bind() const noexcept
+{
     glBindTexture(texType, gpu_id());
 }
 
 /*-------------------------------------
     Unbind the current texture to OpenGL
 -------------------------------------*/
-inline void Texture::unbind() const noexcept {
+inline void Texture::unbind() const noexcept
+{
     glBindTexture(texType, 0);
 }
 
 /*-------------------------------------
  Get the current texture's attribtues
 -------------------------------------*/
-inline const TextureAttrib& Texture::get_attribs() const noexcept {
+inline const TextureAttrib& Texture::get_attribs() const noexcept
+{
     return attribs;
 }
 
 /*-------------------------------------
  Get the current texture's size
 -------------------------------------*/
-inline const math::vec3i& Texture::get_size() const noexcept {
+inline const math::vec3i& Texture::get_size() const noexcept
+{
     return size;
 }
 
 /*-------------------------------------
     Get the texture type of that this texture uses in OpenGL
 -------------------------------------*/
-inline tex_type_t Texture::get_texture_type() const noexcept {
+inline tex_type_t Texture::get_texture_type() const noexcept
+{
     return texType;
 }
 
@@ -435,7 +449,8 @@ inline tex_type_t Texture::get_texture_type() const noexcept {
  * @return an integral type which can be used to determine the maximum
  * byte size of a texture supported by the GPU.
 -------------------------------------*/
-inline int get_max_texture_size() noexcept {
+inline int get_max_texture_size() noexcept
+{
     return get_gl_int(GL_MAX_TEXTURE_SIZE);
 }
 
@@ -448,8 +463,9 @@ inline int get_max_texture_size() noexcept {
  * @return The GPU handle to the texture type currently bound to as a 2D or
  * 3D texture type.
  */
-inline GLuint get_active_texture_id(const tex_type_t texType) noexcept {
-    return get_gl_uint((GLenum) texType);
+inline GLuint get_active_texture_id(const tex_type_t texType) noexcept
+{
+    return get_gl_uint((GLenum)texType);
 }
 
 /**
@@ -460,10 +476,10 @@ inline GLuint get_active_texture_id(const tex_type_t texType) noexcept {
  * @return The currently bound multi-texture target. The initial value is
  * GL_TEXTURE0.
  */
-inline tex_slot_t get_active_texture_unit() noexcept {
-    return (tex_slot_t) get_gl_int(GL_ACTIVE_TEXTURE);
+inline tex_slot_t get_active_texture_unit() noexcept
+{
+    return (tex_slot_t)get_gl_int(GL_ACTIVE_TEXTURE);
 }
-
 } // end draw namespace
 } // end ls namespace
 

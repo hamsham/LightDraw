@@ -6,8 +6,12 @@
 #include "lightsky/math/vec3.h"
 #include "lightsky/math/mat4.h"
 
-namespace ls {
-namespace draw {
+
+
+namespace ls
+{
+namespace draw
+{
 
 
 
@@ -15,6 +19,7 @@ namespace draw {
  Forward Declarations
 -----------------------------------------------------------------------------*/
 class Camera;
+
 class BoundingBox;
 
 
@@ -65,11 +70,12 @@ bool is_visible(const BoundingBox& bb, const math::mat4& mvpMatrix, const float 
 /**----------------------------------------------------------------------------
  * @brief View modes for Camera objects
 -----------------------------------------------------------------------------*/
-enum projection_type_t : uint32_t {
+enum projection_type_t : uint32_t
+{
     PROJECTION_ORTHOGONAL,
     PROJECTION_PERSPECTIVE,
     PROJECTION_LOGARITHMIC_PERSPECTIVE,
-    
+
     DEFAULT_PROJECTION = PROJECTION_PERSPECTIVE,
 };
 
@@ -78,9 +84,10 @@ enum projection_type_t : uint32_t {
 /**----------------------------------------------------------------------------
  * @brief Camera transformation class
 -----------------------------------------------------------------------------*/
-class Camera {
+class Camera
+{
     friend class SceneFileLoader;
-    
+
   public:
     /**
      * @brief Default Camera aspect width.
@@ -117,14 +124,14 @@ class Camera {
      * Flag to determine if *this camera needs updating.
      */
     bool dirtyFlag;
-    
+
     /**
      * Projection type for the camera. This can help determine if the current
      * projection matrix is orthogonal, perspective, or represents a
      * logarithmic (pseudo-infinite) perspective matrix.
      */
     projection_type_t projectType;
-    
+
     /**
      * @brief fov Determines the angle of vision for the camera.
      */
@@ -311,7 +318,7 @@ class Camera {
      * camera's far-clipping plane.
      */
     float get_far_plane() const;
-    
+
     /**
      * Determine if *this Camera object needs an update.
      * 
@@ -330,14 +337,16 @@ class Camera {
 /*-------------------------------------
  * Get the projection matrix
 -------------------------------------*/
-inline const math::mat4& Camera::get_proj_matrix() const {
+inline const math::mat4& Camera::get_proj_matrix() const
+{
     return projMatrix;
 }
 
 /*-------------------------------------
  * Set the FOV
 -------------------------------------*/
-inline void Camera::set_fov(unsigned viewAngle) {
+inline void Camera::set_fov(unsigned viewAngle)
+{
     dirtyFlag = true;
     fov = viewAngle;
 }
@@ -345,14 +354,16 @@ inline void Camera::set_fov(unsigned viewAngle) {
 /*-------------------------------------
  * Get the FOV
 -------------------------------------*/
-inline float Camera::get_fov() const {
+inline float Camera::get_fov() const
+{
     return fov;
 }
 
 /*-------------------------------------
  * Set the aspect ratio
 -------------------------------------*/
-inline void Camera::set_aspect_ratio(float w, float h) {
+inline void Camera::set_aspect_ratio(float w, float h)
+{
     dirtyFlag = true;
     aspectW = w;
     aspectH = h;
@@ -361,7 +372,8 @@ inline void Camera::set_aspect_ratio(float w, float h) {
 /*-------------------------------------
  * Set the aspect ratio
 -------------------------------------*/
-inline void Camera::set_aspect_ratio(const math::vec2& aspect) {
+inline void Camera::set_aspect_ratio(const math::vec2& aspect)
+{
     dirtyFlag = true;
     aspectW = aspect[0];
     aspectH = aspect[1];
@@ -370,28 +382,32 @@ inline void Camera::set_aspect_ratio(const math::vec2& aspect) {
 /*-------------------------------------
  * Get the current aspect ratio.
 -------------------------------------*/
-inline float Camera::get_aspect_ratio() const {
+inline float Camera::get_aspect_ratio() const
+{
     return aspectW / aspectH;
 }
 
 /*-------------------------------------
  * Get the current aspect width.
 -------------------------------------*/
-inline float Camera::get_aspect_width() const {
+inline float Camera::get_aspect_width() const
+{
     return aspectW;
 }
 
 /*-------------------------------------
  * Get the current aspect height.
 -------------------------------------*/
-inline float Camera::get_aspect_height() const {
+inline float Camera::get_aspect_height() const
+{
     return aspectH;
 }
 
 /*-------------------------------------
  * Set the near plane distance
 -------------------------------------*/
-inline void Camera::set_near_plane(float inZNear) {
+inline void Camera::set_near_plane(float inZNear)
+{
     dirtyFlag = true;
     zNear = inZNear;
 }
@@ -399,14 +415,16 @@ inline void Camera::set_near_plane(float inZNear) {
 /*-------------------------------------
  * Get the near plane distance
 -------------------------------------*/
-inline float Camera::get_near_plane() const {
+inline float Camera::get_near_plane() const
+{
     return zNear;
 }
 
 /*-------------------------------------
  * Set the far plane distance
 -------------------------------------*/
-inline void Camera::set_far_plane(float inZFar) {
+inline void Camera::set_far_plane(float inZFar)
+{
     dirtyFlag = true;
     zFar = inZFar;
 }
@@ -414,17 +432,18 @@ inline void Camera::set_far_plane(float inZFar) {
 /*-------------------------------------
  * Get the distance to the far plane.
 -------------------------------------*/
-inline float Camera::get_far_plane() const {
+inline float Camera::get_far_plane() const
+{
     return zFar;
 }
 
 /*-------------------------------------
  * Camera Update Inquiry
 -------------------------------------*/
-inline bool Camera::is_dirty() const noexcept {
+inline bool Camera::is_dirty() const noexcept
+{
     return dirtyFlag;
 }
-
 } // end draw namespace
 } // end ls namespace
 

@@ -12,16 +12,21 @@
 
 #include "lightsky/draw/Setup.h"
 
-namespace ls {
-namespace draw {
+
+
+namespace ls
+{
+namespace draw
+{
 
 
 
 /**----------------------------------------------------------------------------
  * Enumeration to facilitate matrix manipulations within the matrix stack.
 -----------------------------------------------------------------------------*/
-enum matrix_use_t : unsigned {
-    MATRIX_USE_INVALID = (unsigned) - 1,
+enum matrix_use_t : unsigned
+{
+    MATRIX_USE_INVALID = (unsigned)-1,
 
     MATRIX_USE_PROJECTION = 0,
     MATRIX_USE_VIEW = 1,
@@ -39,10 +44,12 @@ enum matrix_use_t : unsigned {
  * within OpenGL. Usage was designed to be fairly close to the original OpenGL
  * 1.0 spec.
 -----------------------------------------------------------------------------*/
-class MatrixStack {
+class MatrixStack
+{
   private:
     std::stack<math::mat4> stacks[3]; // model, view, & projection
     math::mat4 mvpMatrix = {1.f};
+
     math::mat4 vpMatrix = {1.f};
 
   public:
@@ -198,20 +205,22 @@ class MatrixStack {
      * @param matrixType
      * The stack type who's size will be queried.
      */
-    unsigned size(matrix_use_t matrixType);
+    size_t size(matrix_use_t matrixType);
 };
 
 /*-------------------------------------
  * Multiply the selected matrix with the one passed into the function.
 -------------------------------------*/
-inline void MatrixStack::mult_matrix(matrix_use_t mt, const math::mat4& m) {
+inline void MatrixStack::mult_matrix(matrix_use_t mt, const math::mat4& m)
+{
     stacks[mt].top() = m * stacks[mt].top();
 }
 
 /*-------------------------------------
  * Multiply the matrix stack
 -------------------------------------*/
-inline void MatrixStack::construct_mvp() {
+inline void MatrixStack::construct_mvp()
+{
     this->construct_vp();
     mvpMatrix = vpMatrix * stacks[MATRIX_USE_MODEL].top();
 }
@@ -219,38 +228,42 @@ inline void MatrixStack::construct_mvp() {
 /*-------------------------------------
  * Multiply the view and projection stacks
 -------------------------------------*/
-inline void MatrixStack::construct_vp() {
+inline void MatrixStack::construct_vp()
+{
     vpMatrix = stacks[MATRIX_USE_PROJECTION].top() * stacks[MATRIX_USE_VIEW].top();
 }
 
 /*-------------------------------------
  * Get the current model matrix
 -------------------------------------*/
-inline const math::mat4& MatrixStack::get_matrix(matrix_use_t mt) const {
+inline const math::mat4& MatrixStack::get_matrix(matrix_use_t mt) const
+{
     return stacks[mt].top();
 }
 
 /*-------------------------------------
  * Get the MVP Matrix
 -------------------------------------*/
-inline const math::mat4& MatrixStack::get_mvp_matrix() const {
+inline const math::mat4& MatrixStack::get_mvp_matrix() const
+{
     return mvpMatrix;
 }
 
 /*-------------------------------------
  * Get the VP Matrix
 -------------------------------------*/
-inline const math::mat4& MatrixStack::get_vp_matrix() const {
+inline const math::mat4& MatrixStack::get_vp_matrix() const
+{
     return vpMatrix;
 }
 
 /*-------------------------------------
  * Clear a specific Stack
 -------------------------------------*/
-inline unsigned MatrixStack::size(matrix_use_t mt) {
+inline size_t MatrixStack::size(matrix_use_t mt)
+{
     return stacks[mt].size();
 }
-
 } // end draw namespace
 } // end ls namespace
 

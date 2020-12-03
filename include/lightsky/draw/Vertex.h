@@ -17,8 +17,10 @@
 
 
 
-namespace ls {
-namespace draw {
+namespace ls
+{
+namespace draw
+{
 
 
 /*-----------------------------------------------------------------------------
@@ -130,7 +132,8 @@ GLboolean get_vertex_normalization(const vertex_data_t type);
 /**
  * @brief Vertex Attribute types (should be GLenum type).
  */
-enum vertex_data_t : uint32_t {
+enum vertex_data_t : uint32_t
+{
     VERTEX_DATA_UNKNOWN = GL_ZERO,
 
     VERTEX_DATA_BYTE = GL_BYTE,
@@ -258,9 +261,6 @@ constexpr vertex_data_t COMMON_VERTEX_TYPES_LIST[] = {
 };
 
 constexpr unsigned COMMON_VERTEX_TYPES_COUNT LS_ARRAY_SIZE(COMMON_VERTEX_TYPES_LIST);
-
-
-
 } // end draw namespace
 } // end ls namespace
 

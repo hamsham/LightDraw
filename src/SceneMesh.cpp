@@ -3,8 +3,10 @@
 
 
 
-namespace ls {
-namespace draw {
+namespace ls
+{
+namespace draw
+{
 
 
 
@@ -14,7 +16,8 @@ namespace draw {
 /*-------------------------------------
  * Reset A Meshes Meta information
 -------------------------------------*/
-void MeshMetaData::reset() noexcept {
+void MeshMetaData::reset() noexcept
+{
     numSubmeshes = 0;
     vertTypes = (common_vertex_t)0;
     totalVerts = 0;
@@ -30,14 +33,12 @@ void MeshMetaData::reset() noexcept {
 /*-------------------------------------
  * Reset A Mesh
 -------------------------------------*/
-void SceneMesh::reset() noexcept {
+void SceneMesh::reset() noexcept
+{
     drawParams = DrawCommandParams{};
     vboId = 0;
     iboId = 0;
     metaData.reset();
 }
-
-
-
 } // end draw namespace
 } // end ls namespace

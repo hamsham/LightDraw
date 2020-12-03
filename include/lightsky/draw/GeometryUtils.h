@@ -10,8 +10,12 @@
 
 #include "lightsky/draw/Setup.h"
 
-namespace ls {
-namespace draw {
+
+
+namespace ls
+{
+namespace draw
+{
 
 /**----------------------------------------------------------------------------
  * Helper function to calculate a vertex normal from 3 vertices.
@@ -53,8 +57,8 @@ math::vec3 calc_vertex_normal(
 -----------------------------------------------------------------------------*/
 void calc_vertex_tangents(
     unsigned vertCount,
-    const math::vec3 * const positions,
-    const math::vec2 * const uvs,
+    const math::vec3* const positions,
+    const math::vec2* const uvs,
     math::vec3* tangents,
     math::vec3* bitangents
 );
@@ -118,7 +122,6 @@ math::vec3 calc_vertex_bitangent(
     const math::vec3& pos0, const math::vec3& pos1, const math::vec3& pos2,
     const math::vec2& uv0, const math::vec2& uv1, const math::vec2& uv2
 );
-
 } // end draw namespace
 } // end ls namespace
 

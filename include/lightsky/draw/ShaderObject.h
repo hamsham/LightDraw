@@ -15,14 +15,19 @@
 #include "lightsky/draw/Setup.h"
 #include "lightsky/draw/ShaderAttribArray.h"
 
-namespace ls {
-namespace draw {
+
+
+namespace ls
+{
+namespace draw
+{
 
 
 /*-----------------------------------------------------------------------------
  * Forward declarations & Typedefs
 -----------------------------------------------------------------------------*/
 enum vertex_data_t : GLenum;
+
 class ShaderProgram;
 
 
@@ -30,14 +35,15 @@ class ShaderProgram;
 /**----------------------------------------------------------------------------
  * Enumeration to determine the type of shader that should be created on the GPU
 -----------------------------------------------------------------------------*/
-enum shader_stage_t : GLint {
+enum shader_stage_t : GLint
+{
     SHADER_STAGE_INVALID = 0,
-    
+
 #if defined(LS_DRAW_BACKEND_GLES)
     SHADER_STAGE_VERTEX = GL_VERTEX_SHADER,
     SHADER_STAGE_FRAGMENT = GL_FRAGMENT_SHADER,
     SHADER_STAGE_MAX = 2
-    
+
 #else
     SHADER_STAGE_VERTEX = GL_VERTEX_SHADER,
     SHADER_STAGE_GEOMETRY = GL_GEOMETRY_SHADER,
@@ -48,7 +54,8 @@ enum shader_stage_t : GLint {
 
 
 
-enum shader_string_t : GLenum {
+enum shader_string_t : GLenum
+{
     SHADER_STRING_LOG = GL_INFO_LOG_LENGTH,
     SHADER_STRING_SOURCE = GL_SHADER_SOURCE_LENGTH,
 };
@@ -61,7 +68,8 @@ enum shader_string_t : GLenum {
  * Shader objects are attached to programs in order to manipulate rendering on
  * the GPU
 -----------------------------------------------------------------------------*/
-class ShaderObject {
+class ShaderObject
+{
   private:
     /**
      * Handle to the GPU-side shader object.
@@ -94,7 +102,7 @@ class ShaderObject {
     static utils::Pointer<GLchar[]> get_shader_string(
         const GLuint shaderId,
         const shader_string_t stringType
-        ) noexcept;
+    ) noexcept;
 
     /**
      * Perform some introspection on the shader source code and retrieve a
@@ -310,54 +318,58 @@ inline bool ShaderObject::init(
     const shader_stage_t shaderSourceType,
     const char* const data,
     const int size
-) noexcept {
+) noexcept
+{
     return init(shaderSourceType, 1, &data, size ? &size : nullptr);
 }
 
 /*-------------------------------------
     Get a shader's GPU-assigned ID
 -------------------------------------*/
-inline GLuint ShaderObject::gpu_id() const noexcept {
+inline GLuint ShaderObject::gpu_id() const noexcept
+{
     return gpuId;
 }
 
 /*-------------------------------------
     Get a shader's type
 -------------------------------------*/
-inline shader_stage_t ShaderObject::get_shader_type() const noexcept {
+inline shader_stage_t ShaderObject::get_shader_type() const noexcept
+{
     return shaderStage;
 }
 
 /*-------------------------------------
     Get a shader's log data
 -------------------------------------*/
-inline utils::Pointer<GLchar[]> ShaderObject::get_shader_info_log() const noexcept {
+inline utils::Pointer<GLchar[]> ShaderObject::get_shader_info_log() const noexcept
+{
     return get_shader_string(gpu_id(), shader_string_t::SHADER_STRING_LOG);
 }
 
 /*-------------------------------------
     Get a shader's source code
 -------------------------------------*/
-inline utils::Pointer<GLchar[]> ShaderObject::get_shader_source() const noexcept {
+inline utils::Pointer<GLchar[]> ShaderObject::get_shader_source() const noexcept
+{
     return get_shader_string(gpu_id(), shader_string_t::SHADER_STRING_SOURCE);
 }
 
 /*-------------------------------------
  Determine if *this is a valid shader
 -------------------------------------*/
-inline bool ShaderObject::is_valid() const noexcept {
+inline bool ShaderObject::is_valid() const noexcept
+{
     return gpu_id() != 0;
 }
 
 /*-------------------------------------
  Retrieve information about the current shader's attributes.
 -------------------------------------*/
-inline const ShaderAttribArray& ShaderObject::get_attribs() const noexcept {
+inline const ShaderAttribArray& ShaderObject::get_attribs() const noexcept
+{
     return attribs;
 }
-
-
-
 } // end draw namespace
 } // end ls namespace
 

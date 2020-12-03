@@ -3,8 +3,10 @@
 
 
 
-namespace ls {
-namespace draw {
+namespace ls
+{
+namespace draw
+{
 
 /*-------------------------------------
  * Constructor
@@ -17,7 +19,8 @@ DrawCommandParams::DrawCommandParams() noexcept :
     indexType{index_element_t::INDEX_TYPE_NONE},
     first{0},
     count{0}
-{}
+{
+}
 
 /*-------------------------------------
  * Copy Constructor
@@ -29,13 +32,15 @@ DrawCommandParams::DrawCommandParams(const DrawCommandParams& d) noexcept :
     drawMode{d.drawMode},
     indexType{d.indexType}
 {
-    if (indexType != index_element_t::INDEX_TYPE_NONE) {
+    if (indexType != index_element_t::INDEX_TYPE_NONE)
+    {
         offset = d.offset;
     }
-    else {
+    else
+    {
         first = d.first;
     }
-    
+
     count = d.count;
 }
 
@@ -52,18 +57,20 @@ DrawCommandParams::DrawCommandParams(DrawCommandParams&& d) noexcept :
     d.materialId = 0;
     d.vaoId = 0;
 
-    if (indexType != index_element_t::INDEX_TYPE_NONE) {
+    if (indexType != index_element_t::INDEX_TYPE_NONE)
+    {
         offset = d.offset;
     }
-    else {
+    else
+    {
         first = d.first;
     }
-    
+
     d.drawFunc = draw_func_t::DRAW_ARRAYS;
     d.drawMode = draw_mode_t::DRAW_MODE_TRIS;
     d.indexType = index_element_t::INDEX_TYPE_NONE;
     d.first = 0;
-    
+
     count = d.count;
     d.count = 0;
 }
@@ -71,54 +78,60 @@ DrawCommandParams::DrawCommandParams(DrawCommandParams&& d) noexcept :
 /*-------------------------------------
  * Copy Operator
 -------------------------------------*/
-DrawCommandParams& DrawCommandParams::operator=(const DrawCommandParams& d) noexcept {
+DrawCommandParams& DrawCommandParams::operator=(const DrawCommandParams& d) noexcept
+{
     materialId = d.materialId;
     vaoId = d.vaoId;
     drawFunc = d.drawFunc;
     drawMode = d.drawMode;
     indexType = d.indexType;
-    
-    if (indexType != index_element_t::INDEX_TYPE_NONE) {
+
+    if (indexType != index_element_t::INDEX_TYPE_NONE)
+    {
         offset = d.offset;
     }
-    else {
+    else
+    {
         first = d.first;
     }
-    
+
     count = d.count;
-    
+
     return *this;
 }
 
 /*-------------------------------------
  * Move Operator
 -------------------------------------*/
-DrawCommandParams& DrawCommandParams::operator=(DrawCommandParams&& d) noexcept {
+DrawCommandParams& DrawCommandParams::operator=(DrawCommandParams&& d) noexcept
+{
     materialId = d.materialId;
     d.materialId = 0;
-    
+
     vaoId = d.vaoId;
     d.vaoId = 0;
-    
+
     drawFunc = d.drawFunc;
     drawMode = d.drawMode;
     indexType = d.indexType;
 
-    if (indexType != index_element_t::INDEX_TYPE_NONE) {
+    if (indexType != index_element_t::INDEX_TYPE_NONE)
+    {
         offset = d.offset;
     }
-    else {
+    else
+    {
         first = d.first;
     }
-    
+
     d.drawFunc = draw_func_t::DRAW_ARRAYS;
     d.drawMode = draw_mode_t::DRAW_MODE_TRIS;
     d.indexType = index_element_t::INDEX_TYPE_NONE;
     d.first = 0;
-    
+
     count = d.count;
     d.count = 0;
-    
+
     return *this;
 }
 
@@ -127,7 +140,8 @@ DrawCommandParams& DrawCommandParams::operator=(DrawCommandParams&& d) noexcept 
 /*-------------------------------------
  * Reset all internal data
 -------------------------------------*/
-void DrawCommandParams::reset() noexcept {
+void DrawCommandParams::reset() noexcept
+{
     materialId = 0;
     vaoId = 0;
     drawFunc = draw_func_t::DRAW_ARRAYS;
@@ -136,8 +150,5 @@ void DrawCommandParams::reset() noexcept {
     first = 0;
     count = 0;
 }
-
-
-
 } // end draw namespace
 } // end ls namespace

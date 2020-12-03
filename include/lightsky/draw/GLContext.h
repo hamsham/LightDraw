@@ -34,76 +34,80 @@
 
 
 
-namespace ls {
-namespace draw {
+namespace ls
+{
+namespace draw
+{
 
 
 
 /**----------------------------------------------------------------------------
  * GLDataList contains information about the lifetime of OpenGL objects.
 -----------------------------------------------------------------------------*/
-template <typename gl_type, class allocator_type = std::allocator<gl_type> >
-class GLDataList {
-    public:
-        typedef std::vector<gl_type, allocator_type> list_type;
+template <typename gl_type, class allocator_type = std::allocator<gl_type>>
+class GLDataList
+{
+  public:
+    typedef std::vector<gl_type, allocator_type> list_type;
 
-        typedef gl_type value_type;
+    typedef gl_type value_type;
 
-    private:
-        list_type objects;
+  private:
+    list_type objects;
 
-    public:
-        ~GLDataList() noexcept;
+  public:
+    ~GLDataList() noexcept;
 
-        GLDataList() noexcept;
+    GLDataList() noexcept;
 
-        GLDataList(const GLDataList& c) noexcept;
+    GLDataList(const GLDataList& c) noexcept;
 
-        GLDataList(GLDataList&& c) noexcept;
+    GLDataList(GLDataList&& c) noexcept;
 
-        GLDataList& operator=(const GLDataList& c) noexcept;
+    GLDataList& operator=(const GLDataList& c) noexcept;
 
-        GLDataList& operator=(GLDataList&& c) noexcept;
-        
-        void clear() noexcept;
+    GLDataList& operator=(GLDataList&& c) noexcept;
 
-        void reserve(const unsigned numItems) noexcept;
+    void clear() noexcept;
 
-        unsigned add(const gl_type& o) noexcept;
+    void reserve(const size_t numItems) noexcept;
 
-        unsigned add(gl_type&& o) noexcept;
+    size_t add(const gl_type& o) noexcept;
 
-        void remove(const unsigned index) noexcept;
+    size_t add(gl_type&& o) noexcept;
 
-        gl_type release(const unsigned index) noexcept;
+    void remove(const size_t index) noexcept;
 
-        gl_type& operator[](const unsigned index) noexcept;
+    gl_type release(const size_t index) noexcept;
 
-        const gl_type& operator[](const unsigned index) const noexcept;
+    gl_type& operator[](const size_t index) noexcept;
 
-        unsigned size() const noexcept;
+    const gl_type& operator[](const size_t index) const noexcept;
 
-        unsigned capacity() const noexcept;
+    size_t size() const noexcept;
 
-        void shrink_to_fit() noexcept;
+    size_t capacity() const noexcept;
 
-        gl_type* data() noexcept;
+    void shrink_to_fit() noexcept;
 
-        const gl_type* data() const noexcept;
+    gl_type* data() noexcept;
 
-        gl_type& front() noexcept;
+    const gl_type* data() const noexcept;
 
-        const gl_type& front() const noexcept;
+    gl_type& front() noexcept;
 
-        gl_type& back() noexcept;
+    const gl_type& front() const noexcept;
 
-        const gl_type& back() const noexcept;
+    gl_type& back() noexcept;
+
+    const gl_type& back() const noexcept;
 };
 
 /*-------------------------------------
 -------------------------------------*/
 template <typename gl_type, class alloc_type>
-GLDataList<gl_type, alloc_type>::~GLDataList() noexcept {
+GLDataList<gl_type, alloc_type>::~GLDataList() noexcept
+{
     clear();
 }
 
@@ -112,37 +116,42 @@ GLDataList<gl_type, alloc_type>::~GLDataList() noexcept {
 template <typename gl_type, class alloc_type>
 GLDataList<gl_type, alloc_type>::GLDataList() noexcept :
     objects{}
-{}
+{
+}
 
 /*-------------------------------------
 -------------------------------------*/
 template <typename gl_type, class alloc_type>
-GLDataList<gl_type, alloc_type>::GLDataList(const GLDataList& c) noexcept {
+GLDataList<gl_type, alloc_type>::GLDataList(const GLDataList& c) noexcept
+{
     *this = c;
 }
 
 /*-------------------------------------
 -------------------------------------*/
 template <typename gl_type, class alloc_type>
-GLDataList<gl_type, alloc_type>::GLDataList(GLDataList&& c) noexcept {
+GLDataList<gl_type, alloc_type>::GLDataList(GLDataList&& c) noexcept
+{
     *this = std::move(c);
 }
 
 /*-------------------------------------
 -------------------------------------*/
 template <typename gl_type, class alloc_type>
-inline GLDataList<gl_type, alloc_type>& GLDataList<gl_type, alloc_type>::operator=(const GLDataList& c) noexcept {
+inline GLDataList<gl_type, alloc_type>& GLDataList<gl_type, alloc_type>::operator=(const GLDataList& c) noexcept
+{
     objects = c.objects;
     return *this;
 }
 
 template <>
-GLDataList<utils::Pointer<BufferObject>>&GLDataList<utils::Pointer<BufferObject>>::operator=(const GLDataList& c) noexcept;
+GLDataList<utils::Pointer<BufferObject>>& GLDataList<utils::Pointer<BufferObject>>::operator=(const GLDataList& c) noexcept;
 
 /*-------------------------------------
 -------------------------------------*/
 template <typename gl_type, class alloc_type>
-inline GLDataList<gl_type, alloc_type>& GLDataList<gl_type, alloc_type>::operator=(GLDataList&& c) noexcept {
+inline GLDataList<gl_type, alloc_type>& GLDataList<gl_type, alloc_type>::operator=(GLDataList&& c) noexcept
+{
     objects = std::move(c.objects);
     return *this;
 }
@@ -150,16 +159,20 @@ inline GLDataList<gl_type, alloc_type>& GLDataList<gl_type, alloc_type>::operato
 /*-------------------------------------
 -------------------------------------*/
 template <typename gl_type, class alloc_type>
-inline void GLDataList<gl_type, alloc_type>::clear() noexcept {
+inline void GLDataList<gl_type, alloc_type>::clear() noexcept
+{
     reserve(0);
 }
 
 /*-------------------------------------
 -------------------------------------*/
 template <typename gl_type, class alloc_type>
-void GLDataList<gl_type, alloc_type>::reserve(const unsigned numItems) noexcept {
-    if (numItems < objects.size()) {
-        for (unsigned i = 0; i < objects.size(); ++i) {
+void GLDataList<gl_type, alloc_type>::reserve(const size_t numItems) noexcept
+{
+    if (numItems < objects.size())
+    {
+        for (size_t i = 0; i < objects.size(); ++i)
+        {
             objects[i].terminate();
         }
     }
@@ -168,16 +181,19 @@ void GLDataList<gl_type, alloc_type>::reserve(const unsigned numItems) noexcept 
 }
 
 template <>
-void GLDataList<utils::Pointer<BufferObject>>::reserve(const unsigned numItems) noexcept;
+void GLDataList<utils::Pointer<BufferObject>>::reserve(const size_t numItems) noexcept;
 
 /*-------------------------------------
 -------------------------------------*/
 template <typename gl_type, class alloc_type>
-unsigned GLDataList<gl_type, alloc_type>::add(const gl_type& o) noexcept {
-    for (unsigned i = 0; i < objects.size(); ++i) {
+size_t GLDataList<gl_type, alloc_type>::add(const gl_type& o) noexcept
+{
+    for (size_t i = 0; i < objects.size(); ++i)
+    {
         gl_type& current = objects[i];
 
-        if (current.gpu_id() && current.gpu_id() == o.gpu_id()) {
+        if (current.gpu_id() && current.gpu_id() == o.gpu_id())
+        {
             current = o;
             return i;
         }
@@ -188,16 +204,19 @@ unsigned GLDataList<gl_type, alloc_type>::add(const gl_type& o) noexcept {
 }
 
 template <>
-unsigned GLDataList<utils::Pointer<BufferObject>>::add(const utils::Pointer<BufferObject>& o) noexcept;
+size_t GLDataList<utils::Pointer<BufferObject>>::add(const utils::Pointer<BufferObject>& o) noexcept;
 
 /*-------------------------------------
 -------------------------------------*/
 template <typename gl_type, class alloc_type>
-unsigned GLDataList<gl_type, alloc_type>::add(gl_type&& o) noexcept {
-    for (unsigned i = 0; i < size(); ++i) {
+size_t GLDataList<gl_type, alloc_type>::add(gl_type&& o) noexcept
+{
+    for (size_t i = 0; i < size(); ++i)
+    {
         gl_type& current = objects[i];
 
-        if (current.gpu_id() && current.gpu_id() == o.gpu_id()) {
+        if (current.gpu_id() && current.gpu_id() == o.gpu_id())
+        {
             current = std::move(o);
             return i;
         }
@@ -208,23 +227,25 @@ unsigned GLDataList<gl_type, alloc_type>::add(gl_type&& o) noexcept {
 }
 
 template <>
-unsigned GLDataList<utils::Pointer<BufferObject>>::add(utils::Pointer<BufferObject>&& o) noexcept;
+size_t GLDataList<utils::Pointer<BufferObject>>::add(utils::Pointer<BufferObject>&& o) noexcept;
 
 /*-------------------------------------
 -------------------------------------*/
 template <typename gl_type, class alloc_type>
-inline void GLDataList<gl_type, alloc_type>::remove(const unsigned index) noexcept {
+inline void GLDataList<gl_type, alloc_type>::remove(const size_t index) noexcept
+{
     objects[index].terminate();
     objects.erase(objects.begin() + index);
 }
 
 template <>
-void GLDataList<utils::Pointer<BufferObject>>::remove(const unsigned index) noexcept;
+void GLDataList<utils::Pointer<BufferObject>>::remove(const size_t index) noexcept;
 
 /*-------------------------------------
 -------------------------------------*/
 template <typename gl_type, class alloc_type>
-inline gl_type GLDataList<gl_type, alloc_type>::release(const unsigned index) noexcept {
+inline gl_type GLDataList<gl_type, alloc_type>::release(const size_t index) noexcept
+{
     gl_type ret = std::move(objects[index]);
     objects.erase(objects.begin() + index);
     return ret;
@@ -233,56 +254,64 @@ inline gl_type GLDataList<gl_type, alloc_type>::release(const unsigned index) no
 /*-------------------------------------
 -------------------------------------*/
 template <typename gl_type, class alloc_type>
-inline gl_type& GLDataList<gl_type, alloc_type>::operator[](const unsigned index) noexcept {
+inline gl_type& GLDataList<gl_type, alloc_type>::operator[](const size_t index) noexcept
+{
     return objects[index];
 }
 
 /*-------------------------------------
 -------------------------------------*/
 template <typename gl_type, class alloc_type>
-inline const gl_type& GLDataList<gl_type, alloc_type>::operator[](const unsigned index) const noexcept {
+inline const gl_type& GLDataList<gl_type, alloc_type>::operator[](const size_t index) const noexcept
+{
     return objects[index];
 }
 
 /*-------------------------------------
 -------------------------------------*/
 template <typename gl_type, class alloc_type>
-inline unsigned GLDataList<gl_type, alloc_type>::size() const noexcept {
+inline size_t GLDataList<gl_type, alloc_type>::size() const noexcept
+{
     return objects.size();
 }
 
 /*-------------------------------------
 -------------------------------------*/
 template <typename gl_type, class alloc_type>
-inline unsigned GLDataList<gl_type, alloc_type>::capacity() const noexcept {
+inline size_t GLDataList<gl_type, alloc_type>::capacity() const noexcept
+{
     return objects.capacity();
 }
 
 /*-------------------------------------
 -------------------------------------*/
 template <typename gl_type, class alloc_type>
-inline void GLDataList<gl_type, alloc_type>::shrink_to_fit() noexcept {
+inline void GLDataList<gl_type, alloc_type>::shrink_to_fit() noexcept
+{
     objects.shrink_to_fit();
 }
 
 /*-------------------------------------
 -------------------------------------*/
 template <typename gl_type, class alloc_type>
-inline gl_type* GLDataList<gl_type, alloc_type>::data() noexcept {
+inline gl_type* GLDataList<gl_type, alloc_type>::data() noexcept
+{
     return objects.data();
 }
 
 /*-------------------------------------
 -------------------------------------*/
 template <typename gl_type, class alloc_type>
-inline const gl_type* GLDataList<gl_type, alloc_type>::data() const noexcept {
+inline const gl_type* GLDataList<gl_type, alloc_type>::data() const noexcept
+{
     return objects.data();
 }
 
 /*-------------------------------------
 -------------------------------------*/
 template <typename gl_type, class alloc_type>
-inline gl_type& GLDataList<gl_type, alloc_type>::front() noexcept {
+inline gl_type& GLDataList<gl_type, alloc_type>::front() noexcept
+{
     LS_ASSERT(size() > 0);
     return objects[0];
 }
@@ -290,7 +319,8 @@ inline gl_type& GLDataList<gl_type, alloc_type>::front() noexcept {
 /*-------------------------------------
 -------------------------------------*/
 template <typename gl_type, class alloc_type>
-inline const gl_type& GLDataList<gl_type, alloc_type>::front() const noexcept {
+inline const gl_type& GLDataList<gl_type, alloc_type>::front() const noexcept
+{
     LS_ASSERT(size() > 0);
     return objects[0];
 }
@@ -298,40 +328,53 @@ inline const gl_type& GLDataList<gl_type, alloc_type>::front() const noexcept {
 /*-------------------------------------
 -------------------------------------*/
 template <typename gl_type, class alloc_type>
-inline gl_type& GLDataList<gl_type, alloc_type>::back() noexcept {
+inline gl_type& GLDataList<gl_type, alloc_type>::back() noexcept
+{
     LS_ASSERT(size() > 0);
-    return objects[size()-1];
+    return objects[size() - 1];
 }
 
 /*-------------------------------------
 -------------------------------------*/
 template <typename gl_type, class alloc_type>
-inline const gl_type& GLDataList<gl_type, alloc_type>::back() const noexcept {
+inline const gl_type& GLDataList<gl_type, alloc_type>::back() const noexcept
+{
     LS_ASSERT(size() > 0);
-    return objects[size()-1];
+    return objects[size() - 1];
 }
 
 /*-------------------------------------
  * External Template Instantiations
 -------------------------------------*/
-LS_DECLARE_CLASS_TYPE(BufferDataList,          GLDataList, utils::Pointer<BufferObject>);
-LS_DECLARE_CLASS_TYPE(IBODataList,             GLDataList, IndexBuffer);
-LS_DECLARE_CLASS_TYPE(FBODataList,             GLDataList, FrameBuffer);
-LS_DECLARE_CLASS_TYPE(RBODataList,             GLDataList, RenderBuffer);
-LS_DECLARE_CLASS_TYPE(ShaderObjectDataList,    GLDataList, ShaderObject);
-LS_DECLARE_CLASS_TYPE(ShaderProgramDataList,   GLDataList, ShaderProgram);
-LS_DECLARE_CLASS_TYPE(TextureDataList,         GLDataList, Texture);
-LS_DECLARE_CLASS_TYPE(PBODataList,             GLDataList, PixelBuffer);
-LS_DECLARE_CLASS_TYPE(UBODataList,             GLDataList, UniformBuffer);
-LS_DECLARE_CLASS_TYPE(VAODataList,             GLDataList, VertexArray);
-LS_DECLARE_CLASS_TYPE(VBODataList,             GLDataList, VertexBuffer);
+LS_DECLARE_CLASS_TYPE(BufferDataList, GLDataList, utils::Pointer<BufferObject>);
+
+LS_DECLARE_CLASS_TYPE(IBODataList, GLDataList, IndexBuffer);
+
+LS_DECLARE_CLASS_TYPE(FBODataList, GLDataList, FrameBuffer);
+
+LS_DECLARE_CLASS_TYPE(RBODataList, GLDataList, RenderBuffer);
+
+LS_DECLARE_CLASS_TYPE(ShaderObjectDataList, GLDataList, ShaderObject);
+
+LS_DECLARE_CLASS_TYPE(ShaderProgramDataList, GLDataList, ShaderProgram);
+
+LS_DECLARE_CLASS_TYPE(TextureDataList, GLDataList, Texture);
+
+LS_DECLARE_CLASS_TYPE(PBODataList, GLDataList, PixelBuffer);
+
+LS_DECLARE_CLASS_TYPE(UBODataList, GLDataList, UniformBuffer);
+
+LS_DECLARE_CLASS_TYPE(VAODataList, GLDataList, VertexArray);
+
+LS_DECLARE_CLASS_TYPE(VBODataList, GLDataList, VertexBuffer);
 
 
 
 /**----------------------------------------------------------------------------
  * GLContextData provides data for all OpenGL object types.
 -----------------------------------------------------------------------------*/
-struct GLContextData {
+struct GLContextData
+{
     VBODataList vbos;
 
     IBODataList ibos;
@@ -345,20 +388,17 @@ struct GLContextData {
     ShaderObjectDataList shaders;
 
     ShaderProgramDataList progs;
-    
+
     UBODataList ubos;
 
     VAODataList vaos;
-    
+
     std::vector<BlendObject> blendModes;
-    
+
     std::vector<DepthObject> depthModes;
-    
+
     void terminate() noexcept;
 };
-
-
-
 } // end draw namespace
 } // end ls namespace
 

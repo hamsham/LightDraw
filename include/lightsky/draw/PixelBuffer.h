@@ -13,15 +13,18 @@
 
 
 
-namespace ls {
-namespace draw {
+namespace ls
+{
+namespace draw
+{
 
 
 
 /*-----------------------------------------------------------------------------
  * Enumerations
 -----------------------------------------------------------------------------*/
-enum pixel_transfer_t : GLenum {
+enum pixel_transfer_t : GLenum
+{
     PIXEL_TRANSFER_UPLOAD = buffer_use_t::VBO_BUFFER_PIXEL_UPLOAD,
     PIXEL_TRANSFER_DOWNLOAD = buffer_use_t::VBO_BUFFER_PIXEL_DOWNLOAD,
 };
@@ -30,7 +33,8 @@ enum pixel_transfer_t : GLenum {
 
 /**----------------------------------------------------------------------------
 -----------------------------------------------------------------------------*/
-class PixelBuffer : public BufferObject {
+class PixelBuffer : public BufferObject
+{
   private:
     /**
      * Member to keep track of whether *this PBO is uploading or downloading data
@@ -167,23 +171,24 @@ class PixelBuffer : public BufferObject {
 
 /*-------------------------------------
 -------------------------------------*/
-inline buffer_use_t PixelBuffer::get_type() const noexcept {
-    return (buffer_use_t) transferMode;
+inline buffer_use_t PixelBuffer::get_type() const noexcept
+{
+    return (buffer_use_t)transferMode;
 }
 
 /*-------------------------------------
 -------------------------------------*/
-inline pixel_transfer_t PixelBuffer::get_transfer_mode() const noexcept {
+inline pixel_transfer_t PixelBuffer::get_transfer_mode() const noexcept
+{
     return transferMode;
 }
 
 /*-------------------------------------
 -------------------------------------*/
-inline unsigned PixelBuffer::get_num_attribs() const noexcept {
+inline unsigned PixelBuffer::get_num_attribs() const noexcept
+{
     return 0;
 }
-
-
 } // end draw namespace
 } // end ls namespace
 

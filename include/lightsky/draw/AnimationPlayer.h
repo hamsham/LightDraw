@@ -9,8 +9,10 @@
 
 
 
-namespace ls {
-namespace draw {
+namespace ls
+{
+namespace draw
+{
 
 /*-----------------------------------------------------------------------------
  * Forward declarations
@@ -23,7 +25,8 @@ class SceneGraph;
  * @brief The animation_state_t enum detemrines the current state of playback
  * in an animationPlayer object.
 -----------------------------------------------------------------------------*/
-enum animation_state_t {
+enum animation_state_t
+{
     ANIM_STATE_PLAYING,
     ANIM_STATE_PAUSED,
     ANIM_STATE_STOPPED
@@ -37,9 +40,11 @@ enum animation_state_t {
  *
  * This class currently only plays animations in a sceneGraph object.
 -----------------------------------------------------------------------------*/
-class AnimationPlayer {
+class AnimationPlayer
+{
   public:
-    enum : unsigned {
+    enum : unsigned
+    {
         /**
          * @brief Animation flag to indicate that an Animation is repeating.
          */
@@ -132,7 +137,7 @@ class AnimationPlayer {
      *
      * @return A reference to *this.
      */
-    AnimationPlayer& operator =(const AnimationPlayer& a) noexcept;
+    AnimationPlayer& operator=(const AnimationPlayer& a) noexcept;
 
     /**
      * @brief Move Operator
@@ -146,7 +151,7 @@ class AnimationPlayer {
      *
      * @return A reference to *this.
      */
-    AnimationPlayer& operator =(AnimationPlayer&& a) noexcept;
+    AnimationPlayer& operator=(AnimationPlayer&& a) noexcept;
 
     /**
      * @brief Get the number of times that an Animation should play.
@@ -278,13 +283,12 @@ class AnimationPlayer {
      * second will be advanced during a call to 'tick(...)'.
      */
     void set_time_dilation(const anim_prec_t percentNormalTime) noexcept;
-    
+
     /**
      * Reset all internal members to their default values.
      */
     void reset() noexcept;
 };
-
 } // end draw namespace
 } // end ls namespace
 

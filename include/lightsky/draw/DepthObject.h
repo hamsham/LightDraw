@@ -11,8 +11,12 @@
 #include "lightsky/draw/Setup.h"
 #include "lightsky/draw/Color.h"
 
-namespace ls {
-namespace draw {
+
+
+namespace ls
+{
+namespace draw
+{
 
 
 
@@ -22,7 +26,8 @@ namespace draw {
     These can be sent to OpenGL in order to determine how to compare the depth
     of rasterized fragments.
 -----------------------------------------------------------------------------*/
-enum compare_func_t : int {
+enum compare_func_t : int
+{
     DEPTH_FNC_ALWAYS = GL_ALWAYS,
     DEPTH_FNC_NEVER = GL_NEVER,
     DEPTH_FNC_LESS = GL_LESS,
@@ -41,7 +46,8 @@ enum compare_func_t : int {
  * within OpenGL. through this object, you can change the depth buffer's
  * state and parameters.
 -----------------------------------------------------------------------------*/
-class DepthObject {
+class DepthObject
+{
   private:
     /**
      * Determine if depth testing should be enabled or disabled.
@@ -292,7 +298,8 @@ class DepthObject {
     Set whether depth testing should be enabled or disabled in the current
     rendering state.
 -------------------------------------*/
-inline void DepthObject::set_state(bool state) {
+inline void DepthObject::set_state(bool state)
+{
     enabled = state;
 }
 
@@ -300,7 +307,8 @@ inline void DepthObject::set_state(bool state) {
     Determine whether this depth object should tell OpenGL to enable or disable
     the use of depth testing.
 ---------------------------------------*/
-inline bool DepthObject::get_state() const {
+inline bool DepthObject::get_state() const
+{
     return enabled;
 }
 
@@ -308,7 +316,8 @@ inline bool DepthObject::get_state() const {
     Set the value to be applied to the depth buffer after a call to
     glClear(LS_DEPTH_BUFFER_BIT).
 ---------------------------------------*/
-inline void DepthObject::set_clear_value(float clear) {
+inline void DepthObject::set_clear_value(float clear)
+{
     depthClearVal = math::clamp(clear, 0.f, 1.f);
 }
 
@@ -316,63 +325,72 @@ inline void DepthObject::set_clear_value(float clear) {
     Get the value that's applied to the depth buffer when a call to
     glClear(LS_DEPTH_BUFFER_BIT) has been made.
 ---------------------------------------*/
-inline float DepthObject::get_clear_value() const {
+inline float DepthObject::get_clear_value() const
+{
     return depthClearVal;
 }
 
 /*-------------------------------------
     Set the function to be used when rendering fragments from the pixel shader.
 ---------------------------------------*/
-inline void DepthObject::set_depth_func(compare_func_t func) {
+inline void DepthObject::set_depth_func(compare_func_t func)
+{
     depthFunc = func;
 }
 
 /*-------------------------------------
     Get the depth-comparison function used by this depth object.
 ---------------------------------------*/
-inline compare_func_t DepthObject::get_depth_func() const {
+inline compare_func_t DepthObject::get_depth_func() const
+{
     return depthFunc;
 }
 
 /*-------------------------------------
     Set whether to enable writes to the depth buffer.
 ---------------------------------------*/
-inline void DepthObject::set_depth_mask(bool mask) {
+inline void DepthObject::set_depth_mask(bool mask)
+{
     depthMask = mask;
 }
 
 /*-------------------------------------
     Determine if writes to the depth buffer are enabled.
 ---------------------------------------*/
-inline bool DepthObject::get_depth_mask() const {
+inline bool DepthObject::get_depth_mask() const
+{
     return depthMask;
 }
 
 /*-------------------------------------
     Set the near value that will be used by OpenGL's depth buffer.
 ---------------------------------------*/
-inline void DepthObject::set_depth_near(float n) {
+inline void DepthObject::set_depth_near(float n)
+{
     depthNear = math::clamp(n, 0.f, 1.f);
 }
 
 /*-------------------------------------
     Get the near value that will be used by OpenGL's depth buffer.
 ---------------------------------------*/
-inline float DepthObject::get_depth_near() const {
+inline float DepthObject::get_depth_near() const
+{
     return depthNear;
 }
 
 /*-------------------------------------
     Set the far value that will be used by OpenGL's depth buffer.
 ---------------------------------------*/
-inline void DepthObject::set_depth_far(float f) {
+inline void DepthObject::set_depth_far(float f)
+{
     depthFar = math::clamp(f, 0.f, 1.f);
 }
 
 /*-------------------------------------
     Get the far value that will be used by OpenGL's depth buffer.
 ---------------------------------------*/
-inline float DepthObject::get_depth_far() {
+inline float DepthObject::get_depth_far()
+{
     return depthFar;
 }
 
@@ -380,11 +398,11 @@ inline float DepthObject::get_depth_far() {
     Set both the the near and far values that will be used by OpenGL's
     depth buffer to determine if a fragment is of renderable depth.
 ---------------------------------------*/
-inline void DepthObject::set_depth_range(float n, float f) {
+inline void DepthObject::set_depth_range(float n, float f)
+{
     depthNear = math::clamp(n, 0.f, 1.f);
     depthFar = math::clamp(f, 0.f, 1.f);
 }
-
 } // end draw namespace
 } // end ls namespace
 

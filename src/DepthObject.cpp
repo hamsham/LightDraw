@@ -7,17 +7,24 @@
 
 #include "lightsky/draw/DepthObject.h"
 
-namespace ls {
-namespace draw {
+
+
+namespace ls
+{
+namespace draw
+{
 
 /*-------------------------------------
     Depth object binding
 -------------------------------------*/
-void DepthObject::bind() const {
-    if (enabled) {
+void DepthObject::bind() const
+{
+    if (enabled)
+    {
         glEnable(GL_DEPTH_TEST);
     }
-    else {
+    else
+    {
         glDisable(GL_DEPTH_TEST);
     }
 
@@ -30,18 +37,19 @@ void DepthObject::bind() const {
 /*-------------------------------------
     Disable OpenGL depth parameters
 -------------------------------------*/
-void DepthObject::unbind() const {
+void DepthObject::unbind() const
+{
     // the default constructor already has default OpenGL params.
-    const DepthObject depthObj {};
+    const DepthObject depthObj{};
     depthObj.bind();
 }
 
 /*-------------------------------------
     Reset all members to their default values.
 -------------------------------------*/
-void DepthObject::terminate() {
-    *this = DepthObject {};
+void DepthObject::terminate()
+{
+    *this = DepthObject{};
 }
-
 } // end draw namespace
 } // end ls namespace

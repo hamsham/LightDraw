@@ -13,8 +13,12 @@
 
 #include "lightsky/draw/FBOAttrib.h"
 
-namespace ls {
-namespace draw {
+
+
+namespace ls
+{
+namespace draw
+{
 
 
 
@@ -28,7 +32,8 @@ class FrameBuffer;
 /**----------------------------------------------------------------------------
  * Framebuffer Object assembly
 -----------------------------------------------------------------------------*/
-class FBOAssembly {
+class FBOAssembly
+{
   private:
     FBOAttrib attribs[fbo_attach_t::FBO_ATTACHMENT_MAX];
 
@@ -365,19 +370,18 @@ class FBOAssembly {
 /*-------------------------------------
  * Retrieve the current list of FBO attributes
 -------------------------------------*/
-inline const FBOAttrib* FBOAssembly::get_attribs() const noexcept {
+inline const FBOAttrib* FBOAssembly::get_attribs() const noexcept
+{
     return attribs;
 }
 
 /*-------------------------------------
  * Retrieve the total number of attributes held by the internal attrib array.
 -------------------------------------*/
-inline unsigned FBOAssembly::get_num_attribs() const noexcept {
+inline unsigned FBOAssembly::get_num_attribs() const noexcept
+{
     return fbo_attach_t::FBO_ATTACHMENT_MAX;
 }
-
-
-
 } // end draw namespace
 } // end ls namespace
 

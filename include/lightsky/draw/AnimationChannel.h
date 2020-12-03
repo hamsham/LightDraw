@@ -10,15 +10,20 @@
 #include "lightsky/draw/AnimationProperty.h"
 #include "lightsky/draw/AnimationKeyList.h"
 
-namespace ls {
-namespace draw {
+
+
+namespace ls
+{
+namespace draw
+{
 
 
 
 /*-----------------------------------------------------------------------------
  * Animation Keys (interpolations of animations).
 -----------------------------------------------------------------------------*/
-struct AnimationChannel {
+struct AnimationChannel
+{
     /**
      * @brief animationMode Is a bit-flag which is used during
      * "getFrame(...)". This helps to identify if different frames of an
@@ -37,7 +42,7 @@ struct AnimationChannel {
      * @brief scaleFrames contains the self-relative scaling of a node.
      */
     AnimationKeyListVec3 scaleFrames;
-    
+
     /**
      * @brief rotationFrames contains the self-relative orientation of a
      * node.
@@ -90,7 +95,7 @@ struct AnimationChannel {
      *
      * @return A reference to *this.
      */
-    AnimationChannel& operator =(const AnimationChannel& a) noexcept;
+    AnimationChannel& operator=(const AnimationChannel& a) noexcept;
 
     /**
      * @brief Move Operator
@@ -103,7 +108,7 @@ struct AnimationChannel {
      *
      * @return A reference to *this.
      */
-    AnimationChannel& operator =(AnimationChannel&& ak) noexcept;
+    AnimationChannel& operator=(AnimationChannel&& ak) noexcept;
 
     /**
      * @brief Get the bitmasked Animation flags used by *this during
@@ -140,7 +145,7 @@ struct AnimationChannel {
      * @brief Clear all frames from *this and reset all internal members.
      */
     void clear() noexcept;
-    
+
     /**
      * Run a simple check to determine if there are position frames in *this
      * which can be used for scene node animations, given a percent of the
@@ -153,7 +158,7 @@ struct AnimationChannel {
      * animations, FALSE if not.
      */
     bool has_position_frame(const anim_prec_t animPercent) const noexcept;
-    
+
     /**
      * Run a simple check to determine if there are scaling frames in *this
      * which can be used for scene node animations, given a percent of the
@@ -166,7 +171,7 @@ struct AnimationChannel {
      * animations, FALSE if not.
      */
     bool has_scale_frame(const anim_prec_t animPercent) const noexcept;
-    
+
     /**
      * Run a simple check to determine if there are rotation frames in *this
      * which can be used for scene node animations, given a percent of the
@@ -322,7 +327,7 @@ struct AnimationChannel {
         math::quat_t<float>& outRotation,
         const anim_prec_t percentFinished // currentTime / timePerSecond
     ) const noexcept;
-    
+
     /**
      * Retrieve the time of the first keyframe in *this.
      * 
@@ -330,7 +335,7 @@ struct AnimationChannel {
      * animation channel starts running.
      */
     anim_prec_t get_start_time() const noexcept;
-    
+
     /**
      * Set the start time for all keyframes in *this. All internal keyframes
      * will use this time as an offset before playing in an animation player.
@@ -340,7 +345,7 @@ struct AnimationChannel {
      * channel starts running.
      */
     void set_start_time(const anim_prec_t startOffset) noexcept;
-    
+
     /**
      * Retrieve the time of the last keyframe in *this.
      * 
@@ -348,7 +353,7 @@ struct AnimationChannel {
      * animation channel finishes running.
      */
     anim_prec_t get_end_time() const noexcept;
-    
+
     /**
      * Retrieve the total running time of *this animation channel.
      * 
@@ -361,7 +366,8 @@ struct AnimationChannel {
 /*-------------------------------------
  * Rotation availability check
 -------------------------------------*/
-inline bool AnimationChannel::has_position_frame(const anim_prec_t animPercent) const noexcept {
+inline bool AnimationChannel::has_position_frame(const anim_prec_t animPercent) const noexcept
+{
     //return positionFrames.is_valid();
     return animPercent >= positionFrames.get_start_time() && animPercent <= positionFrames.get_end_time();
 }
@@ -369,7 +375,8 @@ inline bool AnimationChannel::has_position_frame(const anim_prec_t animPercent) 
 /*-------------------------------------
  * Rotation availability check
 -------------------------------------*/
-inline bool AnimationChannel::has_scale_frame(const anim_prec_t animPercent) const noexcept {
+inline bool AnimationChannel::has_scale_frame(const anim_prec_t animPercent) const noexcept
+{
     //return scaleFrames.is_valid();
     return animPercent >= scaleFrames.get_start_time() && animPercent <= scaleFrames.get_end_time();
 }
@@ -377,7 +384,8 @@ inline bool AnimationChannel::has_scale_frame(const anim_prec_t animPercent) con
 /*-------------------------------------
  * Rotation availability check
 -------------------------------------*/
-inline bool AnimationChannel::has_rotation_frame(const anim_prec_t animPercent) const noexcept {
+inline bool AnimationChannel::has_rotation_frame(const anim_prec_t animPercent) const noexcept
+{
     //return rotationFrames.is_valid();
     return animPercent >= rotationFrames.get_start_time() && animPercent <= rotationFrames.get_end_time();
 }
@@ -389,7 +397,8 @@ inline void AnimationChannel::set_position_frame(
     const unsigned frameIndex,
     const anim_prec_t percent,
     const math::vec3_t<float>& pos
-) noexcept {
+) noexcept
+{
     LS_DEBUG_ASSERT(percent >= -1.0 && percent <= 1.0);
     positionFrames.set_frame(frameIndex, percent, pos);
 }
@@ -401,7 +410,8 @@ inline void AnimationChannel::set_scale_frame(
     const unsigned frameIndex,
     const anim_prec_t percent,
     const math::vec3_t<float>& scale
-) noexcept {
+) noexcept
+{
     LS_DEBUG_ASSERT(percent >= -1.0 && percent <= 1.0);
     scaleFrames.set_frame(frameIndex, percent, scale);
 }
@@ -413,7 +423,8 @@ inline void AnimationChannel::set_rotation_frame(
     const unsigned frameIndex,
     const anim_prec_t percent,
     const math::quat_t<float>& rot
-) noexcept {
+) noexcept
+{
     LS_DEBUG_ASSERT(percent >= -1.0 && percent <= 1.0);
     rotationFrames.set_frame(frameIndex, percent, rot);
 }
@@ -421,21 +432,24 @@ inline void AnimationChannel::set_rotation_frame(
 /*-------------------------------------
  * Get a single position key
 -------------------------------------*/
-inline math::vec3 AnimationChannel::get_position_frame(const anim_prec_t percent) const noexcept {
+inline math::vec3 AnimationChannel::get_position_frame(const anim_prec_t percent) const noexcept
+{
     return positionFrames.get_interpolated_data(percent, animationMode);
 }
 
 /*-------------------------------------
  * Get a single scale key
 -------------------------------------*/
-inline math::vec3 AnimationChannel::get_scale_frame(const anim_prec_t percent) const noexcept {
+inline math::vec3 AnimationChannel::get_scale_frame(const anim_prec_t percent) const noexcept
+{
     return scaleFrames.get_interpolated_data(percent, animationMode);
 }
 
 /*-------------------------------------
  * Get a single rotaion key
 -------------------------------------*/
-inline math::quat AnimationChannel::get_rotation_frame(const anim_prec_t percent) const noexcept {
+inline math::quat AnimationChannel::get_rotation_frame(const anim_prec_t percent) const noexcept
+{
     return rotationFrames.get_interpolated_data(percent, animationMode);
 }
 
@@ -447,9 +461,10 @@ inline bool AnimationChannel::get_frame(
     math::vec3& outScale,
     math::quat& outRotation,
     anim_prec_t percentFinished
-) const noexcept {
+) const noexcept
+{
     outPosition = get_position_frame(percentFinished);
-    outScale    = get_scale_frame(percentFinished);
+    outScale = get_scale_frame(percentFinished);
     outRotation = get_rotation_frame(percentFinished);
     return true;
 }
@@ -457,10 +472,10 @@ inline bool AnimationChannel::get_frame(
 /*-------------------------------------
  * Retrieve the total track running time
 -------------------------------------*/
-inline anim_prec_t AnimationChannel::get_duration() const noexcept {
+inline anim_prec_t AnimationChannel::get_duration() const noexcept
+{
     return get_end_time() - get_start_time();
 }
-
 } // end draw namespace
 } // end ls namespace
 

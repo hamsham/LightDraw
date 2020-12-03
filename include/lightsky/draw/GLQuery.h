@@ -11,8 +11,12 @@
 
 #include "lightsky/draw/Setup.h"
 
-namespace ls {
-namespace draw {
+
+
+namespace ls
+{
+namespace draw
+{
 
 
 
@@ -81,9 +85,6 @@ GLuint64 get_gl_uint64(const GLenum param) noexcept;
  * @return A float value retrieved from the OpenGL state machine.
  */
 GLfloat get_gl_float(const GLenum param) noexcept;
-
-
-
 } // end draw namespace
 } // end ls namespace
 

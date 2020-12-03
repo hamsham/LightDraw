@@ -15,22 +15,26 @@
 
 
 
-namespace ls {
-namespace draw {
+namespace ls
+{
+namespace draw
+{
 
 /*-------------------------------------
  * Destructor
 -------------------------------------*/
-VAOAssembly::~VAOAssembly() noexcept {
+VAOAssembly::~VAOAssembly() noexcept
+{
 }
 
 /*-------------------------------------
  * Constructor
 -------------------------------------*/
 VAOAssembly::VAOAssembly() noexcept :
-    pIndexBuffer {nullptr}
+    pIndexBuffer{nullptr}
 {
-    for (vbo_assembly_type::value_type& vboIndex : vboIndices) {
+    for (vbo_assembly_type::value_type& vboIndex : vboIndices)
+    {
         vboIndex.first = nullptr;
         vboIndex.second = 0;
     }
@@ -39,24 +43,28 @@ VAOAssembly::VAOAssembly() noexcept :
 /*-------------------------------------
  * Copy Constructor
 -------------------------------------*/
-VAOAssembly::VAOAssembly(const VAOAssembly& va) noexcept {
+VAOAssembly::VAOAssembly(const VAOAssembly& va) noexcept
+{
     *this = va;
 }
 
 /*-------------------------------------
  * Move Constructor
 -------------------------------------*/
-VAOAssembly::VAOAssembly(VAOAssembly&& va) noexcept {
+VAOAssembly::VAOAssembly(VAOAssembly&& va) noexcept
+{
     *this = std::move(va);
 }
 
 /*-------------------------------------
  * Copy Operator
 -------------------------------------*/
-VAOAssembly& VAOAssembly::operator =(const VAOAssembly& va) noexcept {
+VAOAssembly& VAOAssembly::operator=(const VAOAssembly& va) noexcept
+{
     pIndexBuffer = va.pIndexBuffer;
 
-    for (unsigned i = 0; i < VAO_MAX_VERTEX_ATTRIBS; ++i) {
+    for (unsigned i = 0; i < VAO_MAX_VERTEX_ATTRIBS; ++i)
+    {
         const vbo_assembly_type::value_type& inAttrib = va.vboIndices[i];
         vbo_assembly_type::value_type& outAttrib = this->vboIndices[i];
 
@@ -64,7 +72,8 @@ VAOAssembly& VAOAssembly::operator =(const VAOAssembly& va) noexcept {
         outAttrib.second = inAttrib.second;
     }
 
-    for (unsigned i = 0; i < VAO_MAX_VERTEX_ATTRIBS; ++i) {
+    for (unsigned i = 0; i < VAO_MAX_VERTEX_ATTRIBS; ++i)
+    {
         attribNames[i] = va.attribNames[i];
     }
 
@@ -74,13 +83,15 @@ VAOAssembly& VAOAssembly::operator =(const VAOAssembly& va) noexcept {
 /*-------------------------------------
  * Move Operator
 -------------------------------------*/
-VAOAssembly& VAOAssembly::operator =(VAOAssembly&& va) noexcept {
+VAOAssembly& VAOAssembly::operator=(VAOAssembly&& va) noexcept
+{
     pIndexBuffer = va.pIndexBuffer;
     va.pIndexBuffer = nullptr;
 
     // std::array is an aggregate class, it has no move operations available.
     // Manually move each element out of the input VAOAssembly.
-    for (unsigned i = 0; i < VAO_MAX_VERTEX_ATTRIBS; ++i) {
+    for (unsigned i = 0; i < VAO_MAX_VERTEX_ATTRIBS; ++i)
+    {
         vbo_assembly_type::value_type& inVboMeta = va.vboIndices[i];
         vbo_assembly_type::value_type& outVboMeta = this->vboIndices[i];
 
@@ -91,7 +102,8 @@ VAOAssembly& VAOAssembly::operator =(VAOAssembly&& va) noexcept {
         inVboMeta.second = 0;
     }
 
-    for (unsigned i = 0; i < VAO_MAX_VERTEX_ATTRIBS; ++i) {
+    for (unsigned i = 0; i < VAO_MAX_VERTEX_ATTRIBS; ++i)
+    {
         attribNames[i] = std::move(va.attribNames[i]);
     }
 
@@ -101,21 +113,26 @@ VAOAssembly& VAOAssembly::operator =(VAOAssembly&& va) noexcept {
 /*-------------------------------------
  * Pack valid VBO attribs into the front if "vboIndices" and "outAttribs"
 -------------------------------------*/
-void VAOAssembly::pack_vbo_attribs() noexcept {
+void VAOAssembly::pack_vbo_attribs() noexcept
+{
     LS_LOG_MSG("Repacking VAO Assembly attributes.");
 
-    for (unsigned i = 0; i < VAO_MAX_VERTEX_ATTRIBS; ++i) {
+    for (unsigned i = 0; i < VAO_MAX_VERTEX_ATTRIBS; ++i)
+    {
         vbo_assembly_type::value_type& current = vboIndices[i];
 
-        if (current.first != nullptr) {
+        if (current.first != nullptr)
+        {
             continue;
         }
 
-        for (unsigned j = i + 1; j < VAO_MAX_VERTEX_ATTRIBS; ++j) {
+        for (unsigned j = i + 1; j < VAO_MAX_VERTEX_ATTRIBS; ++j)
+        {
             vbo_assembly_type::value_type& next = vboIndices[j];
 
             // Skip NULL values but clear the name
-            if (next.first == nullptr) {
+            if (next.first == nullptr)
+            {
                 attribNames[i].clear();
                 continue;
             }
@@ -140,7 +157,8 @@ void VAOAssembly::pack_vbo_attribs() noexcept {
 /*-------------------------------------
  * Assign a VBO's VBOAttrib to a VAO Attribute location.
 -------------------------------------*/
-void VAOAssembly::set_vbo_attrib(const unsigned vaoAttribIndex, const VertexBuffer& vbo, const unsigned vboAttribIndex) noexcept {
+void VAOAssembly::set_vbo_attrib(const unsigned vaoAttribIndex, const VertexBuffer& vbo, const unsigned vboAttribIndex) noexcept
+{
     LS_LOG_MSG("Attaching VBO Attrib ", &vbo, '-', vboAttribIndex, " to VAO Attrib ", vaoAttribIndex, ".");
 
     LS_DEBUG_ASSERT(vboAttribIndex < vbo.get_num_attribs());
@@ -149,7 +167,8 @@ void VAOAssembly::set_vbo_attrib(const unsigned vaoAttribIndex, const VertexBuff
     vboIndices[vaoAttribIndex].first = &vbo;
     vboIndices[vaoAttribIndex].second = vboAttribIndex;
 
-    if (vaoAttribIndex > 0 && vboIndices[vaoAttribIndex - 1].first == nullptr) {
+    if (vaoAttribIndex > 0 && vboIndices[vaoAttribIndex - 1].first == nullptr)
+    {
         pack_vbo_attribs();
     }
 
@@ -159,14 +178,18 @@ void VAOAssembly::set_vbo_attrib(const unsigned vaoAttribIndex, const VertexBuff
 /*-------------------------------------
  * Assign all of a VBO's attributes to an attrib location.
 -------------------------------------*/
-void VAOAssembly::set_vbo_attribs(const VertexBuffer& vbo) noexcept {
-    for (unsigned i = 0; i < VAO_MAX_VERTEX_ATTRIBS; ++i) {
-        if (i < vbo.get_num_attribs()) {
+void VAOAssembly::set_vbo_attribs(const VertexBuffer& vbo) noexcept
+{
+    for (unsigned i = 0; i < VAO_MAX_VERTEX_ATTRIBS; ++i)
+    {
+        if (i < vbo.get_num_attribs())
+        {
             set_vbo_attrib(i, vbo, i);
             continue;
         }
 
-        if (vboIndices[i].first != nullptr) {
+        if (vboIndices[i].first != nullptr)
+        {
             clear_vbo(i);
         }
     }
@@ -175,9 +198,10 @@ void VAOAssembly::set_vbo_attribs(const VertexBuffer& vbo) noexcept {
 /*-------------------------------------
  * Assign a VAO attrib a name.
 -------------------------------------*/
-bool VAOAssembly::set_attrib_name(const unsigned attribIndex, const char* const name) noexcept {
+bool VAOAssembly::set_attrib_name(const unsigned attribIndex, const char* const name) noexcept
+{
     // delegate to the std::string version
-    std::string str {name};
+    std::string str{name};
     set_attrib_name(attribIndex, str);
     return true;
 }
@@ -185,13 +209,15 @@ bool VAOAssembly::set_attrib_name(const unsigned attribIndex, const char* const 
 /*-------------------------------------
  * Swap two vertex attrib locations
 -------------------------------------*/
-void VAOAssembly::swap_vbo_attribs(const unsigned indexA, const unsigned indexB) noexcept {
+void VAOAssembly::swap_vbo_attribs(const unsigned indexA, const unsigned indexB) noexcept
+{
     LS_LOG_MSG("Swapping VAO Assembly attributes ", indexA, " and ", indexB, '.');
 
     LS_ASSERT(indexA < VAO_MAX_VERTEX_ATTRIBS);
     LS_ASSERT(indexB < VAO_MAX_VERTEX_ATTRIBS);
 
-    if (indexA == indexB) {
+    if (indexA == indexB)
+    {
         LS_LOG_MSG("\tIndex values are the same. Nothing to do.\n");
     }
 
@@ -210,7 +236,8 @@ void VAOAssembly::swap_vbo_attribs(const unsigned indexA, const unsigned indexB)
 /*-------------------------------------
  * clear a single VAO attribute
 -------------------------------------*/
-void VAOAssembly::clear_vbo(const unsigned attribIndex) noexcept {
+void VAOAssembly::clear_vbo(const unsigned attribIndex) noexcept
+{
     LS_LOG_MSG("Removing vertex attribute ", attribIndex, " from a VAO Assembly.");
 
     LS_DEBUG_ASSERT(attribIndex < VAO_MAX_VERTEX_ATTRIBS);
@@ -229,15 +256,18 @@ void VAOAssembly::clear_vbo(const unsigned attribIndex) noexcept {
 /*-------------------------------------
  * Clear all Vertex attributes
 -------------------------------------*/
-void VAOAssembly::clear_vbos() noexcept {
+void VAOAssembly::clear_vbos() noexcept
+{
     LS_LOG_MSG("Removing all vertex attributes from a VAO Assembly.");
 
-    for (unsigned i = 0; i < VAO_MAX_VERTEX_ATTRIBS; ++i) {
+    for (unsigned i = 0; i < VAO_MAX_VERTEX_ATTRIBS; ++i)
+    {
         vboIndices[i].first = nullptr;
         vboIndices[i].second = 0;
     }
 
-    for (unsigned i = 0; i < VAO_MAX_VERTEX_ATTRIBS; ++i) {
+    for (unsigned i = 0; i < VAO_MAX_VERTEX_ATTRIBS; ++i)
+    {
         attribNames[i].clear();
     }
 
@@ -247,7 +277,8 @@ void VAOAssembly::clear_vbos() noexcept {
 /*-------------------------------------
  * Clear all vertex and index attibutes
 -------------------------------------*/
-void VAOAssembly::clear() noexcept {
+void VAOAssembly::clear() noexcept
+{
     clear_ibo();
     clear_vbos();
 }
@@ -255,14 +286,18 @@ void VAOAssembly::clear() noexcept {
 /*-------------------------------------
  * get the current number of vertex attribs
 -------------------------------------*/
-unsigned VAOAssembly::get_num_vbo_attribs() const noexcept {
+unsigned VAOAssembly::get_num_vbo_attribs() const noexcept
+{
     unsigned numAttribs = 0;
 
-    for (const vbo_assembly_type::value_type& attrib : vboIndices) {
-        if (attrib.first == nullptr) {
+    for (const vbo_assembly_type::value_type& attrib : vboIndices)
+    {
+        if (attrib.first == nullptr)
+        {
             break;
         }
-        else {
+        else
+        {
             ++numAttribs;
         }
     }
@@ -273,15 +308,19 @@ unsigned VAOAssembly::get_num_vbo_attribs() const noexcept {
 /*-------------------------------------
  * Get the current number of VAO attribs
 -------------------------------------*/
-unsigned VAOAssembly::get_num_vbo_attrib_components() const noexcept {
+unsigned VAOAssembly::get_num_vbo_attrib_components() const noexcept
+{
     unsigned numAttribs = 0;
 
-    for (const vbo_assembly_type::value_type& attrib : vboIndices) {
-        if (attrib.first == nullptr) {
+    for (const vbo_assembly_type::value_type& attrib : vboIndices)
+    {
+        if (attrib.first == nullptr)
+        {
             break;
         }
-        else {
-            const VertexBuffer * const pVbo = attrib.first;
+        else
+        {
+            const VertexBuffer* const pVbo = attrib.first;
             const VBOAttrib& vboAttrib = pVbo->get_attrib(attrib.second);
             //const unsigned numComponents = vboAttrib.get_num_attrib_components();
             const unsigned numSubcomponents = vboAttrib.get_num_subcomponents();
@@ -297,31 +336,38 @@ unsigned VAOAssembly::get_num_vbo_attrib_components() const noexcept {
 /*-------------------------------------
  * Determine if a VAO can be generated
 -------------------------------------*/
-bool VAOAssembly::is_assembly_valid() const noexcept {
+bool VAOAssembly::is_assembly_valid() const noexcept
+{
     LS_LOG_MSG("Validating a VAO Assembly.");
 
-    for (unsigned i = 0; i < VAO_MAX_VERTEX_ATTRIBS; ++i) {
+    for (unsigned i = 0; i < VAO_MAX_VERTEX_ATTRIBS; ++i)
+    {
         const vbo_assembly_type::value_type& current = vboIndices[i];
-        const VertexBuffer * const pVbo = current.first;
+        const VertexBuffer* const pVbo = current.first;
 
         // Iterate until the first empty attribute
-        if (!pVbo) {
-            if (i == 0) {
+        if (!pVbo)
+        {
+            if (i == 0)
+            {
                 LS_LOG_MSG("\tInvalid VAO Assembly found. No vertex attribs exist.\n");
                 return false;
             }
-            else {
+            else
+            {
                 break;
             }
 
-            if (pVbo->get_num_attribs() == 0) {
+            if (pVbo->get_num_attribs() == 0)
+            {
                 LS_LOG_MSG("\tInvalid VAO Assembly found. No VBO ", i, " contains no attributes.\n");
                 return false;
             }
         }
 
         // ensure all attribs have a name
-        if (attribNames[i].empty()) {
+        if (attribNames[i].empty())
+        {
             LS_LOG_MSG("\tInvalid VAO Assembly found. Attrib ", i, " has no name.\n");
             return false;
         }
@@ -335,9 +381,11 @@ bool VAOAssembly::is_assembly_valid() const noexcept {
 /*-------------------------------------
  * Assemble CPU-side Vertex Attributes
 -------------------------------------*/
-bool VAOAssembly::assemble(VAOAttrib& outVaoAttrib) const noexcept {
+bool VAOAssembly::assemble(VAOAttrib& outVaoAttrib) const noexcept
+{
     // Don't touch the output list for reentrancy
-    if (!is_assembly_valid()) {
+    if (!is_assembly_valid())
+    {
         return false;
     }
 
@@ -349,24 +397,27 @@ bool VAOAssembly::assemble(VAOAttrib& outVaoAttrib) const noexcept {
         numSubComponents, " components."
     );
 
-    if (!outVaoAttrib.reset_num_attribs(numSubComponents)) {
+    if (!outVaoAttrib.reset_num_attribs(numSubComponents))
+    {
         LS_LOG_MSG("Unable to allocate memory for a VAO attribute list.");
         return false;
     }
 
     // Create the attrib list
-    for (unsigned i = 0; i < numAttribs; ++i) {
-        const VertexBuffer& vbo     = *vboIndices[i].first;
-        const VBOAttrib& vboAttrib  = vbo.get_attrib(vboIndices[i].second);
-        VBOAttrib& outAttrib        = outVaoAttrib.get_attrib(i);
+    for (unsigned i = 0; i < numAttribs; ++i)
+    {
+        const VertexBuffer& vbo = *vboIndices[i].first;
+        const VBOAttrib& vboAttrib = vbo.get_attrib(vboIndices[i].second);
+        VBOAttrib& outAttrib = outVaoAttrib.get_attrib(i);
 
-        for (unsigned j = 0; j < vboAttrib.get_num_subcomponents(); ++j) {
-            outAttrib.set_num_elements  (vboAttrib.get_num_elements());
-            outAttrib.set_type          (draw::get_vertex_subcomponent_type(vboAttrib.get_type()));
-            outAttrib.set_normalized    (vboAttrib.is_normalized());
-            outAttrib.set_byte_stride   (vboAttrib.get_byte_stride());
-            outAttrib.set_offset        (vboAttrib.get_offset());
-            outAttrib.set_instance_rate (vboAttrib.get_instance_rate());
+        for (unsigned j = 0; j < vboAttrib.get_num_subcomponents(); ++j)
+        {
+            outAttrib.set_num_elements(vboAttrib.get_num_elements());
+            outAttrib.set_type(draw::get_vertex_subcomponent_type(vboAttrib.get_type()));
+            outAttrib.set_normalized(vboAttrib.is_normalized());
+            outAttrib.set_byte_stride(vboAttrib.get_byte_stride());
+            outAttrib.set_offset(vboAttrib.get_offset());
+            outAttrib.set_instance_rate(vboAttrib.get_instance_rate());
         }
 
         outVaoAttrib.set_attrib_name(i, attribNames[i]);
@@ -380,15 +431,18 @@ bool VAOAssembly::assemble(VAOAttrib& outVaoAttrib) const noexcept {
 /*-------------------------------------
  * Assembly a GPU-side VAO
 -------------------------------------*/
-bool VAOAssembly::assemble(VertexArray& vao) const noexcept {
-    if (vao.gpu_id() != 0) {
+bool VAOAssembly::assemble(VertexArray& vao) const noexcept
+{
+    if (vao.gpu_id() != 0)
+    {
         LS_LOG_ERR("\tAttempted to assemble a preexisting VAO object.\n");
         return false;
     }
 
     VAOAttrib outVaoAttrib;
 
-    if (!assemble(outVaoAttrib)) {
+    if (!assemble(outVaoAttrib))
+    {
         return false;
     }
 
@@ -397,11 +451,13 @@ bool VAOAssembly::assemble(VertexArray& vao) const noexcept {
     GLuint vaoId = 0;
     glGenVertexArrays(1, &vaoId);
 
-    if (!vaoId) {
+    if (!vaoId)
+    {
         LS_LOG_MSG("\tUnable to create a VAO on the GPU.\n");
         return false;
     }
-    else {
+    else
+    {
         vao.gpuId = vaoId;
         vao.attribs = std::move(outVaoAttrib);
     }
@@ -409,7 +465,8 @@ bool VAOAssembly::assemble(VertexArray& vao) const noexcept {
     vao.bind();
     LS_LOG_GL_ERR();
 
-    if (pIndexBuffer) {
+    if (pIndexBuffer)
+    {
         pIndexBuffer->bind();
         LS_LOG_GL_ERR();
     }
@@ -420,11 +477,13 @@ bool VAOAssembly::assemble(VertexArray& vao) const noexcept {
     // The number of Primary VBO attribs varies depending on the number of
     // sub-attributes in each. For example, vectors & scalars have 1
     // sub-component but matrices can be 2-4 sub-components.
-    for (unsigned i = 0; i < get_num_vbo_attribs(); ++i) {
+    for (unsigned i = 0; i < get_num_vbo_attribs(); ++i)
+    {
         const std::string& attribName = attribNames[i];
         const VBOAttrib& vboAttrib = vao.get_attrib(i);
 
-        if (pVbo != vboIndices[i].first) {
+        if (pVbo != vboIndices[i].first)
+        {
             pVbo = vboIndices[i].first;
 
             LS_DEBUG_ASSERT(pVbo != nullptr);
@@ -434,7 +493,8 @@ bool VAOAssembly::assemble(VertexArray& vao) const noexcept {
         }
 
         // Pack all sub-attributes from the current VBO Attribute
-        for (unsigned j = 0; j < vboAttrib.get_num_subcomponents(); ++j) {
+        for (unsigned j = 0; j < vboAttrib.get_num_subcomponents(); ++j)
+        {
             LS_LOG_MSG(
                 "\t\tAssembling a VAO attribute using a VAOAssembly:",
                 "\n\t\t\tIndex:         ", currentAttrib,
@@ -461,7 +521,8 @@ bool VAOAssembly::assemble(VertexArray& vao) const noexcept {
     pVbo->unbind();
     LS_LOG_GL_ERR();
 
-    if (pIndexBuffer) {
+    if (pIndexBuffer)
+    {
         pIndexBuffer->unbind();
     }
 
@@ -469,8 +530,5 @@ bool VAOAssembly::assemble(VertexArray& vao) const noexcept {
 
     return true;
 }
-
-
-
 } // end draw namespace
 } // end ls namespace

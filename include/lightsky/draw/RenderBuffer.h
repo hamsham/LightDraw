@@ -5,8 +5,12 @@
 #include "lightsky/draw/Setup.h"
 #include "lightsky/draw/Color.h"
 
-namespace ls {
-namespace draw {
+
+
+namespace ls
+{
+namespace draw
+{
 
 
 
@@ -14,7 +18,8 @@ namespace draw {
  * @brief rbo_format_t Allows for better type safety when creating or resizing
  * a renderbuffer.
 -----------------------------------------------------------------------------*/
-enum rbo_format_t : GLenum {
+enum rbo_format_t : GLenum
+{
     RBO_FMT_DEPTH_STENCIL_24_8 = GL_DEPTH24_STENCIL8,
     RBO_FMT_DEPTH_STENCIL_32_8 = GL_DEPTH32F_STENCIL8,
     RBO_FMT_DEPTH_16 = GL_DEPTH_COMPONENT16,
@@ -66,10 +71,13 @@ enum rbo_format_t : GLenum {
  * RBO Attribs provide meta-data about a render buffer object without requiring
  * client code to query OpenGL.
 -----------------------------------------------------------------------------*/
-class RBOAttrib {
+class RBOAttrib
+{
   private:
     color_type_t colorType;
+
     pixel_layout_t basicFormat;
+
     rbo_format_t internalFormat;
 
 
@@ -106,7 +114,8 @@ class RBOAttrib {
  * to render off-screen. This is useful for framebuffer operations which
  * will not be returned back to the CPU (such as for depth or stencil functions.
 -----------------------------------------------------------------------------*/
-class RenderBuffer {
+class RenderBuffer
+{
     friend class RBOAssembly;
 
   private:
@@ -243,45 +252,50 @@ class RenderBuffer {
 /*-------------------------------------
  * Get the GPU-Assigned ID that this object references.
 -------------------------------------*/
-inline unsigned RenderBuffer::gpu_id() const noexcept {
+inline unsigned RenderBuffer::gpu_id() const noexcept
+{
     return gpuId;
 }
 
 /*-------------------------------------
  Determine if *this can be used during rendering operations.
 -------------------------------------*/
-inline bool RenderBuffer::is_valid() const noexcept {
+inline bool RenderBuffer::is_valid() const noexcept
+{
     return gpu_id() != 0;
 }
 
 /*-------------------------------------
  * Get current RBO's dimentsions.
 -------------------------------------*/
-inline const math::vec2i& RenderBuffer::get_size() const noexcept {
+inline const math::vec2i& RenderBuffer::get_size() const noexcept
+{
     return size;
 }
 
 /*-------------------------------------
  * Get the current attributes.
 -------------------------------------*/
-inline const RBOAttrib& RenderBuffer::get_attribs() const noexcept {
+inline const RBOAttrib& RenderBuffer::get_attribs() const noexcept
+{
     return attribs;
 }
 
 /*-------------------------------------
  * Bind the current renderbuffer to OpenGL
 -------------------------------------*/
-inline void RenderBuffer::bind() const noexcept {
+inline void RenderBuffer::bind() const noexcept
+{
     glBindRenderbuffer(GL_RENDERBUFFER, gpuId);
 }
 
 /*-------------------------------------
  * Unbind the current renderbuffer to OpenGL
 -------------------------------------*/
-inline void RenderBuffer::unbind() const noexcept {
+inline void RenderBuffer::unbind() const noexcept
+{
     glBindRenderbuffer(GL_RENDERBUFFER, 0);
 }
-
 } // end draw namespace
 } // end ls namespace
 

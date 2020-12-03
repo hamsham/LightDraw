@@ -23,18 +23,18 @@
  Regex Setup
 -----------------------------------------------------------------------------*/
 #if 0//defined(LS_COMPILER_GNU)
-    // std::regex support wasn't added to Clang until version 3.5.
-    // A bug in Clang's libc++, prevents it from distinguishing escaped parenthesis in raw-string literals.
-    #if defined(LS_COMPILER_CLANG)
-        #if (LS_COMPILER_CLANG_MAJ == 3) && (LS_COMPILER_CLANG_MIN < 6)
-            #define LS_REQUIRE_BOOST_REGEX
-        #endif
-
-    // std::regex support wasn't addded to GCC until version 4.9.2
-    #elif defined(LS_COMPILER_GCC) && (LS_COMPILER_GCC == 4) && (LS_COMPILER_GCC_MAJ < 9)
+// std::regex support wasn't added to Clang until version 3.5.
+// A bug in Clang's libc++, prevents it from distinguishing escaped parenthesis in raw-string literals.
+#if defined(LS_COMPILER_CLANG)
+    #if (LS_COMPILER_CLANG_MAJ == 3) && (LS_COMPILER_CLANG_MIN < 6)
         #define LS_REQUIRE_BOOST_REGEX
-
     #endif
+
+// std::regex support wasn't addded to GCC until version 4.9.2
+#elif defined(LS_COMPILER_GCC) && (LS_COMPILER_GCC == 4) && (LS_COMPILER_GCC_MAJ < 9)
+    #define LS_REQUIRE_BOOST_REGEX
+
+#endif
 #endif
 
 #ifdef LS_REQUIRE_BOOST_REGEX
@@ -50,14 +50,19 @@ namespace rgx {
 } // end std::namespace
 
 #else
+
     #include <regex> // should be boost::regex if using G++ 4.9 or earlier.
 
-namespace ls {
-namespace rgx {
-    using std::cregex_iterator;
-    using std::regex;
-    using std::cmatch;
-    namespace regex_constants = std::regex_constants;
+
+
+namespace ls
+{
+namespace rgx
+{
+using std::cregex_iterator;
+using std::regex;
+using std::cmatch;
+namespace regex_constants = std::regex_constants;
 } // end rgx namespace
 } // end std::namespace
 
@@ -68,16 +73,19 @@ namespace rgx {
 /*-----------------------------------------------------------------------------
  Anonymous helper functions
 -----------------------------------------------------------------------------*/
-namespace {
+namespace
+{
 
 constexpr char const VERT_SHADER_QUERY[] = u8R"***((?:location\s*\=\s*(\d+).*\))?\s*in\s+(bool|int|uint|float|[biud]?vec[2-4]?|mat[2-4](x[2-4])?)\s+([a-zA-Z_]\w*)\s*(?:\[(\d+)\]\s*)?;)***";
+
 constexpr char const FRAG_SHADER_QUERY[] = u8R"***((?:location\s*\=\s*(\d+).*\))?\s*out\s+(bool|int|uint|float|[biud]?vec[2-4]?|mat[2-4](x[2-4])?)\s+([a-zA-Z_]\w*)\s*(?:\[(\d+)\]\s*)?;)***";
 
 // Indices of shader regex groupings.
 
 
 
-enum shader_regex_group_t : unsigned {
+enum shader_regex_group_t : unsigned
+{
     SHADER_REGEX_LAYOUT = 1,
     SHADER_REGEX_TYPE = 2,
     SHADER_REGEX_NAME = 4,
@@ -87,34 +95,38 @@ enum shader_regex_group_t : unsigned {
 /*-------------------------------------
  * Retrieve the layout of a shader attrib
 -------------------------------------*/
-inline unsigned _get_shader_attrib_layout(const ls::rgx::cmatch& shaderMatches) {
+inline unsigned _get_shader_attrib_layout(const ls::rgx::cmatch& shaderMatches)
+{
     const std::string& layout = shaderMatches[shader_regex_group_t::SHADER_REGEX_LAYOUT];
     return layout.empty()
-        ? ls::draw::shader_limits_t::GLSL_INVALID_LOCATION
-        : (unsigned)std::stoi(layout);
+           ? ls::draw::shader_limits_t::GLSL_INVALID_LOCATION
+           : (unsigned)std::stoi(layout);
 }
 
 /*-------------------------------------
  * Retrieve the components of a shader attrib
 -------------------------------------*/
-inline unsigned _get_shader_attrib_components(const ls::rgx::cmatch& shaderMatches) {
+inline unsigned _get_shader_attrib_components(const ls::rgx::cmatch& shaderMatches)
+{
     const std::string& components = shaderMatches[shader_regex_group_t::SHADER_REGEX_COMPONENTS];
     return components.empty()
-        ? 1
-        : (unsigned)std::stoi(components);
+           ? 1
+           : (unsigned)std::stoi(components);
 }
 
 /*-------------------------------------
  * Retrieve the name of a shader attrib
 -------------------------------------*/
-inline const std::string _get_shader_attrib_name(const ls::rgx::cmatch& shaderMatches) {
+inline const std::string _get_shader_attrib_name(const ls::rgx::cmatch& shaderMatches)
+{
     return shaderMatches[shader_regex_group_t::SHADER_REGEX_NAME].str();
 }
 
 /*-------------------------------------
  * Retrieve the type of a shader attrib
 -------------------------------------*/
-ls::draw::vertex_data_t _get_shader_attrib_type(const ls::rgx::cmatch& shaderMatches) {
+ls::draw::vertex_data_t _get_shader_attrib_type(const ls::rgx::cmatch& shaderMatches)
+{
     using ls::draw::vertex_data_t;
 
     const std::string& type = shaderMatches[shader_regex_group_t::SHADER_REGEX_TYPE];
@@ -143,24 +155,25 @@ ls::draw::vertex_data_t _get_shader_attrib_type(const ls::rgx::cmatch& shaderMat
 
     constexpr unsigned numTypes = LS_ARRAY_SIZE(types);
 
-    for (unsigned i = 0; i < numTypes; ++i) {
-        if (type == names[i]) {
+    for (unsigned i = 0; i < numTypes; ++i)
+    {
+        if (type == names[i])
+        {
             return types[i];
         }
     }
 
     return vertex_data_t::VERTEX_DATA_UNKNOWN;
 }
-
-
-
 } // end anonymous namespace
 
 /*-----------------------------------------------------------------------------
  * ls Draw Namespace
 -----------------------------------------------------------------------------*/
-namespace ls {
-namespace draw {
+namespace ls
+{
+namespace draw
+{
 
 /*-----------------------------------------------------------------------------
  Shader Object Methods
@@ -169,34 +182,37 @@ namespace draw {
 /*-------------------------------------
     Destructor
 -------------------------------------*/
-ShaderObject::~ShaderObject() noexcept {
+ShaderObject::~ShaderObject() noexcept
+{
 }
 
 /*-------------------------------------
     Constructor
 -------------------------------------*/
 ShaderObject::ShaderObject() noexcept :
-    gpuId {0},
-    shaderStage {SHADER_STAGE_INVALID},
-    attribs {}
-{}
+    gpuId{0},
+    shaderStage{SHADER_STAGE_INVALID},
+    attribs{}
+{
+}
 
 /*-------------------------------------
     Copy Constructor
 -------------------------------------*/
 ShaderObject::ShaderObject(const ShaderObject& s) noexcept :
-    gpuId {s.gpuId},
-    shaderStage {s.shaderStage},
-    attribs {s.attribs}
-{}
+    gpuId{s.gpuId},
+    shaderStage{s.shaderStage},
+    attribs{s.attribs}
+{
+}
 
 /*-------------------------------------
     Move Constructor
 -------------------------------------*/
 ShaderObject::ShaderObject(ShaderObject&& s) noexcept :
-    gpuId {s.gpuId},
-    shaderStage {s.shaderStage},
-    attribs {std::move(s.attribs)}
+    gpuId{s.gpuId},
+    shaderStage{s.shaderStage},
+    attribs{std::move(s.attribs)}
 {
     s.gpuId = 0;
     s.shaderStage = SHADER_STAGE_INVALID;
@@ -205,7 +221,8 @@ ShaderObject::ShaderObject(ShaderObject&& s) noexcept :
 /*-------------------------------------
     Copy Operator
 -------------------------------------*/
-ShaderObject& ShaderObject::operator =(const ShaderObject& s) noexcept {
+ShaderObject& ShaderObject::operator=(const ShaderObject& s) noexcept
+{
     gpuId = s.gpuId;
     shaderStage = s.shaderStage;
     attribs = s.attribs;
@@ -216,7 +233,8 @@ ShaderObject& ShaderObject::operator =(const ShaderObject& s) noexcept {
 /*-------------------------------------
     Move Operator
 -------------------------------------*/
-ShaderObject& ShaderObject::operator =(ShaderObject&& s) noexcept {
+ShaderObject& ShaderObject::operator=(ShaderObject&& s) noexcept
+{
     gpuId = s.gpuId;
     s.gpuId = 0;
 
@@ -234,7 +252,8 @@ ShaderObject& ShaderObject::operator =(ShaderObject&& s) noexcept {
 utils::Pointer<GLchar[]> ShaderObject::get_shader_string(
     const GLuint shaderId,
     const shader_string_t stringType
-) noexcept {
+) noexcept
+{
     LS_DEBUG_ASSERT(
         stringType == shader_string_t::SHADER_STRING_LOG ||
         stringType == shader_string_t::SHADER_STRING_SOURCE
@@ -245,18 +264,21 @@ utils::Pointer<GLchar[]> ShaderObject::get_shader_string(
 
     // Allocate some memory to temporarily store the log data. Add +1 for
     // null-termination
-    utils::Pointer<GLchar[]> shaderStringData(new(std::nothrow) GLchar[shaderStringLen+1]);
-    
-    if (!shaderStringData) {
+    utils::Pointer<GLchar[]> shaderStringData(new(std::nothrow) GLchar[shaderStringLen + 1]);
+
+    if (!shaderStringData)
+    {
         return shaderStringData;
     }
-    
-    utils::fast_fill(shaderStringData.get(), '\0', shaderStringLen+1);
 
-    if (stringType == shader_string_t::SHADER_STRING_LOG) {
+    utils::fast_fill(shaderStringData.get(), '\0', shaderStringLen + 1);
+
+    if (stringType == shader_string_t::SHADER_STRING_LOG)
+    {
         glGetShaderInfoLog(shaderId, shaderStringLen, nullptr, shaderStringData.get());
     }
-    else {
+    else
+    {
         glGetShaderSource(shaderId, shaderStringLen, nullptr, shaderStringData.get());
     }
 
@@ -266,7 +288,8 @@ utils::Pointer<GLchar[]> ShaderObject::get_shader_string(
 /*-------------------------------------
     Parse a shader for its information & attribs.
 -------------------------------------*/
-bool ShaderObject::introspect_attributes() noexcept {
+bool ShaderObject::introspect_attributes() noexcept
+{
     LS_LOG_MSG(
         "\tAttempting to parse all attributes in a shader of type ",
         LS_ENUM_VAL(shaderStage), '.'
@@ -280,17 +303,18 @@ bool ShaderObject::introspect_attributes() noexcept {
 
     const utils::Pointer<GLchar[]>&& shaderSource = get_shader_source();
     const char* const attribPattern = (shaderStage == shader_stage_t::SHADER_STAGE_VERTEX)
-        ? VERT_SHADER_QUERY
-        : FRAG_SHADER_QUERY;
+                                      ? VERT_SHADER_QUERY
+                                      : FRAG_SHADER_QUERY;
 
-    rgx::regex fragRegex {attribPattern, rgx::regex::ECMAScript};
-    const unsigned numSourceChars = strlen(shaderSource.get());
-    const rgx::cregex_iterator start{shaderSource.get(), shaderSource.get()+numSourceChars, fragRegex, rgx::regex_constants::match_any};
+    rgx::regex fragRegex{attribPattern, rgx::regex::ECMAScript};
+    const unsigned numSourceChars = (unsigned)strlen(shaderSource.get());
+    const rgx::cregex_iterator start{shaderSource.get(), shaderSource.get() + numSourceChars, fragRegex, rgx::regex_constants::match_any};
     const rgx::cregex_iterator end;
     unsigned numAttribs = 0;
 
     // count the number of attribs to preallocate
-    for (rgx::cregex_iterator iter = start; iter != end; ++iter) {
+    for (rgx::cregex_iterator iter = start; iter != end; ++iter)
+    {
         ++numAttribs;
     }
 
@@ -302,7 +326,8 @@ bool ShaderObject::introspect_attributes() noexcept {
     attribs.reset_num_attribs(numAttribs);
 
     unsigned currentAttrib = 0;
-    for (rgx::cregex_iterator iter = start; iter != end; ++iter) {
+    for (rgx::cregex_iterator iter = start; iter != end; ++iter)
+    {
         ShaderAttrib& attrib = attribs.get_attrib(currentAttrib++);
 
         attrib.set_location(_get_shader_attrib_layout(*iter));
@@ -321,7 +346,8 @@ bool ShaderObject::introspect_attributes() noexcept {
         );
     }
 
-    if (attribs.get_num_attribs() < 1) {
+    if (attribs.get_num_attribs() < 1)
+    {
         LS_LOG_ERR(
             "\t\tUnable to parse any attributes from a shader of type ",
             LS_ENUM_VAL(shaderStage), ".\n"
@@ -341,7 +367,8 @@ bool ShaderObject::introspect_attributes() noexcept {
 /*-------------------------------------
     Free all memory used by this shader object.
 -------------------------------------*/
-void ShaderObject::terminate() noexcept {
+void ShaderObject::terminate() noexcept
+{
     glDeleteShader(gpuId);
     gpuId = 0;
     shaderStage = shader_stage_t::SHADER_STAGE_INVALID;
@@ -356,25 +383,27 @@ bool ShaderObject::init(
     const unsigned numStrings,
     const char* const* data,
     const int* const sizes
-) noexcept {
+) noexcept
+{
     LS_LOG_MSG("Attempting to compile a shader object.");
 
     LS_LOG_MSG("\tCreating a shader ID.");
     GLuint shaderId;
     shaderId = glCreateShader(shaderSourceType);
 
-    if (!shaderId) {
+    if (!shaderId)
+    {
         LS_LOG_ERR("\t\tUnable to create a handle to a shader object on the GPU.\n");
         return false;
     }
     LS_LOG_MSG("\t\tDone");
 
     LS_LOG_MSG("\tUploading source data of type ", shaderSourceType, " to shader object ", shaderId, '.');
-    
+
     // If the size is zero, opengl will just look for null-termination in the data
     glShaderSource(shaderId, numStrings, const_cast<const char**>(data), sizes);
     LS_LOG_GL_ERR();
-    
+
     LS_LOG_MSG("\t\tDone.");
 
     LS_LOG_MSG("\tCompiling shader object ", shaderId, '.');
@@ -389,8 +418,9 @@ bool ShaderObject::init(
 
     // get the log information for the loaded shader
     LS_LOG_MSG("\t\tShader compilation log: ", infoLog.get(), '\n');
-    
-    if (shaderStatus != GL_TRUE) {
+
+    if (shaderStatus != GL_TRUE)
+    {
         glDeleteShader(shaderId);
         return false;
     }
@@ -399,11 +429,12 @@ bool ShaderObject::init(
     shaderStage = shaderSourceType;
 
 #ifdef LS_DRAW_BACKEND_GL
-    if (shaderSourceType != shader_stage_t::SHADER_STAGE_GEOMETRY) {
+    if (shaderSourceType != shader_stage_t::SHADER_STAGE_GEOMETRY)
+    {
         LS_ASSERT(introspect_attributes());
     }
 #else
-    LS_ASSERT(introspect_attributes());
+        LS_ASSERT(introspect_attributes());
 #endif
 
     LS_LOG_MSG(
@@ -419,17 +450,20 @@ bool ShaderObject::init(
 /*-------------------------------------
  Recreate a ShaderObject from OpenGL queries
 -------------------------------------*/
-bool ShaderObject::recreate_from_id(const GLuint shaderId) noexcept {
+bool ShaderObject::recreate_from_id(const GLuint shaderId) noexcept
+{
 #ifdef LS_DRAW_BACKEND_GL
-    if (shaderStage == shader_stage_t::SHADER_STAGE_GEOMETRY) {
+    if (shaderStage == shader_stage_t::SHADER_STAGE_GEOMETRY)
+    {
         LS_LOG_ERR("Unable to recreate shader attributes for a geometry shader.");
         return false;
     }
 #endif
-    
+
     LS_LOG_MSG("Attempting to recreate a ShaderObject by querying OpenGL.");
 
-    if (glIsShader(shaderId) != GL_TRUE) {
+    if (glIsShader(shaderId) != GL_TRUE)
+    {
         LS_LOG_ERR(
             "\tFailed to recreate a ShaderObject. The input ID ", shaderId,
             " does not represent a valid shader on the GPU.\n"
@@ -445,11 +479,12 @@ bool ShaderObject::recreate_from_id(const GLuint shaderId) noexcept {
         shaderType == shader_stage_t::SHADER_STAGE_FRAGMENT
     );
 
-    ShaderObject temp {};
+    ShaderObject temp{};
     temp.gpuId = shaderId;
     temp.shaderStage = (shader_stage_t)shaderType;
 
-    if (!temp.introspect_attributes()) {
+    if (!temp.introspect_attributes())
+    {
         LS_LOG_ERR("\tUnable to query the recreated shader ", shaderId, " for input/output attributes.\n");
         return false;
     }
@@ -460,8 +495,5 @@ bool ShaderObject::recreate_from_id(const GLuint shaderId) noexcept {
     *this = std::move(temp);
     return true;
 }
-
-
-
 } // end draw namespace
 } // end ls namespace

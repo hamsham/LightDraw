@@ -19,13 +19,18 @@
 #include "lightsky/draw/Setup.h"
 #include "lightsky/draw/Vertex.h"
 
-namespace ls {
-namespace draw {
+
+
+namespace ls
+{
+namespace draw
+{
 
 /*-----------------------------------------------------------------------------
  * Forward Declarations
 -----------------------------------------------------------------------------*/
 enum vertex_data_t : GLenum;
+
 class VBOAttrib;
 
 
@@ -36,7 +41,8 @@ class VBOAttrib;
  * This type can be used to determine if an object is a vertex array attribute
  * or a shader uniform attribute.
  */
-enum class vertex_attrib_t : int {
+enum class vertex_attrib_t : int
+{
     UNIFORM_ATTRIB,
     VERTEX_ATTRIB
 };
@@ -46,7 +52,8 @@ enum class vertex_attrib_t : int {
 /**
  * Enumeration containing OpenGL's built-in limits for VAO-related tasks.
  */
-enum vao_limits_t : unsigned {
+enum vao_limits_t : unsigned
+{
     VAO_MAX_VERTEX_ATTRIBS = 16 // minimum set by the OpenGL standard.
 };
 
@@ -58,7 +65,8 @@ enum vao_limits_t : unsigned {
  * The Vertex Attrib Array structure helps to provide a layer of introspection
  * between OpenGL client code and GLSL shader code.
 -----------------------------------------------------------------------------*/
-class VAOAttrib {
+class VAOAttrib
+{
   private:
     /**
      * Contains an array of names associated with vertex attributes.
@@ -125,7 +133,7 @@ class VAOAttrib {
         const unsigned preallocCount,
         utils::Pointer<std::string[]>&& preallocNames,
         utils::Pointer<VBOAttrib[]>&& preallocAttribs
-        ) noexcept;
+    ) noexcept;
 
     /**
      * Copy Constructor
@@ -335,13 +343,15 @@ class VAOAttrib {
 
 /*-------------------------------------
 -------------------------------------*/
-inline unsigned VAOAttrib::get_num_attribs() const noexcept {
+inline unsigned VAOAttrib::get_num_attribs() const noexcept
+{
     return numAttribs;
 }
 
 /*-------------------------------------
 -------------------------------------*/
-inline bool VAOAttrib::is_attrib_valid(const unsigned attribIndex) const noexcept {
+inline bool VAOAttrib::is_attrib_valid(const unsigned attribIndex) const noexcept
+{
     // TODO: Add more validations within each VBO Attribute
     LS_DEBUG_ASSERT(attribIndex < get_num_attribs());
     return !names[attribIndex].empty();
@@ -349,7 +359,8 @@ inline bool VAOAttrib::is_attrib_valid(const unsigned attribIndex) const noexcep
 
 /*-------------------------------------
 -------------------------------------*/
-inline void VAOAttrib::invalidate_attrib(const unsigned attribIndex) noexcept {
+inline void VAOAttrib::invalidate_attrib(const unsigned attribIndex) noexcept
+{
     LS_DEBUG_ASSERT(attribIndex < get_num_attribs());
     names[attribIndex].clear();
 }
@@ -357,21 +368,24 @@ inline void VAOAttrib::invalidate_attrib(const unsigned attribIndex) noexcept {
 /*-------------------------------------
 -------------------------------------*/
 template <class std_string_type>
-inline void VAOAttrib::set_attrib_name(const unsigned index, std_string_type&& attribName) noexcept {
+inline void VAOAttrib::set_attrib_name(const unsigned index, std_string_type&& attribName) noexcept
+{
     LS_DEBUG_ASSERT(index < get_num_attribs());
     names[index] = std::forward<std_string_type>(attribName);
 }
 
 /*-------------------------------------
 -------------------------------------*/
-inline const std::string& VAOAttrib::get_attrib_name(const unsigned index) const noexcept {
+inline const std::string& VAOAttrib::get_attrib_name(const unsigned index) const noexcept
+{
     LS_DEBUG_ASSERT(index < get_num_attribs());
     return names[index];
 }
 
 /*-------------------------------------
 -------------------------------------*/
-inline std::string& VAOAttrib::get_attrib_name(const unsigned index) noexcept {
+inline std::string& VAOAttrib::get_attrib_name(const unsigned index) noexcept
+{
     LS_DEBUG_ASSERT(index < get_num_attribs());
     return names[index];
 }
@@ -380,7 +394,8 @@ inline std::string& VAOAttrib::get_attrib_name(const unsigned index) noexcept {
  * Set a VBO Attrib
 -------------------------------------*/
 template <class vbo_attrib_type>
-inline void VAOAttrib::set_vbo_attrib(const unsigned index, vbo_attrib_type&& attrib) noexcept {
+inline void VAOAttrib::set_vbo_attrib(const unsigned index, vbo_attrib_type&& attrib) noexcept
+{
     LS_DEBUG_ASSERT(index < get_num_attribs());
     vboAttribs[index] = std::forward(attrib);
 }
@@ -391,9 +406,6 @@ inline void VAOAttrib::set_vbo_attrib(const unsigned index, vbo_attrib_type&& at
  * Vertex Attrib Helper Functions
 -----------------------------------------------------------------------------*/
 VAOAttrib create_vertex_attrib(const vertex_data_t type);
-
-
-
 } // end draw namespace
 } // end ls namespace
 

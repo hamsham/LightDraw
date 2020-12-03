@@ -10,8 +10,12 @@
 
 #include "lightsky/draw/Setup.h"
 
-namespace ls {
-namespace draw {
+
+
+namespace ls
+{
+namespace draw
+{
 
 
 
@@ -21,9 +25,11 @@ namespace draw {
  * The orientation for a bounding box follows OpenGL coordinates, where the
  * positive XYZ coordinates point towards the top, right, front of the viewport.
  */
-class BoundingBox {
+class BoundingBox
+{
   private:
     math::vec3 topRearRight = {1.f, 1.f, 1.f};
+
     math::vec3 botFrontLeft = {-1.f, -1.f, -1.f};
 
   public:
@@ -152,38 +158,42 @@ class BoundingBox {
 /*-------------------------------------
     Check if a point is within this box.
 -------------------------------------*/
-inline bool BoundingBox::is_in_box(const BoundingBox& bb) const noexcept {
+inline bool BoundingBox::is_in_box(const BoundingBox& bb) const noexcept
+{
     return is_in_box(bb.topRearRight) || is_in_box(bb.botFrontLeft);
 }
 
 /*-------------------------------------
     Set the top-rear-right point of this bounding box.
 -------------------------------------*/
-inline void BoundingBox::set_top_rear_right(const math::vec3& v) noexcept {
+inline void BoundingBox::set_top_rear_right(const math::vec3& v) noexcept
+{
     topRearRight = v;
 }
 
 /*-------------------------------------
     Get the top-rear-right point of this bounding box.
 -------------------------------------*/
-inline const math::vec3& BoundingBox::get_top_rear_right() const noexcept {
+inline const math::vec3& BoundingBox::get_top_rear_right() const noexcept
+{
     return topRearRight;
 }
 
 /*-------------------------------------
     Set the bottom, front, left point of this bounding box.
 -------------------------------------*/
-inline void BoundingBox::set_bot_front_left(const math::vec3& v) noexcept {
+inline void BoundingBox::set_bot_front_left(const math::vec3& v) noexcept
+{
     botFrontLeft = v;
 }
 
 /*-------------------------------------
     Get the bottom, front, left point of this bounding box.
 -------------------------------------*/
-inline const math::vec3& BoundingBox::get_bot_front_left() const noexcept {
+inline const math::vec3& BoundingBox::get_bot_front_left() const noexcept
+{
     return botFrontLeft;
 }
-
 } // end draw namespace
 } // end ls namespace
 

@@ -11,8 +11,10 @@
 
 
 
-namespace ls {
-namespace draw {
+namespace ls
+{
+namespace draw
+{
 
 
 
@@ -23,34 +25,37 @@ namespace draw {
 /*-------------------------------------
  * Destructor
 -------------------------------------*/
-IBOAttrib::~IBOAttrib() noexcept {
+IBOAttrib::~IBOAttrib() noexcept
+{
 }
 
 /*-------------------------------------
  * Constructor
 -------------------------------------*/
 IBOAttrib::IBOAttrib() noexcept :
-    count {0},
-    indexType {index_element_t::INDEX_TYPE_DEFAULT},
-    offset {nullptr}
-{}
+    count{0},
+    indexType{index_element_t::INDEX_TYPE_DEFAULT},
+    offset{nullptr}
+{
+}
 
 /*-------------------------------------
  * Copy Constructor
 -------------------------------------*/
 IBOAttrib::IBOAttrib(const IBOAttrib& attrib) noexcept :
-    count {attrib.count},
-    indexType {attrib.indexType},
-    offset {attrib.offset}
-{}
+    count{attrib.count},
+    indexType{attrib.indexType},
+    offset{attrib.offset}
+{
+}
 
 /*-------------------------------------
  * Move Constructor
 -------------------------------------*/
 IBOAttrib::IBOAttrib(IBOAttrib&& attrib) noexcept :
-    count {attrib.count},
-    indexType {attrib.indexType},
-    offset {attrib.offset}
+    count{attrib.count},
+    indexType{attrib.indexType},
+    offset{attrib.offset}
 {
     attrib.count = 0;
     attrib.indexType = index_element_t::INDEX_TYPE_DEFAULT;
@@ -60,7 +65,8 @@ IBOAttrib::IBOAttrib(IBOAttrib&& attrib) noexcept :
 /*-------------------------------------
  * Copy Operator
 -------------------------------------*/
-IBOAttrib& IBOAttrib::operator =(const IBOAttrib& attrib) noexcept {
+IBOAttrib& IBOAttrib::operator=(const IBOAttrib& attrib) noexcept
+{
     count = attrib.count;
     indexType = attrib.indexType;
     offset = attrib.offset;
@@ -71,7 +77,8 @@ IBOAttrib& IBOAttrib::operator =(const IBOAttrib& attrib) noexcept {
 /*-------------------------------------
  * Move Operator
 -------------------------------------*/
-IBOAttrib& IBOAttrib::operator =(IBOAttrib&& attrib) noexcept {
+IBOAttrib& IBOAttrib::operator=(IBOAttrib&& attrib) noexcept
+{
     count = attrib.count;
     attrib.count = 0;
 
@@ -93,7 +100,8 @@ IBOAttrib& IBOAttrib::operator =(IBOAttrib&& attrib) noexcept {
 /*-------------------------------------
  * Destructor
 -------------------------------------*/
-IndexBuffer::~IndexBuffer() noexcept {
+IndexBuffer::~IndexBuffer() noexcept
+{
     terminate_attribs();
 }
 
@@ -101,18 +109,19 @@ IndexBuffer::~IndexBuffer() noexcept {
  * Constructor
 -------------------------------------*/
 IndexBuffer::IndexBuffer() noexcept :
-    BufferObject {},
-    pAttribs {nullptr},
-    numAttribs {0}
-{}
+    BufferObject{},
+    pAttribs{nullptr},
+    numAttribs{0}
+{
+}
 
 /*-------------------------------------
  * Copy Constructor
 -------------------------------------*/
 IndexBuffer::IndexBuffer(const IndexBuffer& b) noexcept :
-    BufferObject {b},
-    pAttribs {nullptr},
-    numAttribs {0}
+    BufferObject{b},
+    pAttribs{nullptr},
+    numAttribs{0}
 {
     copy_attribs(b);
 }
@@ -121,9 +130,9 @@ IndexBuffer::IndexBuffer(const IndexBuffer& b) noexcept :
  * Move Constructor
 -------------------------------------*/
 IndexBuffer::IndexBuffer(IndexBuffer&& b) noexcept :
-    BufferObject {std::move(b)},
-    pAttribs {b.pAttribs.release()},
-    numAttribs {b.numAttribs}
+    BufferObject{std::move(b)},
+    pAttribs{b.pAttribs.release()},
+    numAttribs{b.numAttribs}
 {
     b.numAttribs = 0;
 }
@@ -131,8 +140,9 @@ IndexBuffer::IndexBuffer(IndexBuffer&& b) noexcept :
 /*-------------------------------------
  * Copy Operator
 -------------------------------------*/
-IndexBuffer& IndexBuffer::operator =(const IndexBuffer& b) noexcept {
-    BufferObject::operator =(b);
+IndexBuffer& IndexBuffer::operator=(const IndexBuffer& b) noexcept
+{
+    BufferObject::operator=(b);
 
     copy_attribs(b);
 
@@ -142,8 +152,9 @@ IndexBuffer& IndexBuffer::operator =(const IndexBuffer& b) noexcept {
 /*-------------------------------------
  * Move Operator
 -------------------------------------*/
-IndexBuffer& IndexBuffer::operator =(IndexBuffer&& b) noexcept {
-    BufferObject::operator =(std::move(b));
+IndexBuffer& IndexBuffer::operator=(IndexBuffer&& b) noexcept
+{
+    BufferObject::operator=(std::move(b));
 
     pAttribs.reset(b.pAttribs.release());
 
@@ -156,7 +167,8 @@ IndexBuffer& IndexBuffer::operator =(IndexBuffer&& b) noexcept {
 /*-------------------------------------
  * Delete all attributes in use by *this.
 -------------------------------------*/
-void IndexBuffer::terminate_attribs() noexcept {
+void IndexBuffer::terminate_attribs() noexcept
+{
     pAttribs.reset();
     numAttribs = 0;
 }
@@ -164,17 +176,21 @@ void IndexBuffer::terminate_attribs() noexcept {
 /*-------------------------------------
  * Dynamically create the index attributes required for a BufferObject.
 -------------------------------------*/
-bool IndexBuffer::setup_attribs(const unsigned attribCount) noexcept {
-    if (attribCount == 0) {
+bool IndexBuffer::setup_attribs(const unsigned attribCount) noexcept
+{
+    if (attribCount == 0)
+    {
         pAttribs.reset();
         numAttribs = 0;
         return true;
     }
 
-    if (this->numAttribs != attribCount) {
-        IBOAttrib * const pNewAttribs = new(std::nothrow) IBOAttrib[attribCount];
+    if (this->numAttribs != attribCount)
+    {
+        IBOAttrib* const pNewAttribs = new(std::nothrow) IBOAttrib[attribCount];
 
-        if (!pNewAttribs) {
+        if (!pNewAttribs)
+        {
             return false;
         }
 
@@ -182,7 +198,8 @@ bool IndexBuffer::setup_attribs(const unsigned attribCount) noexcept {
         this->numAttribs = attribCount;
     }
 
-    for (unsigned i = 0; i < numAttribs; ++i) {
+    for (unsigned i = 0; i < numAttribs; ++i)
+    {
         IBOAttrib& pAttrib = pAttribs[i];
         pAttrib.set_attrib_count(0);
         pAttrib.set_attrib_type(index_element_t::INDEX_TYPE_DEFAULT);
@@ -195,13 +212,11 @@ bool IndexBuffer::setup_attribs(const unsigned attribCount) noexcept {
 /*-------------------------------------
  * Copy attribs from the input parameter into *this.
 -------------------------------------*/
-bool IndexBuffer::copy_attribs(const BufferObject& from) noexcept {
+bool IndexBuffer::copy_attribs(const BufferObject& from) noexcept
+{
     LS_DEBUG_ASSERT(from.get_type() == buffer_use_t::VBO_BUFFER_ELEMENT);
-    const IndexBuffer * const pIbo = static_cast<const IndexBuffer*>(&from);
+    const IndexBuffer* const pIbo = static_cast<const IndexBuffer*>(&from);
     return BufferObject::copy_attribs<IndexBuffer, IBOAttrib>(*pIbo, *this);
 }
-
-
-
 } // end draw namespace
 } // end ls namespace

@@ -14,13 +14,17 @@
 #include "lightsky/utils/Resource.h"
 #include "lightsky/utils/StringUtils.h"
 
+
+
 /*-----------------------------------------------------------------------------
     Forward Declarations
 -----------------------------------------------------------------------------*/
 struct FT_FaceRec_;
 
-namespace ls {
-namespace draw {
+namespace ls
+{
+namespace draw
+{
 
 
 
@@ -29,14 +33,19 @@ namespace draw {
  *
  * This contains the basic data for each individual glyph in a font.
 -----------------------------------------------------------------------------*/
-struct FontGlyph {
+struct FontGlyph
+{
     math::vec2i size = {0};
+
     math::vec2i advance = {0};
+
     math::vec2i bearing = {0};
+
     char* pData = nullptr;
 
-    ~FontGlyph() {
-        delete [] pData;
+    ~FontGlyph()
+    {
+        delete[] pData;
     }
 };
 
@@ -49,7 +58,8 @@ struct FontGlyph {
  * When using the getData() method, the returned pointer should be type casted
  * to "const glyph*".
 -----------------------------------------------------------------------------*/
-class FontResource final : public ls::utils::Resource {
+class FontResource final : public ls::utils::Resource
+{
   public:
 
 
@@ -57,7 +67,8 @@ class FontResource final : public ls::utils::Resource {
     /**
      * Default font size (as DPI) of fonts loaded from a file.
      */
-    enum : unsigned {
+    enum : unsigned
+    {
         FONT_SIZE_LOW = 48,
         FONT_SIZE_MEDIUM = 72,
         FONT_SIZE_HIGH = 96,
@@ -106,6 +117,7 @@ class FontResource final : public ls::utils::Resource {
      * Copy Constructor - DELETED
      */
     FontResource(const FontResource&) = delete;
+
     /**
      * @brief Move Constructor
      *
@@ -245,52 +257,58 @@ class FontResource final : public ls::utils::Resource {
 /*-------------------------------------
  * Load a font file using the default font size.
 -------------------------------------*/
-inline bool FontResource::load_file(const std::wstring& filename, unsigned pixelSize) {
+inline bool FontResource::load_file(const std::wstring& filename, unsigned pixelSize)
+{
     return load_file(ls::utils::to_str(filename), pixelSize);
 }
 
 /*-------------------------------------
  * Load a font file using the default font size.
 -------------------------------------*/
-inline bool FontResource::load_file(const std::wstring& filename) {
+inline bool FontResource::load_file(const std::wstring& filename)
+{
     return load_file(ls::utils::to_str(filename));
 }
 
 /*-------------------------------------
  * Load a font file using the default font size.
 -------------------------------------*/
-inline bool FontResource::load_file(const std::string& filename) {
+inline bool FontResource::load_file(const std::string& filename)
+{
     return load_file(filename, FONT_SIZE_DEFAULT);
 }
 
 /*-------------------------------------
  * Get the size of the currently loaded fonts
 -------------------------------------*/
-inline unsigned FontResource::get_font_size() const {
+inline unsigned FontResource::get_font_size() const
+{
     return glyphSize;
 }
 
 /*-------------------------------------
  * Get the array of glyphs used by *this
 -------------------------------------*/
-inline const FontGlyph* FontResource::get_glyphs() const {
+inline const FontGlyph* FontResource::get_glyphs() const
+{
     return reinterpret_cast<FontGlyph*> (pData);
 }
 
 /*-------------------------------------
  * Get the number of glyphs that have been loaded
 -------------------------------------*/
-inline unsigned FontResource::get_num_glyphs() const {
+inline unsigned FontResource::get_num_glyphs() const
+{
     return numGlyphs;
 }
 
 /*-------------------------------------
  * Get the size of the widest glyph
 -------------------------------------*/
-inline math::vec2i FontResource::get_max_glyph_size() const {
+inline math::vec2i FontResource::get_max_glyph_size() const
+{
     return maxGlyphSize;
 }
-
 } // end draw namespace
 } // end ls namespace
 

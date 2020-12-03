@@ -24,7 +24,8 @@
 /*-----------------------------------------------------------------------------
  * Anonymous utility functions
 -----------------------------------------------------------------------------*/
-namespace {
+namespace
+{
 /*
 void print_list(const std::vector<ls::draw::SceneNode>& l) {
     for (const ls::draw::SceneNode& n : l) {
@@ -52,28 +53,28 @@ void print_list(const std::vector<ls::draw::Transform>& l) {
 template <typename list_t>
 void rotate_list(
     list_t& vec,
-    const unsigned start,
-    const unsigned length,
-    const unsigned dest
-) {
+    const size_t start,
+    const size_t length,
+    const size_t dest
+)
+{
     typename list_t::iterator first, middle, last;
 
-    if (start < dest) {
-        first  = vec.begin() + start;
-        middle = first       + length;
-        last   = vec.begin() + dest;
+    if (start < dest)
+    {
+        first = vec.begin() + start;
+        middle = first + length;
+        last = vec.begin() + dest;
     }
-    else {
-        first  = vec.begin() + dest;
+    else
+    {
+        first = vec.begin() + dest;
         middle = vec.begin() + start;
-        last   = middle      + length;
+        last = middle + length;
     }
 
     std::rotate(first, middle, last);
 }
-
-
-
 } // end anonymous namespace
 
 
@@ -81,12 +82,15 @@ void rotate_list(
 /*-----------------------------------------------------------------------------
  * SceneGraph Class
 -----------------------------------------------------------------------------*/
-namespace ls {
-namespace draw {
+namespace ls
+{
+namespace draw
+{
 /*-------------------------------------
  * Destructor
 -------------------------------------*/
-SceneGraph::~SceneGraph() noexcept {
+SceneGraph::~SceneGraph() noexcept
+{
     terminate();
 }
 
@@ -108,26 +112,30 @@ SceneGraph::SceneGraph() noexcept :
     nodeMeshCounts(),
     nodeMeshes(),
     renderData()
-{}
+{
+}
 
 /*-------------------------------------
  * Copy Constructor
 -------------------------------------*/
-SceneGraph::SceneGraph(const SceneGraph& s) noexcept {
+SceneGraph::SceneGraph(const SceneGraph& s) noexcept
+{
     *this = s;
 }
 
 /*-------------------------------------
  * Move Constructor
 -------------------------------------*/
-SceneGraph::SceneGraph(SceneGraph&& s) noexcept {
+SceneGraph::SceneGraph(SceneGraph&& s) noexcept
+{
     *this = std::move(s);
 }
 
 /*-------------------------------------
  * Copy Operator
 -------------------------------------*/
-SceneGraph& SceneGraph::operator=(const SceneGraph& s) noexcept {
+SceneGraph& SceneGraph::operator=(const SceneGraph& s) noexcept
+{
     cameras = s.cameras;
     meshes = s.meshes;
     bounds = s.bounds;
@@ -139,35 +147,37 @@ SceneGraph& SceneGraph::operator=(const SceneGraph& s) noexcept {
     nodeNames = s.nodeNames;
     animations = s.animations;
     nodeAnims = s.nodeAnims;
-    
+
     LS_DEBUG_ASSERT(s.nodeMeshCounts.size() == s.nodeMeshes.size());
     nodeMeshCounts = s.nodeMeshCounts;
-    
+
     nodeMeshes.reserve(s.nodeMeshes.size());
-    
-    for (unsigned i = 0; i < s.nodeMeshes.size(); ++i) {
+
+    for (unsigned i = 0; i < s.nodeMeshes.size(); ++i)
+    {
         const utils::Pointer<DrawCommandParams[]>& inMeshes = s.nodeMeshes[i];
         const unsigned inMeshCount = s.nodeMeshCounts[i];
-        
+
         LS_DEBUG_ASSERT(inMeshCount > 0);
-        
+
         utils::Pointer<DrawCommandParams[]> outMeshes{new DrawCommandParams[inMeshCount]};
-        
+
         utils::fast_copy(outMeshes.get(), inMeshes.get(), inMeshCount);
-        
+
         nodeMeshCounts.push_back(inMeshCount);
         nodeMeshes.emplace_back(std::move(outMeshes));
     }
-    
+
     renderData = s.renderData;
-    
+
     return *this;
 }
 
 /*-------------------------------------
  * Move Operator
 -------------------------------------*/
-SceneGraph& SceneGraph::operator=(SceneGraph&& s) noexcept {
+SceneGraph& SceneGraph::operator=(SceneGraph&& s) noexcept
+{
     cameras = std::move(s.cameras);
     meshes = std::move(s.meshes);
     bounds = std::move(s.bounds);
@@ -182,14 +192,15 @@ SceneGraph& SceneGraph::operator=(SceneGraph&& s) noexcept {
     nodeMeshCounts = std::move(s.nodeMeshCounts);
     nodeMeshes = std::move(s.nodeMeshes);
     renderData = std::move(s.renderData);
-    
+
     return *this;
 }
 
 /*-------------------------------------
  * Terminate
 -------------------------------------*/
-void SceneGraph::terminate() noexcept {
+void SceneGraph::terminate() noexcept
+{
     cameras.clear();
     meshes.clear();
     bounds.clear();
@@ -208,44 +219,52 @@ void SceneGraph::terminate() noexcept {
 /*-------------------------------------
  * Node updating
 -------------------------------------*/
-void SceneGraph::update_node_transform(const unsigned transformId) noexcept {
+void SceneGraph::update_node_transform(const size_t transformId) noexcept
+{
     draw::Transform& t = currentTransforms[transformId];
-    
-    const unsigned parentId = t.parentId;
+
+    const size_t parentId = t.parentId;
     const bool doesParentExist = parentId != draw::scene_property_t::SCENE_GRAPH_ROOT_ID;
 
-    if (doesParentExist) {
+    if (doesParentExist)
+    {
         draw::Transform& pt = currentTransforms[parentId];
-        
+
         // update all parent node data before attempting to update *this.
-        if (pt.is_dirty()) {
+        if (pt.is_dirty())
+        {
             update_node_transform(parentId);
             t.set_dirty();
         }
     }
 
     // Early exit
-    if (!t.is_dirty()) {
+    if (!t.is_dirty())
+    {
         return;
     }
-    
-    if (doesParentExist) {
+
+    if (doesParentExist)
+    {
         draw::Transform& pt = currentTransforms[parentId];
         t.apply_pre_transform(pt.get_transform());
     }
-    else {
+    else
+    {
         t.apply_transform();
     }
-    
+
     modelMatrices[transformId] = t.get_transform();
 
     // TODO: implement transformation packing so the iteration can stop as
     // soon as all child transforms have been updated. There's no reason
     // to iterate past the child transforms in the transform array.
-    for (unsigned i = transformId+1; i < currentTransforms.size(); ++i) {
+    for (size_t i = transformId + 1; i < currentTransforms.size(); ++i)
+    {
         draw::Transform& ct = currentTransforms[i];
-        
-        if (ct.parentId == transformId) {
+
+        if (ct.parentId == transformId)
+        {
             ct.set_dirty();
         }
     }
@@ -254,16 +273,21 @@ void SceneGraph::update_node_transform(const unsigned transformId) noexcept {
 /*-------------------------------------
  * Scene Updating
 -------------------------------------*/
-void SceneGraph::update() noexcept {
+void SceneGraph::update() noexcept
+{
     // Transformation indices have a 1:1 relationship with node indices.
-    for (unsigned i = 0; i < currentTransforms.size(); ++i) {
-        if (currentTransforms[i].is_dirty()) {
+    for (size_t i = 0; i < currentTransforms.size(); ++i)
+    {
+        if (currentTransforms[i].is_dirty())
+        {
             update_node_transform(i);
         }
     }
-    
-    for (Camera& cam : cameras) {
-        if (cam.is_dirty()) {
+
+    for (Camera& cam : cameras)
+    {
+        if (cam.is_dirty())
+        {
             cam.update();
         }
     }
@@ -272,7 +296,8 @@ void SceneGraph::update() noexcept {
 /*-------------------------------------
  * Mesh Node Deletion
 -------------------------------------*/
-void SceneGraph::delete_mesh_node_data(const unsigned nodeDataId) noexcept {
+void SceneGraph::delete_mesh_node_data(const size_t nodeDataId) noexcept
+{
     nodeMeshCounts.erase(nodeMeshCounts.begin() + nodeDataId);
     nodeMeshes.erase(nodeMeshes.begin() + nodeDataId);
 }
@@ -280,50 +305,59 @@ void SceneGraph::delete_mesh_node_data(const unsigned nodeDataId) noexcept {
 /*-------------------------------------
  * Camera Deletion
 -------------------------------------*/
-void SceneGraph::delete_camera_node_data(const unsigned nodeDataId) noexcept {
+void SceneGraph::delete_camera_node_data(const size_t nodeDataId) noexcept
+{
     cameras.erase(cameras.begin() + nodeDataId);
 }
 
 /*-------------------------------------
  * Animation Deletion
 -------------------------------------*/
-void SceneGraph::delete_node_animation_data(const uint32_t nodeId, const uint32_t animId) noexcept {
+void SceneGraph::delete_node_animation_data(const size_t nodeId, const size_t animId) noexcept
+{
     // Remove all animation channels associated with the current node.
-    for (unsigned i = animations.size(); i --> 0;) {
-        
+    for (size_t i = animations.size(); i--;)
+    {
+
         // Animations contain transformation IDs which may need to be
         // decremented. Search for transformation indices with a value greater
         // than the current node's nodeId.
         Animation& currentAnim = animations[i];
-        
+
         // friendly class member manipulation
-        std::vector<uint32_t>& currentAnimIds = currentAnim.animationIds;
-        std::vector<uint32_t>& currentTransIds = currentAnim.transformIds;
-        
+        std::vector<size_t>& currentAnimIds = currentAnim.animationIds;
+        std::vector<size_t>& currentTransIds = currentAnim.transformIds;
+
         // Reduce the animation ID of all animations in *this.
-        for (uint32_t j = currentAnimIds.size(); j --> 0;) {
-            if (currentTransIds[j] == nodeId) {
+        for (size_t j = currentAnimIds.size(); j-- > 0;)
+        {
+            if (currentTransIds[j] == nodeId)
+            {
                 currentAnim.remove_anim_channel(j);
                 continue;
             }
-            
-            if (currentTransIds[j] > nodeId) {
+
+            if (currentTransIds[j] > nodeId)
+            {
                 --currentTransIds[j];
             }
-            
-            if (animId != scene_property_t::SCENE_GRAPH_ROOT_ID && currentAnimIds[j] > animId) {
+
+            if (animId != scene_property_t::SCENE_GRAPH_ROOT_ID && currentAnimIds[j] > animId)
+            {
                 --currentAnimIds[j];
             }
         }
-        
+
         // Remove any defunct animations
-        if (!currentAnim.get_num_anim_channels()) {
+        if (!currentAnim.get_num_anim_channels())
+        {
             animations.erase(animations.begin() + i);
         }
     }
-    
+
     // Animation Channels
-    if (animId != scene_property_t::SCENE_GRAPH_ROOT_ID) {
+    if (animId != scene_property_t::SCENE_GRAPH_ROOT_ID)
+    {
         nodeAnims.erase(nodeAnims.begin() + animId);
     }
 }
@@ -331,7 +365,8 @@ void SceneGraph::delete_node_animation_data(const uint32_t nodeId, const uint32_
 /*-------------------------------------
  * Delete all nodes
 -------------------------------------*/
-void SceneGraph::clear_node_data() noexcept {
+void SceneGraph::clear_node_data() noexcept
+{
     cameras.clear();
     nodes.clear();
     baseTransforms.clear();
@@ -347,124 +382,136 @@ void SceneGraph::clear_node_data() noexcept {
 /*-------------------------------------
  * Node Deletion
 -------------------------------------*/
-unsigned SceneGraph::delete_node(const unsigned nodeIndex) noexcept {
-    unsigned numDeleted = 1;
-    
-    if (nodeIndex == scene_property_t::SCENE_GRAPH_ROOT_ID) {
+size_t SceneGraph::delete_node(const size_t nodeIndex) noexcept
+{
+    size_t numDeleted = 1;
+
+    if (nodeIndex == scene_property_t::SCENE_GRAPH_ROOT_ID)
+    {
         numDeleted = nodes.size();
         clear_node_data();
         return numDeleted;
     }
-    
+
     // No mercy for client code
     LS_DEBUG_ASSERT(nodeIndex < nodes.size());
-    
+
     // Remove all child nodes and their data
-    for (unsigned i = nodes.size(); i --> nodeIndex;) {
-        if (currentTransforms[i].parentId == nodeIndex) {
+    for (size_t i = nodes.size(); i-- > nodeIndex;)
+    {
+        if (currentTransforms[i].parentId == nodeIndex)
+        {
             numDeleted += delete_node(i);
         }
     }
-    
-    const SceneNode& n          = nodes[nodeIndex];
-    const scene_node_t typeId   = n.type;
-    const uint32_t dataId       = n.dataId;
-    const uint32_t animId       = n.animListId;
-    
+
+    const SceneNode& n = nodes[nodeIndex];
+    const scene_node_t typeId = n.type;
+    const size_t dataId = n.dataId;
+    const size_t animId = n.animListId;
+
     LS_DEBUG_ASSERT(nodeIndex == n.nodeId);
-    
+
     // Delete any specific data associated with the node.
-    switch (typeId) {
+    switch (typeId)
+    {
         case scene_node_t::NODE_TYPE_CAMERA:
             delete_camera_node_data(dataId);
             break;
-            
+
         case scene_node_t::NODE_TYPE_MESH:
             delete_mesh_node_data(dataId);
             break;
-            
+
         case scene_node_t::NODE_TYPE_EMPTY:
             break;
     }
-    
+
     // Delete the actual node
-    nodes.erase                 (nodes.begin()              + nodeIndex);
-    currentTransforms.erase     (currentTransforms.begin()  + nodeIndex);
-    baseTransforms.erase        (baseTransforms.begin()     + nodeIndex);
-    modelMatrices.erase         (modelMatrices.begin()      + nodeIndex);
-    nodeNames.erase             (nodeNames.begin()          + nodeIndex);
-    
+    nodes.erase(nodes.begin() + nodeIndex);
+    currentTransforms.erase(currentTransforms.begin() + nodeIndex);
+    baseTransforms.erase(baseTransforms.begin() + nodeIndex);
+    modelMatrices.erase(modelMatrices.begin() + nodeIndex);
+    nodeNames.erase(nodeNames.begin() + nodeIndex);
+
     // early exit in case there are no animations tied to the current node.
     delete_node_animation_data(nodeIndex, animId);
-    
+
     // Decrement all node ID and data ID indices that are greater than those in
     // the current node. Also deal with the last bit of transformation data in
     // case a recursive deletion is in required.
-    for (unsigned i = nodes.size(); i --> nodeIndex;) {
-        SceneNode& nextNode         = nodes[i];
+    for (size_t i = nodes.size(); i-- > nodeIndex;)
+    {
+        SceneNode& nextNode = nodes[i];
         const scene_node_t nextType = nextNode.type;
-        unsigned& nextDataId        = nextNode.dataId;
-        unsigned& nextAnimId        = nextNode.animListId;
-        Transform& nextTransform    = currentTransforms[i];
-        const unsigned nextParentId = nextTransform.parentId;
-        
+        size_t& nextDataId = nextNode.dataId;
+        size_t& nextAnimId = nextNode.animListId;
+        Transform& nextTransform = currentTransforms[i];
+        const size_t nextParentId = nextTransform.parentId;
+
         // Placing assertion here because nodeIds must never equate to the
         // root node ID. They must always have tangible data to point at.
         LS_DEBUG_ASSERT(nextNode.nodeId != scene_property_t::SCENE_GRAPH_ROOT_ID);
-        
+
         nodes[i].nodeId = i;
-        
-        if (nextParentId > nodeIndex && nextParentId != scene_property_t::SCENE_GRAPH_ROOT_ID) {
+
+        if (nextParentId > nodeIndex && nextParentId != scene_property_t::SCENE_GRAPH_ROOT_ID)
+        {
             // decrement the next node's parent ID if necessary
             nextTransform.parentId = nextParentId - 1;
         }
-        
+
         // the node dataId member can be equal to the root node ID. This is
         // because empty nodes may not have have data to use.
         if (nextType == typeId
-        && nextDataId > dataId
-        && nextDataId != scene_property_t::SCENE_GRAPH_ROOT_ID
-        ) {
+            && nextDataId > dataId
+            && nextDataId != scene_property_t::SCENE_GRAPH_ROOT_ID
+            )
+        {
             --nextDataId;
         }
-        
+
         // decrement the animation ID from all nodes with a value greater than
         // the current node's
-        if (nextAnimId > animId && nextAnimId != scene_property_t::SCENE_GRAPH_ROOT_ID) {
+        if (nextAnimId > animId && nextAnimId != scene_property_t::SCENE_GRAPH_ROOT_ID)
+        {
             --nextAnimId;
         }
     }
-    
+
     return numDeleted;
 }
 
 /*-------------------------------------
  * Node Parenting
 -------------------------------------*/
-bool SceneGraph::reparent_node(const unsigned nodeIndex, const unsigned newParentId) noexcept {
-    if (nodeIndex == scene_property_t::SCENE_GRAPH_ROOT_ID) {
+bool SceneGraph::reparent_node(const size_t nodeIndex, const size_t newParentId) noexcept
+{
+    if (nodeIndex == scene_property_t::SCENE_GRAPH_ROOT_ID)
+    {
         return false;
     }
-    
-    if (node_is_child(newParentId, nodeIndex)) {
+
+    if (node_is_child(newParentId, nodeIndex))
+    {
         LS_LOG_MSG("Cannot make a node ", nodeIndex, " a parent of its ancestor ", newParentId, '.');
         return false;
     }
 
     LS_DEBUG_ASSERT(nodeIndex < nodes.size());
 
-    const unsigned numChildren      = get_num_total_children(nodeIndex);
-    const unsigned displacement     = 1 + numChildren;
-    const unsigned numNewSiblings   = get_num_total_children(newParentId);
-    const unsigned newNodeIndex     = 1 + newParentId + numNewSiblings;
+    const size_t numChildren = get_num_total_children(nodeIndex);
+    const size_t displacement = 1 + numChildren;
+    const size_t numNewSiblings = get_num_total_children(newParentId);
+    const size_t newNodeIndex = 1 + newParentId + numNewSiblings;
 
     // Keep track of the range of elements which need to be updated.
-    const unsigned effectStart      = math::min(nodeIndex, newNodeIndex);
-    const unsigned effectEnd        = math::max(newNodeIndex, nodeIndex+displacement);
-    
+    const size_t effectStart = math::min(nodeIndex, newNodeIndex);
+    const size_t effectEnd = math::max(newNodeIndex, nodeIndex + displacement);
+
     // Sentinel to help determine not to modify the node at 'nodeIndex'
-    const bool movingUp             = nodeIndex < newParentId;
-    
+    const bool movingUp = nodeIndex < newParentId;
+
     /*
     LS_LOG_MSG(
         "Re-parenting node ", nodeIndex, " from ", currentTransforms[nodeIndex].parentId, " to ", newParentId,
@@ -473,58 +520,61 @@ bool SceneGraph::reparent_node(const unsigned nodeIndex, const unsigned newParen
     );
     */
 
-    rotate_list(nodes,              nodeIndex, displacement, newNodeIndex);
-    rotate_list(baseTransforms,     nodeIndex, displacement, newNodeIndex);
-    rotate_list(currentTransforms,  nodeIndex, displacement, newNodeIndex);
-    rotate_list(modelMatrices,      nodeIndex, displacement, newNodeIndex);
-    
-    for (unsigned i = effectStart; i < effectEnd; ++i) {
-        unsigned& rParentId = currentTransforms[i].parentId;
-        const unsigned pId  = rParentId;
-        const unsigned nId  = nodes[i].nodeId;
-        nodes[i].nodeId     = i;
+    rotate_list(nodes, nodeIndex, displacement, newNodeIndex);
+    rotate_list(baseTransforms, nodeIndex, displacement, newNodeIndex);
+    rotate_list(currentTransforms, nodeIndex, displacement, newNodeIndex);
+    rotate_list(modelMatrices, nodeIndex, displacement, newNodeIndex);
+
+    for (size_t i = effectStart; i < effectEnd; ++i)
+    {
+        size_t& rParentId = currentTransforms[i].parentId;
+        const size_t pId = rParentId;
+        const size_t nId = nodes[i].nodeId;
+        nodes[i].nodeId = i;
 
         // Update the requested node's index
-        if (nId == nodeIndex) {
-            rParentId = movingUp ? (newParentId-displacement) : newParentId;
+        if (nId == nodeIndex)
+        {
+            rParentId = movingUp ? (newParentId - displacement) : newParentId;
             currentTransforms[i].set_dirty();
             continue;
         }
 
         // Determine if there's a node which even needs its parent ID updated.
-        if (pId == scene_property_t::SCENE_GRAPH_ROOT_ID || pId < effectStart) {
+        if (pId == scene_property_t::SCENE_GRAPH_ROOT_ID || pId < effectStart)
+        {
             continue;
         }
-        
-        const unsigned parentDelta = nId - pId;
+
+        const size_t parentDelta = nId - pId;
 
         //LS_LOG_MSG("\t\tMoving ", i, "'s (", nId, ") parent ID by ", parentDelta, " from ", pId, " to ", i-parentDelta);
         rParentId = i - parentDelta;
-        
+
         currentTransforms[i].set_dirty();
     }
-    
+
     /*
     std::cout << "To this:";
     std::cout << "\n\t"; print_list(nodes);
     std::cout << "\t"; print_list(currentTransforms);
     */
-    
+
     // Animations need love too
-    static_assert(sizeof(unsigned) == sizeof(uint32_t), "Cannot update indices of differing types.");
-    
-    for (Animation& anim : animations) {
-        for (uint32_t& oldId : anim.transformIds) {
-            const uint32_t newId = nodes[oldId].nodeId;
-            const uint32_t nodeDelta = math::max(oldId, newId) - math::min(oldId, newId);
-            oldId = (newId >= oldId) ? (oldId+nodeDelta) : (oldId-nodeDelta);
+    for (Animation& anim : animations)
+    {
+        for (size_t& oldId : anim.transformIds)
+        {
+            const size_t newId = nodes[oldId].nodeId;
+            const size_t nodeDelta = math::max(oldId, newId) - math::min(oldId, newId);
+            oldId = (newId >= oldId) ? (oldId + nodeDelta) : (oldId - nodeDelta);
         }
     }
-    
+
     //LS_LOG_MSG("\tDone.");
-    
+
     LS_DEBUG_ASSERT(newNodeIndex <= nodes.size());
-    
+
     return true;
 }
 
@@ -533,32 +583,39 @@ bool SceneGraph::reparent_node(const unsigned nodeIndex, const unsigned newParen
 /*-------------------------------------
  * Node Searching
 -------------------------------------*/
-unsigned SceneGraph::find_node_id(const std::string& nameQuery) const noexcept {
-    unsigned nodeId = scene_property_t::SCENE_GRAPH_ROOT_ID;
-    
-    for (unsigned i = nodeNames.size(); i --> 0;) {
-        if (nodeNames[i] == nameQuery) {
+size_t SceneGraph::find_node_id(const std::string& nameQuery) const noexcept
+{
+    size_t nodeId = scene_property_t::SCENE_GRAPH_ROOT_ID;
+
+    for (size_t i = nodeNames.size(); i--;)
+    {
+        if (nodeNames[i] == nameQuery)
+        {
             return i;
         }
     }
-    
+
     return nodeId;
 }
 
 /*-------------------------------------
  * Node Child Counting (total)
 -------------------------------------*/
-unsigned SceneGraph::get_num_total_children(const unsigned nodeIndex) const noexcept {
-    if (nodeIndex == scene_property_t::SCENE_GRAPH_ROOT_ID) {
+size_t SceneGraph::get_num_total_children(const size_t nodeIndex) const noexcept
+{
+    if (nodeIndex == scene_property_t::SCENE_GRAPH_ROOT_ID)
+    {
         return nodes.size();
     }
 
-    unsigned numChildren = 0;
-    
-    for (unsigned cId = nodeIndex+1; cId < currentTransforms.size(); ++cId) {
-        const unsigned pId = currentTransforms[cId].parentId;
+    size_t numChildren = 0;
 
-        if (pId < nodeIndex || pId == scene_property_t::SCENE_GRAPH_ROOT_ID) {
+    for (size_t cId = nodeIndex + 1; cId < currentTransforms.size(); ++cId)
+    {
+        const size_t pId = currentTransforms[cId].parentId;
+
+        if (pId < nodeIndex || pId == scene_property_t::SCENE_GRAPH_ROOT_ID)
+        {
             break;
         }
 
@@ -573,24 +630,29 @@ unsigned SceneGraph::get_num_total_children(const unsigned nodeIndex) const noex
 /*-------------------------------------
  * Node Child Counting (immediate)
 -------------------------------------*/
-unsigned SceneGraph::get_num_immediate_children(const unsigned nodeIndex) const noexcept {
-    if (nodeIndex == scene_property_t::SCENE_GRAPH_ROOT_ID) {
+size_t SceneGraph::get_num_immediate_children(const size_t nodeIndex) const noexcept
+{
+    if (nodeIndex == scene_property_t::SCENE_GRAPH_ROOT_ID)
+    {
         return nodes.size();
     }
 
-    const unsigned startIndex   = nodeIndex+1;
-    const unsigned stopIndex    = nodeIndex;
-    unsigned numChildren        = 0;
-    
-    for (unsigned cId = startIndex; cId < currentTransforms.size(); ++cId) {
-        const unsigned pId = currentTransforms[cId].parentId;
+    const size_t startIndex = nodeIndex + 1;
+    const size_t stopIndex = nodeIndex;
+    size_t numChildren = 0;
 
-        if (pId == scene_property_t::SCENE_GRAPH_ROOT_ID || pId < stopIndex) {
+    for (size_t cId = startIndex; cId < currentTransforms.size(); ++cId)
+    {
+        const size_t pId = currentTransforms[cId].parentId;
+
+        if (pId == scene_property_t::SCENE_GRAPH_ROOT_ID || pId < stopIndex)
+        {
             break;
         }
 
         //LS_LOG_MSG("Node ", nodeIndex, " has a child at ", cId);
-        if (pId == nodeIndex) {
+        if (pId == nodeIndex)
+        {
             numChildren++;
         }
     }
@@ -601,42 +663,45 @@ unsigned SceneGraph::get_num_immediate_children(const unsigned nodeIndex) const 
 /*-------------------------------------
  * Check if a node is a child of another node
 -------------------------------------*/
-bool SceneGraph::node_is_child(const unsigned nodeIndex, const unsigned parentId) const noexcept {
+bool SceneGraph::node_is_child(const size_t nodeIndex, const size_t parentId) const noexcept
+{
     // parent IDs are always less than their child IDs.
-    if (nodeIndex == scene_property_t::SCENE_GRAPH_ROOT_ID || parentId >= nodeIndex) {
+    if (nodeIndex == scene_property_t::SCENE_GRAPH_ROOT_ID || parentId >= nodeIndex)
+    {
         return false;
     }
-    
+
     // all nodes are children of the root node
-    if (parentId == scene_property_t::SCENE_GRAPH_ROOT_ID) {
+    if (parentId == scene_property_t::SCENE_GRAPH_ROOT_ID)
+    {
         return true;
     }
-    
-    const unsigned pId = currentTransforms[nodeIndex].parentId;
-    
+
+    const size_t pId = currentTransforms[nodeIndex].parentId;
+
     // check for ancestry
-    if (pId < parentId) {
+    if (pId < parentId)
+    {
         return false;
     }
-    
+
     // check for immediate parenting
-    if (pId == parentId) {
+    if (pId == parentId)
+    {
         return true;
     }
-    
-    for (unsigned iter = pId; iter != scene_property_t::SCENE_GRAPH_ROOT_ID;) {
-        if (iter == parentId) {
+
+    for (size_t iter = pId; iter != scene_property_t::SCENE_GRAPH_ROOT_ID;)
+    {
+        if (iter == parentId)
+        {
             return true;
         }
-        
+
         iter = currentTransforms[iter].parentId;
     }
-    
+
     return false;
 }
-
-
-
-
 } // end draw namepsace
 } // end ls namespace

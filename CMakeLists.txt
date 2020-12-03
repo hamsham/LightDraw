@@ -199,18 +199,18 @@ set(LS_DRAW_SOURCES
 # Keeping LightDraw as a static library until Vulkan support is added.
 add_library(${OUTPUT_NAME} STATIC ${LS_DRAW_HEADERS} ${LS_DRAW_SOURCES})
 
-target_include_directories(${OUTPUT_NAME}
-    PUBLIC include
-    PRIVATE BEFORE SYSTEM external/include
-    PRIVATE BEFORE SYSTEM ${FREETYPE_INCLUDE_DIRS}
+target_include_directories(${OUTPUT_NAME} PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>)
+target_include_directories(${OUTPUT_NAME} SYSTEM BEFORE
+    PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/external/include>
+    PRIVATE ${FREETYPE_INCLUDE_DIRS}
 )
 
 # Linking Setup
 target_link_libraries(
     ${OUTPUT_NAME}
-        PUBLIC lssetup
-        PUBLIC lsutils
-        PUBLIC lsmath
+        PUBLIC LightSky::Setup
+        PUBLIC LightSky::Utils
+        PUBLIC LightSky::Math
         PUBLIC ${FREETYPE_LIBRARIES}
         PUBLIC ${ASSIMP_LIBRARIES}
         PUBLIC ${FREEIMAGE_LIBRARIES}
@@ -252,16 +252,25 @@ endif()
 
 
 
-
 # -------------------------------------
 # Library Installation Setup
 # -------------------------------------
-install(TARGETS "${OUTPUT_NAME}"
+install(TARGETS ${OUTPUT_NAME}
+    EXPORT LightDraw
     RUNTIME DESTINATION bin
     ARCHIVE DESTINATION lib
     LIBRARY DESTINATION lib
 )
 install(DIRECTORY include/lightsky/draw DESTINATION include/lightsky)
+
+install(EXPORT LightDraw
+    FILE LightDraw.cmake
+    NAMESPACE LightSky::
+    DESTINATION lib/cmake/LightSky
+)
+
+export(EXPORT LightDraw NAMESPACE LightSky::)
+add_library(LightSky::Draw ALIAS lsdraw)
 
 
 

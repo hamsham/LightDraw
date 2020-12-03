@@ -16,8 +16,10 @@
 
 
 
-namespace ls {
-namespace draw {
+namespace ls
+{
+namespace draw
+{
 
 
 
@@ -25,7 +27,8 @@ namespace draw {
  * Texture slots determine what binding point a shader will retrieve a sampler
  * sampler from. Multiple slots can be used at a time.
  */
-enum tex_slot_t : int {
+enum tex_slot_t : int
+{
     TEXTURE_SLOT_0 = 0,
     TEXTURE_SLOT_1 = 1,
     TEXTURE_SLOT_2 = 2,
@@ -69,7 +72,7 @@ enum tex_slot_t : int {
     TEXTURE_SLOT_NORMAL = TEXTURE_SLOT_DEFAULT + 1,
     TEXTURE_SLOT_SPECULAR = TEXTURE_SLOT_DEFAULT + 2,
     TEXTURE_SLOT_AMBIENT = TEXTURE_SLOT_DEFAULT + 3,
-    
+
     TEXTURE_SLOT_INVALID = -1,
     TEXTURE_SLOT_GPU_OFFSET = GL_TEXTURE0
 };
@@ -79,7 +82,8 @@ enum tex_slot_t : int {
 /**
  * Descriptors for different texture types
  */
-enum tex_type_t : GLenum {
+enum tex_type_t : GLenum
+{
     TEX_TYPE_2D = GL_TEXTURE_2D,
     TEX_TYPE_2D_ARRAY = GL_TEXTURE_2D_ARRAY,
     TEX_TYPE_3D = GL_TEXTURE_3D,
@@ -92,7 +96,8 @@ enum tex_type_t : GLenum {
  * Descriptors for 2D texture sub-types. Enumeration values for cube map
  * follow the OpenGL coordinate system.
  */
-enum tex_2d_type_t : GLenum {
+enum tex_2d_type_t : GLenum
+{
     TEX_SUBTYPE_2D = GL_TEXTURE_2D,
 
     TEX_SUBTYPE_CUBE_RIGHT = GL_TEXTURE_CUBE_MAP_POSITIVE_X,
@@ -108,7 +113,8 @@ enum tex_2d_type_t : GLenum {
 /**
  * Descriptors for 3D texture sub-types
  */
-enum tex_3d_type_t : GLenum {
+enum tex_3d_type_t : GLenum
+{
     TEX_SUBTYPE_2D_ARRAY = GL_TEXTURE_2D_ARRAY,
     TEX_SUBTYPE_3D = GL_TEXTURE_3D,
 };
@@ -122,7 +128,8 @@ enum tex_3d_type_t : GLenum {
  * client code rather than in GLSL. This can be done to help resolve
  * differences amongst platforms and GPU storage formats.
  */
-enum pixel_swizzle_t : GLenum {
+enum pixel_swizzle_t : GLenum
+{
     SWIZZLE_RED = GL_RED,
     SWIZZLE_GREEN = GL_GREEN,
     SWIZZLE_BLUE = GL_BLUE,
@@ -136,7 +143,8 @@ enum pixel_swizzle_t : GLenum {
 /**
  * Texture & Framebuffer filtering specifiers
  */
-enum tex_filter_t : int {
+enum tex_filter_t : int
+{
     TEX_FILTER_NEAREST = GL_NEAREST,
     TEX_FILTER_LINEAR = GL_LINEAR,
 
@@ -152,11 +160,12 @@ enum tex_filter_t : int {
 /**
  * Enumeration to help distinguish between different texture wrapping modes.
  */
-enum tex_wrap_t : GLenum {
+enum tex_wrap_t : GLenum
+{
     TEX_WRAP_CLAMP = GL_CLAMP_TO_EDGE,
     TEX_WRAP_MIRROR_REPEAT = GL_MIRRORED_REPEAT,
     TEX_WRAP_REPEAT = GL_REPEAT,
-    
+
     // Found in the GLES 3.0 Spec
     TEX_WRAP_DEFAULT = TEX_WRAP_REPEAT
 };
@@ -166,7 +175,8 @@ enum tex_wrap_t : GLenum {
 /**
  * Parameters for modifying the appearance of textures.
  */
-enum tex_param_t : int {
+enum tex_param_t : int
+{
     TEX_PARAM_INVALID = -1,
 
     TEX_PARAM_MIN_FILTER = GL_TEXTURE_MIN_FILTER,
@@ -191,25 +201,35 @@ enum tex_param_t : int {
  * Texture Attribs provide meta-data about a texture object without requiring
  * client code to query OpenGL.
 -----------------------------------------------------------------------------*/
-class TextureAttrib {
+class TextureAttrib
+{
   private:
     color_type_t colorType;
+
     pixel_layout_t basicFormat;
+
     pixel_format_t internalFormat;
 
     tex_filter_t minFilter;
+
     tex_filter_t magFilter;
 
     tex_wrap_t wrapS;
+
     tex_wrap_t wrapT;
+
     tex_wrap_t wrapR;
 
     pixel_swizzle_t swizzleR;
+
     pixel_swizzle_t swizzleG;
+
     pixel_swizzle_t swizzleB;
+
     pixel_swizzle_t swizzleA;
 
     float minLod;
+
     float maxLod;
 
 
@@ -251,7 +271,7 @@ class TextureAttrib {
     void set_filtering(
         const tex_filter_t minification = tex_filter_t::TEX_FILTER_NEAREST_LINEAR,
         const tex_filter_t magnification = tex_filter_t::TEX_FILTER_LINEAR
-        ) noexcept;
+    ) noexcept;
 
     void set_min_filter(const tex_filter_t minification = tex_filter_t::TEX_FILTER_NEAREST_LINEAR) noexcept;
 
@@ -279,30 +299,30 @@ class TextureAttrib {
 /*-------------------------------------
  * Introspection of Texture Integer Attributes
 -------------------------------------*/
-inline GLint get_texture_int(const tex_type_t texType, const tex_param_t param) noexcept {
+inline GLint get_texture_int(const tex_type_t texType, const tex_param_t param) noexcept
+{
     GLint retVal;
-    glGetTexParameteriv((GLenum) texType, (GLenum) param, &retVal);
+    glGetTexParameteriv((GLenum)texType, (GLenum)param, &retVal);
     return retVal;
 }
 
 /*-------------------------------------
  * Introspection of Texture Boolean Attributes
 -------------------------------------*/
-inline bool get_texture_bool(const tex_type_t texType, const tex_param_t param) noexcept {
+inline bool get_texture_bool(const tex_type_t texType, const tex_param_t param) noexcept
+{
     return get_texture_int(texType, param) == GL_TRUE;
 }
 
 /*-------------------------------------
  * Introspection of Texture Float Attributes
 -------------------------------------*/
-inline GLfloat get_texture_float(const tex_type_t texType, const tex_param_t param) noexcept {
+inline GLfloat get_texture_float(const tex_type_t texType, const tex_param_t param) noexcept
+{
     GLfloat retVal;
-    glGetTexParameterfv((GLenum) texType, (GLenum) param, &retVal);
+    glGetTexParameterfv((GLenum)texType, (GLenum)param, &retVal);
     return retVal;
 }
-
-
-
 } // end draw namespace
 } // end ls namespace
 

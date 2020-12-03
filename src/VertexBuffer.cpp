@@ -11,8 +11,12 @@
 #include "lightsky/draw/VertexBuffer.h"
 #include "lightsky/draw/VertexUtils.h"
 
-namespace ls {
-namespace draw {
+
+
+namespace ls
+{
+namespace draw
+{
 
 
 
@@ -22,7 +26,8 @@ namespace draw {
 /*-------------------------------------
  * Destructor
 -------------------------------------*/
-VertexBuffer::~VertexBuffer() noexcept {
+VertexBuffer::~VertexBuffer() noexcept
+{
     terminate_attribs();
 }
 
@@ -30,20 +35,21 @@ VertexBuffer::~VertexBuffer() noexcept {
  * Constructor
 -------------------------------------*/
 VertexBuffer::VertexBuffer() noexcept :
-    BufferObject {},
-    attribs {(common_vertex_t)0},
-    pAttribs {nullptr},
-    numAttribs {0}
-{}
+    BufferObject{},
+    attribs{(common_vertex_t)0},
+    pAttribs{nullptr},
+    numAttribs{0}
+{
+}
 
 /*-------------------------------------
  * Copy Constructor
 -------------------------------------*/
 VertexBuffer::VertexBuffer(const VertexBuffer& b) noexcept :
-    BufferObject {b},
-    attribs {(common_vertex_t)0},
-    pAttribs {nullptr},
-    numAttribs {0}
+    BufferObject{b},
+    attribs{(common_vertex_t)0},
+    pAttribs{nullptr},
+    numAttribs{0}
 {
     copy_attribs(b);
 }
@@ -52,12 +58,12 @@ VertexBuffer::VertexBuffer(const VertexBuffer& b) noexcept :
  * Move Constructor
 -------------------------------------*/
 VertexBuffer::VertexBuffer(VertexBuffer&& b) noexcept :
-    BufferObject {std::move(b)},
-    attribs {b.attribs},
-    pAttribs {b.pAttribs.release()},
-    numAttribs {b.numAttribs}
+    BufferObject{std::move(b)},
+    attribs{b.attribs},
+    pAttribs{b.pAttribs.release()},
+    numAttribs{b.numAttribs}
 {
-    
+
     b.attribs = (common_vertex_t)0;
     b.numAttribs = 0;
 }
@@ -65,8 +71,9 @@ VertexBuffer::VertexBuffer(VertexBuffer&& b) noexcept :
 /*-------------------------------------
  * Copy Operator
 -------------------------------------*/
-VertexBuffer& VertexBuffer::operator =(const VertexBuffer& b) noexcept {
-    BufferObject::operator =(b);
+VertexBuffer& VertexBuffer::operator=(const VertexBuffer& b) noexcept
+{
+    BufferObject::operator=(b);
 
     copy_attribs(b);
 
@@ -76,12 +83,13 @@ VertexBuffer& VertexBuffer::operator =(const VertexBuffer& b) noexcept {
 /*-------------------------------------
  * Move Operator
 -------------------------------------*/
-VertexBuffer& VertexBuffer::operator =(VertexBuffer&& b) noexcept {
-    BufferObject::operator =(std::move(b));
+VertexBuffer& VertexBuffer::operator=(VertexBuffer&& b) noexcept
+{
+    BufferObject::operator=(std::move(b));
 
     attribs = b.attribs;
     b.attribs = (common_vertex_t)0;
-    
+
     pAttribs.reset(b.pAttribs.release());
 
     numAttribs = b.numAttribs;
@@ -93,7 +101,8 @@ VertexBuffer& VertexBuffer::operator =(VertexBuffer&& b) noexcept {
 /*-------------------------------------
  * Delete all attributes in use by *this.
 -------------------------------------*/
-void VertexBuffer::terminate_attribs() noexcept {
+void VertexBuffer::terminate_attribs() noexcept
+{
     attribs = (common_vertex_t)0;
     pAttribs.reset();
     numAttribs = 0;
@@ -102,47 +111,56 @@ void VertexBuffer::terminate_attribs() noexcept {
 /*-------------------------------------
  * Dynamically create the vertex attributes required for a BufferObject.
 -------------------------------------*/
-bool VertexBuffer::setup_attribs(const common_vertex_t inAttribs) noexcept {
+bool VertexBuffer::setup_attribs(const common_vertex_t inAttribs) noexcept
+{
     return setup_attribs(&inAttribs, 1);
 }
 
 /*-------------------------------------
  * Dynamically create the vertex attributes required for a BufferObject.
 -------------------------------------*/
-bool VertexBuffer::setup_attribs(const common_vertex_t* const pInAttribs, const unsigned attribCount) noexcept {
-    if (!pInAttribs || !attribCount) {
+bool VertexBuffer::setup_attribs(const common_vertex_t* const pInAttribs, const unsigned attribCount) noexcept
+{
+    if (!pInAttribs || !attribCount)
+    {
         terminate_attribs();
         return true;
     }
-    
+
     const char* byteOffset = nullptr;
     unsigned totalNumAttribs = 0;
-    
-    for (unsigned i = 0; i < attribCount; ++i) {
+
+    for (unsigned i = 0; i < attribCount; ++i)
+    {
         const common_vertex_t inAttribs = pInAttribs[i];
 
         totalNumAttribs += math::count_set_bits(inAttribs);
     }
 
-    if (this->numAttribs != totalNumAttribs) {
-        VBOAttrib * const pNewAttribs = new(std::nothrow) VBOAttrib[totalNumAttribs];
+    if (this->numAttribs != totalNumAttribs)
+    {
+        VBOAttrib* const pNewAttribs = new(std::nothrow) VBOAttrib[totalNumAttribs];
 
-        if (!pNewAttribs) {
+        if (!pNewAttribs)
+        {
             return false;
         }
 
         this->pAttribs.reset(pNewAttribs);
         this->numAttribs = totalNumAttribs;
     }
-    
+
     unsigned attribIndex = 0;
 
-    for (unsigned i = 0; i < attribCount; ++i) {
+    for (unsigned i = 0; i < attribCount; ++i)
+    {
         const common_vertex_t inAttribs = pInAttribs[i];
         const GLsizei byteStride = get_vertex_byte_size(inAttribs);
 
-        for (unsigned j = 0; j < COMMON_VERTEX_FLAGS_COUNT; ++j) {
-            if (0 == (inAttribs & COMMON_VERTEX_FLAGS_LIST[j])) {
+        for (unsigned j = 0; j < COMMON_VERTEX_FLAGS_COUNT; ++j)
+        {
+            if (0 == (inAttribs & COMMON_VERTEX_FLAGS_LIST[j]))
+            {
                 continue;
             }
 
@@ -173,24 +191,22 @@ bool VertexBuffer::setup_attribs(const common_vertex_t* const pInAttribs, const 
 
         this->attribs = (common_vertex_t)(this->attribs | inAttribs);
     }
-    
+
     return true;
 }
 
 /*-------------------------------------
  * Copy attribs from the input parameter into *this.
 -------------------------------------*/
-bool VertexBuffer::copy_attribs(const BufferObject& from) noexcept {
+bool VertexBuffer::copy_attribs(const BufferObject& from) noexcept
+{
     LS_DEBUG_ASSERT(from.get_type() == buffer_use_t::VBO_BUFFER_ARRAY);
-    
-    const VertexBuffer * const pVbo = static_cast<const VertexBuffer*>(&from);
-    
+
+    const VertexBuffer* const pVbo = static_cast<const VertexBuffer*>(&from);
+
     attribs = pVbo->attribs;
 
     return BufferObject::copy_attribs<VertexBuffer, VBOAttrib>(*pVbo, *this);
 }
-
-
-
 } // end draw namespace
 } // end ls namespace

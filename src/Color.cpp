@@ -6,13 +6,18 @@
 
 #include "lightsky/draw/Color.h"
 
-namespace ls {
+
+
+namespace ls
+{
 
 /*-------------------------------------
  * Convert an InternalFormat to a standard format
 -------------------------------------*/
-draw::pixel_layout_t draw::get_color_layout(const pixel_format_t internalFormat) noexcept {
-    switch (internalFormat) {
+draw::pixel_layout_t draw::get_color_layout(const pixel_format_t internalFormat) noexcept
+{
+    switch (internalFormat)
+    {
         case COLOR_FMT_DEPTH_16U:
         case COLOR_FMT_DEPTH_24U:
         case COLOR_FMT_DEPTH_32F:
@@ -101,7 +106,7 @@ draw::pixel_layout_t draw::get_color_layout(const pixel_format_t internalFormat)
         case COLOR_FMT_COMPRESSED_RGBA:
             return COLOR_LAYOUT_DEFAULT_RGBA;
 #endif /* LS_PLATFORM_DESKTOP */
-            
+
         case COLOR_FMT_DEFAULT_RGB:
             return COLOR_LAYOUT_DEFAULT_RGB;
 
@@ -119,11 +124,13 @@ draw::pixel_layout_t draw::get_color_layout(const pixel_format_t internalFormat)
 /*-------------------------------------
  * Convert an InternalFormat to a byte layout
 -------------------------------------*/
-draw::color_type_t draw::get_color_type(const pixel_format_t internalFormat) noexcept {
-    switch (internalFormat) {
-            /*
-             * Depth, Stencil, and Shadow formats
-             */
+draw::color_type_t draw::get_color_type(const pixel_format_t internalFormat) noexcept
+{
+    switch (internalFormat)
+    {
+        /*
+         * Depth, Stencil, and Shadow formats
+         */
         case COLOR_FMT_DEPTH_16U:
             return COLOR_TYPE_USHORT;
         case COLOR_FMT_DEPTH_24U:
@@ -249,8 +256,10 @@ draw::color_type_t draw::get_color_type(const pixel_format_t internalFormat) noe
 /*-------------------------------------
  * Get the number of components used by a pixel
 -------------------------------------*/
-unsigned draw::get_num_pixel_components(const pixel_format_t internalFormat) noexcept {
-    switch (internalFormat) {
+unsigned draw::get_num_pixel_components(const pixel_format_t internalFormat) noexcept
+{
+    switch (internalFormat)
+    {
         case COLOR_FMT_DEPTH_STENCIL_24_8:
         case COLOR_FMT_DEPTH_STENCIL_32_8:
             return 2;
@@ -319,7 +328,7 @@ unsigned draw::get_num_pixel_components(const pixel_format_t internalFormat) noe
         case COLOR_FMT_RGBA_10_2U:
         case COLOR_FMT_RGBA_4:
             return 4;
-            
+
 #ifdef LS_DRAW_BACKEND_GL
         case COLOR_FMT_COMPRESSED_RGB:
             return 3;
@@ -344,25 +353,27 @@ unsigned draw::get_num_pixel_components(const pixel_format_t internalFormat) noe
 /*-------------------------------------
  * Get the number of bytes occupied by a pixel
 -------------------------------------*/
-unsigned draw::get_num_color_bytes(const color_type_t colorType) noexcept {
-    switch (colorType) {
+unsigned draw::get_num_color_bytes(const color_type_t colorType) noexcept
+{
+    switch (colorType)
+    {
         case COLOR_TYPE_BYTE:
-            return sizeof (int8_t);
+            return sizeof(int8_t);
 
         case COLOR_TYPE_UBYTE:
-            return sizeof (uint8_t);
+            return sizeof(uint8_t);
 
         case COLOR_TYPE_SHORT:
-            return sizeof (int16_t);
+            return sizeof(int16_t);
 
         case COLOR_TYPE_USHORT:
         case COLOR_TYPE_USHORT_565:
         case COLOR_TYPE_USHORT_5551:
         case COLOR_TYPE_USHORT_4444:
-            return sizeof (uint16_t);
+            return sizeof(uint16_t);
 
         case COLOR_TYPE_INT:
-            return sizeof (int32_t);
+            return sizeof(int32_t);
 
         case COLOR_TYPE_UINT:
         case COLOR_TYPE_UINT_24_8:
@@ -370,13 +381,13 @@ unsigned draw::get_num_color_bytes(const color_type_t colorType) noexcept {
         case COLOR_TYPE_UINT_111110F:
         case COLOR_TYPE_UINT_999_E5:
         case COLOR_TYPE_UINT_2101010:
-            return sizeof (uint32_t);
+            return sizeof(uint32_t);
 
         case COLOR_TYPE_HALF_FLOAT:
-            return sizeof (float) / 2;
+            return sizeof(float) / 2;
 
         case COLOR_TYPE_FLOAT:
-            return sizeof (float);
+            return sizeof(float);
 
         case COLOR_TYPE_INVALID:
         default:
@@ -385,7 +396,4 @@ unsigned draw::get_num_color_bytes(const color_type_t colorType) noexcept {
 
     return 0;
 }
-
-
-
 } // end ls namespace

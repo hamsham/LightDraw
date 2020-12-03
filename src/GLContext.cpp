@@ -10,8 +10,10 @@
 
 
 
-namespace ls {
-namespace draw {
+namespace ls
+{
+namespace draw
+{
 
 
 
@@ -22,7 +24,8 @@ namespace draw {
  * Prevent Copies of abstract BufferObject types
 -------------------------------------*/
 template <>
-GLDataList<utils::Pointer<BufferObject>>&GLDataList<utils::Pointer<BufferObject>>::operator =(const GLDataList& c) noexcept {
+GLDataList<utils::Pointer<BufferObject>>& GLDataList<utils::Pointer<BufferObject>>::operator=(const GLDataList& c) noexcept
+{
     (void)c;
     LS_ASSERT(0 != "Cannot copy Buffer Objects!");
     return *this;
@@ -32,9 +35,12 @@ GLDataList<utils::Pointer<BufferObject>>&GLDataList<utils::Pointer<BufferObject>
  * Ensure Abstract Buffer object types can be reserved
 -------------------------------------*/
 template <>
-void GLDataList<utils::Pointer<BufferObject>>::reserve(const unsigned numItems) noexcept {
-    if (numItems < objects.size()) {
-        for (unsigned i = 0; i < objects.size(); ++i) {
+void GLDataList<utils::Pointer<BufferObject>>::reserve(const size_t numItems) noexcept
+{
+    if (numItems < objects.size())
+    {
+        for (size_t i = 0; i < objects.size(); ++i)
+        {
             objects[i]->terminate();
         }
     }
@@ -46,21 +52,25 @@ void GLDataList<utils::Pointer<BufferObject>>::reserve(const unsigned numItems) 
  * Prevent Copies of abstract BufferObject types
 -------------------------------------*/
 template <>
-unsigned GLDataList<utils::Pointer<BufferObject>>::add(const utils::Pointer<BufferObject>& o) noexcept {
+size_t GLDataList<utils::Pointer<BufferObject>>::add(const utils::Pointer<BufferObject>& o) noexcept
+{
     (void)o;
     LS_ASSERT(0 != "Cannot copy Buffer Objects!");
-    return (unsigned) - 1;
+    return (size_t)-1;
 }
 
 /*-------------------------------------
  * Prevent Copies of abstract BufferObject types
 -------------------------------------*/
 template <>
-unsigned GLDataList<utils::Pointer<BufferObject>>::add(utils::Pointer<BufferObject>&& o) noexcept {
-    for (unsigned i = 0; i < size(); ++i) {
+size_t GLDataList<utils::Pointer<BufferObject>>::add(utils::Pointer<BufferObject>&& o) noexcept
+{
+    for (size_t i = 0; i < size(); ++i)
+    {
         utils::Pointer<BufferObject>& current = objects[i];
 
-        if (current->gpu_id() == o->gpu_id()) {
+        if (current->gpu_id() == o->gpu_id())
+        {
             current = std::move(o);
             return i;
         }
@@ -74,7 +84,8 @@ unsigned GLDataList<utils::Pointer<BufferObject>>::add(utils::Pointer<BufferObje
  * Terminate abstract BufferObject types
 -------------------------------------*/
 template <>
-void GLDataList<utils::Pointer<BufferObject>>::remove(const unsigned index) noexcept {
+void GLDataList<utils::Pointer<BufferObject>>::remove(const size_t index) noexcept
+{
     objects[index]->terminate();
     objects.erase(objects.begin() + index);
 }
@@ -82,15 +93,25 @@ void GLDataList<utils::Pointer<BufferObject>>::remove(const unsigned index) noex
 /*-------------------------------------
 -------------------------------------*/
 LS_DEFINE_CLASS_TYPE(GLDataList, utils::Pointer<BufferObject>);
+
 LS_DEFINE_CLASS_TYPE(GLDataList, FrameBuffer);
+
 LS_DEFINE_CLASS_TYPE(GLDataList, IndexBuffer);
+
 LS_DEFINE_CLASS_TYPE(GLDataList, RenderBuffer);
+
 LS_DEFINE_CLASS_TYPE(GLDataList, ShaderObject);
+
 LS_DEFINE_CLASS_TYPE(GLDataList, ShaderProgram);
+
 LS_DEFINE_CLASS_TYPE(GLDataList, Texture);
+
 LS_DEFINE_CLASS_TYPE(GLDataList, PixelBuffer);
+
 LS_DEFINE_CLASS_TYPE(GLDataList, UniformBuffer);
+
 LS_DEFINE_CLASS_TYPE(GLDataList, VertexArray);
+
 LS_DEFINE_CLASS_TYPE(GLDataList, VertexBuffer);
 
 
@@ -101,7 +122,8 @@ LS_DEFINE_CLASS_TYPE(GLDataList, VertexBuffer);
 /*-------------------------------------
  * Terminate
 -------------------------------------*/
-void GLContextData::terminate() noexcept {
+void GLContextData::terminate() noexcept
+{
     vbos.clear();
     ibos.clear();
     textures.clear();
@@ -114,8 +136,5 @@ void GLContextData::terminate() noexcept {
     blendModes.clear();
     depthModes.clear();
 }
-
-
-
 } // end draw namespace
 } // end ls namespace

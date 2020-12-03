@@ -18,8 +18,10 @@
 
 
 
-namespace ls {
-namespace draw {
+namespace ls
+{
+namespace draw
+{
 
 
 
@@ -28,9 +30,13 @@ namespace draw {
 -----------------------------------------------------------------------------*/
 enum class vertex_attrib_t : int;
 enum shader_stage_t : GLint;
+
 class ShaderObject;
+
 class ShaderProgramAssembly;
+
 class UniformBuffer;
+
 class VAOAttrib;
 
 
@@ -41,7 +47,8 @@ class VAOAttrib;
  * Represents a combination of OpenGL vertex, fragment, and geometry shader
  * objects.
 -----------------------------------------------------------------------------*/
-class ShaderProgram {
+class ShaderProgram
+{
     friend class ShaderProgramAssembly;
 
   private:
@@ -51,7 +58,7 @@ class ShaderProgram {
     GLuint gpuId;
 
     unsigned numUniformBlocks;
-    
+
     /**
      * Array of CPU-side references to uniform blocks in *this shader.
      */
@@ -185,7 +192,7 @@ class ShaderProgram {
      * linking.
      */
     const ShaderAttribArray& get_fragment_attribs() const noexcept;
-    
+
     /**
      * Retrieve the number of uniform blocks active within *this Shader
      * program.
@@ -194,7 +201,7 @@ class ShaderProgram {
      * represented by *this.
      */
     unsigned get_num_uniform_blocks() const noexcept;
-    
+
     /**
      * Retrieve a list of all currently active Uniform Blocks contained within
      * *this.
@@ -237,7 +244,7 @@ class ShaderProgram {
      * A positive value to indicate the uniform's location in OpenGL or
      * -1 for an invalid uniform index.
      */
-    GLint get_uniform_location(const GLchar * const name) const noexcept;
+    GLint get_uniform_location(const GLchar* const name) const noexcept;
 
     /**
      * Query the bindings of color numbers to user-defined varying out variables
@@ -249,7 +256,7 @@ class ShaderProgram {
      * found by "name". A value of -1 is returned if an object by the name of
      * "name" doesn't exist.
      */
-    GLint get_frag_data_location(const GLchar * const name) const noexcept;
+    GLint get_frag_data_location(const GLchar* const name) const noexcept;
 
     /**
      * Retrieve the ID of a currently attached shader.
@@ -262,7 +269,7 @@ class ShaderProgram {
      * binding point.
      */
     GLuint get_attached_shader_id(const shader_stage_t shaderType) const noexcept;
-    
+
     /**
      * Retrieve the index of a uniform block which matches the attributes in
      * *this ShaderProgram's array of uniform attributes.
@@ -276,7 +283,7 @@ class ShaderProgram {
      * match any of the block attributes in *this.
      */
     int get_matching_uniform_block_index(const char* const blockName) const noexcept;
-    
+
     /**
      * Retrieve the index of a uniform block which matches the attributes in
      * *this ShaderProgram's array of uniform attributes.
@@ -290,7 +297,7 @@ class ShaderProgram {
      * match any of the block attributes in *this.
      */
     int get_matching_uniform_block_index(const std::string& blockName) const noexcept;
-    
+
     /**
      * Retrieve the index of a uniform block which matches the attributes in a
      * UniformBuffer object.
@@ -309,89 +316,100 @@ class ShaderProgram {
 /*-------------------------------------
     Get the OpenGL ID used by *this.
 -------------------------------------*/
-inline unsigned ShaderProgram::gpu_id() const noexcept {
+inline unsigned ShaderProgram::gpu_id() const noexcept
+{
     return gpuId;
 }
 
 /*-------------------------------------
  Determine if *this is a valid shader object.
 -------------------------------------*/
-inline bool ShaderProgram::is_valid() const noexcept {
+inline bool ShaderProgram::is_valid() const noexcept
+{
     return gpu_id() != 0
-        && vertAttribs.get_num_attribs() > 0
-        && fragAttribs.get_num_attribs() > 0;
+           && vertAttribs.get_num_attribs() > 0
+           && fragAttribs.get_num_attribs() > 0;
 }
 
 /*-------------------------------------
     Bind this program to the current context
 -------------------------------------*/
-inline void ShaderProgram::bind() const noexcept {
+inline void ShaderProgram::bind() const noexcept
+{
     glUseProgram(gpu_id());
 }
 
 /*-------------------------------------
     Unbind this program from the context.
 -------------------------------------*/
-inline void ShaderProgram::unbind() const noexcept {
+inline void ShaderProgram::unbind() const noexcept
+{
     glUseProgram(0);
 }
 
 /*-------------------------------------
  * Get all vertex shader attributes
 -------------------------------------*/
-inline const ShaderAttribArray& ShaderProgram::get_vertex_attribs() const noexcept {
+inline const ShaderAttribArray& ShaderProgram::get_vertex_attribs() const noexcept
+{
     return vertAttribs;
 }
 
 /*-------------------------------------
  * Get all fragment shader attributes
 -------------------------------------*/
-inline const ShaderAttribArray& ShaderProgram::get_fragment_attribs() const noexcept {
+inline const ShaderAttribArray& ShaderProgram::get_fragment_attribs() const noexcept
+{
     return fragAttribs;
 }
 
 /*-------------------------------------
  * Get the current number of uniform blocks
 -------------------------------------*/
-inline unsigned ShaderProgram::get_num_uniform_blocks() const noexcept {
+inline unsigned ShaderProgram::get_num_uniform_blocks() const noexcept
+{
     return numUniformBlocks;
 }
 
 /*-------------------------------------
  * Get all uniform blocks in *this.
 -------------------------------------*/
-inline const utils::Pointer<ShaderBlockAttrib[]>& ShaderProgram::get_uniform_blocks() const noexcept {
+inline const utils::Pointer<ShaderBlockAttrib[]>& ShaderProgram::get_uniform_blocks() const noexcept
+{
     return uniformBlocks;
 }
 
 /*-------------------------------------
  * Get all shader uniform names
 -------------------------------------*/
-inline const ShaderAttribArray& ShaderProgram::get_uniforms() const noexcept {
+inline const ShaderAttribArray& ShaderProgram::get_uniforms() const noexcept
+{
     return uniforms;
 }
 
 /*-------------------------------------
     Get the location of a uniform variable.
 -------------------------------------*/
-inline GLint ShaderProgram::get_uniform_location(const GLchar * const name) const noexcept {
+inline GLint ShaderProgram::get_uniform_location(const GLchar* const name) const noexcept
+{
     return glGetUniformLocation(gpu_id(), name);
 }
 
 /*-------------------------------------
     Get the location of a uniform variable.
 -------------------------------------*/
-inline GLint ShaderProgram::get_uniform_location(const std::string& name) const noexcept {
+inline GLint ShaderProgram::get_uniform_location(const std::string& name) const noexcept
+{
     return glGetUniformLocation(gpu_id(), name.c_str());
 }
 
 /*-------------------------------------
     Query the bindings of color numbers to user-defined varying out variables
 -------------------------------------*/
-inline GLint ShaderProgram::get_frag_data_location(const GLchar * const name) const noexcept {
+inline GLint ShaderProgram::get_frag_data_location(const GLchar* const name) const noexcept
+{
     return glGetFragDataLocation(gpu_id(), name);
 }
-
 } // end draw namespace
 } // end ls namespace
 

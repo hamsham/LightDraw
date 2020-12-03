@@ -7,13 +7,15 @@
 /*-----------------------------------------------------------------------------
  * Forward Declarations
 ------------------------------------------------------------------------------*/
-namespace ls {
-namespace math {
-    template <typename num_t>
-    struct vec3_t;
+namespace ls
+{
+namespace math
+{
+template <typename num_t>
+struct vec3_t;
 
-    template <typename num_t>
-    struct quat_t;
+template <typename num_t>
+struct quat_t;
 } // end math namespace
 } // end ls namespace
 
@@ -22,8 +24,10 @@ namespace math {
 /*-----------------------------------------------------------------------------
  * Data Types used for animations
 -----------------------------------------------------------------------------*/
-namespace ls {
-namespace draw {
+namespace ls
+{
+namespace draw
+{
 
 
 
@@ -34,9 +38,6 @@ namespace draw {
  * but interpolation between frames may need more precision.
 -------------------------------------*/
 typedef float anim_prec_t;
-
-
-
 } // end draw namespace
 } // end ls namespace
 

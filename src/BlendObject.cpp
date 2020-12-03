@@ -7,14 +7,20 @@
 
 #include "lightsky/draw/BlendObject.h"
 
-namespace ls {
-namespace draw {
+
+
+namespace ls
+{
+namespace draw
+{
 
 /*-------------------------------------
     Enable blending and apply blend parameters to OpenGL.
 -------------------------------------*/
-void BlendObject::bind() const {
-    if (!enabled) {
+void BlendObject::bind() const
+{
+    if (!enabled)
+    {
         glDisable(BLEND_STATE);
         return;
     }
@@ -31,18 +37,19 @@ void BlendObject::bind() const {
 /*
  * Disable OpenGL blending
  */
-void BlendObject::unbind() const {
+void BlendObject::unbind() const
+{
     // the default constructor already has default OpenGL params.
-    BlendObject blender {};
+    BlendObject blender{};
     blender.bind();
 }
 
 /*
  * Reset all members to their default values.
  */
-void BlendObject::terminate() {
-    *this = BlendObject {};
+void BlendObject::terminate()
+{
+    *this = BlendObject{};
 }
-
 } // end draw namespace
 } // end ls namespace

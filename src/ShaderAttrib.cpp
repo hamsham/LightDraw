@@ -19,8 +19,12 @@
 #include "lightsky/draw/ShaderObject.h"
 #include "lightsky/draw/ShaderProgram.h"
 
-namespace ls {
-namespace draw {
+
+
+namespace ls
+{
+namespace draw
+{
 
 
 
@@ -31,7 +35,8 @@ namespace draw {
 /*-------------------------------------
  * Destructor
 -------------------------------------*/
-ShaderAttrib::~ShaderAttrib() noexcept {
+ShaderAttrib::~ShaderAttrib() noexcept
+{
 }
 
 /*-------------------------------------
@@ -44,7 +49,8 @@ ShaderAttrib::ShaderAttrib() noexcept :
     numElements{1},
     nameHash{0},
     name{nullptr}
-{}
+{
+}
 
 /*-------------------------------------
  * Copy Constructor
@@ -64,9 +70,9 @@ ShaderAttrib::ShaderAttrib(const ShaderAttrib& v) noexcept :
  * Move Constructor
 -------------------------------------*/
 ShaderAttrib::ShaderAttrib(ShaderAttrib&& v) noexcept :
-    location {v.location},
-    components {v.components},
-    type {v.type},
+    location{v.location},
+    components{v.components},
+    type{v.type},
     numElements{v.numElements},
     nameHash{v.nameHash},
     name{std::move(v.name)}
@@ -81,12 +87,13 @@ ShaderAttrib::ShaderAttrib(ShaderAttrib&& v) noexcept :
 /*-------------------------------------
  * Copy Operator
 -------------------------------------*/
-ShaderAttrib& ShaderAttrib::operator =(const ShaderAttrib& v) noexcept {
+ShaderAttrib& ShaderAttrib::operator=(const ShaderAttrib& v) noexcept
+{
     location = v.location;
     components = v.components;
     type = v.type;
     numElements = v.numElements;
-    
+
     set_name(v.name);
 
     return *this;
@@ -95,7 +102,8 @@ ShaderAttrib& ShaderAttrib::operator =(const ShaderAttrib& v) noexcept {
 /*-------------------------------------
  * Move Operator
 -------------------------------------*/
-ShaderAttrib& ShaderAttrib::operator =(ShaderAttrib&& v) noexcept {
+ShaderAttrib& ShaderAttrib::operator=(ShaderAttrib&& v) noexcept
+{
     location = v.location;
     v.location = GLSL_INVALID_LOCATION;
 
@@ -104,13 +112,13 @@ ShaderAttrib& ShaderAttrib::operator =(ShaderAttrib&& v) noexcept {
 
     type = v.type;
     v.type = VERTEX_DATA_UNKNOWN;
-    
+
     numElements = v.numElements;
     v.numElements = 1;
 
     nameHash = v.nameHash;
     v.nameHash = 0;
-    
+
     name = std::move(v.name);
 
     return *this;
@@ -119,50 +127,55 @@ ShaderAttrib& ShaderAttrib::operator =(ShaderAttrib&& v) noexcept {
 /*-------------------------------------
  * Compare matching attribs
 -------------------------------------*/
-bool ShaderAttrib::operator==(const ShaderAttrib& s) const noexcept {
+bool ShaderAttrib::operator==(const ShaderAttrib& s) const noexcept
+{
     return 1
-    && location == s.location
-    && components == s.components
-    && type == s.type
-    && numElements == s.numElements
-    && nameHash == s.nameHash;
+           && location == s.location
+           && components == s.components
+           && type == s.type
+           && numElements == s.numElements
+           && nameHash == s.nameHash;
     // Don't compare the name member, the hash must match
 }
 
 /*-------------------------------------
  * Compare mismatched attribs
 -------------------------------------*/
-bool ShaderAttrib::operator!=(const ShaderAttrib& s) const noexcept {
+bool ShaderAttrib::operator!=(const ShaderAttrib& s) const noexcept
+{
     return !(*this == s);
 }
 
 /*-------------------------------------
  * Set the name of an attribute
 -------------------------------------*/
-bool ShaderAttrib::set_name(const char* const attribName, const unsigned numSrcChars) noexcept {
-    unsigned numDestChars = numSrcChars ? numSrcChars : strlen(attribName);
-    
-    if (!numDestChars) {
+bool ShaderAttrib::set_name(const char* const attribName, const unsigned numSrcChars) noexcept
+{
+    unsigned numDestChars = (unsigned)(numSrcChars ? numSrcChars : strlen(attribName));
+
+    if (!numDestChars)
+    {
         name.reset(nullptr);
         return false;
     }
-    
-    name.reset(new(std::nothrow) GLchar[numDestChars+1]);
-    
-    if (!name) {
+
+    name.reset(new(std::nothrow) GLchar[numDestChars + 1u]);
+
+    if (!name)
+    {
         return false;
     }
-    
+
     //utils::fast_memcpy(name.get(), attribName, numDestChars);
     for (unsigned i = 0; i < numDestChars; ++i)
     {
         name[i] = attribName[i];
     }
-    
+
     name[numDestChars] = '\0';
-    
+
     nameHash = utils::string_hash(name.get());
-    
+
     return true;
 }
 
@@ -182,7 +195,8 @@ utils::Pointer<GLchar[]> draw::get_attrib_name(
     GLint& outVarSize,
     GLenum& outVarType,
     const GLint attribMaxLenFlag
-    ) noexcept {
+) noexcept
+{
     LS_DEBUG_ASSERT(
         attribMaxLenFlag == GL_ACTIVE_UNIFORM_MAX_LENGTH ||
         attribMaxLenFlag == GL_ACTIVE_ATTRIBUTE_MAX_LENGTH
@@ -192,10 +206,12 @@ utils::Pointer<GLchar[]> draw::get_attrib_name(
     glGetProgramiv(prog.gpu_id(), attribMaxLenFlag, &maxVarNameLen);
     LS_LOG_GL_ERR();
 
-    if (maxVarNameLen < 1) {
+    if (maxVarNameLen < 1)
+    {
         return utils::Pointer<GLchar[]>{nullptr};
     }
-    else {
+    else
+    {
         // OpenGL doesn't account for the null-terminator when retrieving the
         // length of a variable's name.
         maxVarNameLen += 1;
@@ -203,13 +219,15 @@ utils::Pointer<GLchar[]> draw::get_attrib_name(
 
     GLsizei varNameLen = 0;
     utils::Pointer<GLchar[]> varName{new GLchar[maxVarNameLen]};
-    
+
     utils::fast_fill(varName.get(), '\0', maxVarNameLen);
 
-    if (attribMaxLenFlag == GL_ACTIVE_UNIFORM_MAX_LENGTH) {
+    if (attribMaxLenFlag == GL_ACTIVE_UNIFORM_MAX_LENGTH)
+    {
         glGetActiveUniform(prog.gpu_id(), index, maxVarNameLen, &varNameLen, &outVarSize, &outVarType, varName.get());
     }
-    else {
+    else
+    {
         glGetActiveAttrib(prog.gpu_id(), index, maxVarNameLen, &varNameLen, &outVarSize, &outVarType, varName.get());
     }
 
@@ -217,7 +235,4 @@ utils::Pointer<GLchar[]> draw::get_attrib_name(
 
     return varName;
 }
-
-
-
 } // end ls namespace

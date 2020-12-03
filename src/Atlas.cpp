@@ -16,13 +16,18 @@
 #include "lightsky/draw/GLQuery.h"
 #include "lightsky/draw/TextureAssembly.h"
 
-namespace ls {
-namespace draw {
+
+
+namespace ls
+{
+namespace draw
+{
 
 /*-------------------------------------
  * Destructor
 -------------------------------------*/
-Atlas::~Atlas() noexcept {
+Atlas::~Atlas() noexcept
+{
     reset_cpu_data();
 }
 
@@ -34,7 +39,8 @@ Atlas::Atlas() noexcept :
     numEntries{0},
     pEntries{nullptr},
     atlasTex{}
-{}
+{
+}
 
 /*-------------------------------------
  * Font Atlas Copy Constructor
@@ -45,12 +51,14 @@ Atlas::Atlas(const Atlas& a) noexcept :
     pEntries{a.pEntries ? new(std::nothrow) AtlasGlyph[a.numEntries] : nullptr},
     atlasTex{a.atlasTex}
 {
-    if (!pEntries) {
+    if (!pEntries)
+    {
         reset_cpu_data();
         return;
     }
 
-    for (unsigned i = 0; i < a.numEntries; ++i) {
+    for (unsigned i = 0; i < a.numEntries; ++i)
+    {
         pEntries[i] = a.pEntries[i];
     }
 }
@@ -71,12 +79,15 @@ Atlas::Atlas(Atlas&& a) noexcept :
 /*-------------------------------------
  * Font Atlas Copy Operator
 -------------------------------------*/
-Atlas& Atlas::operator =(const Atlas& a) noexcept {
-    if (pEntries) {
+Atlas& Atlas::operator=(const Atlas& a) noexcept
+{
+    if (pEntries)
+    {
         reset_cpu_data();
     }
 
-    if (!a.pEntries || !a.numEntries) {
+    if (!a.pEntries || !a.numEntries)
+    {
         return *this;
     }
 
@@ -85,12 +96,14 @@ Atlas& Atlas::operator =(const Atlas& a) noexcept {
     pEntries.reset(new(std::nothrow) AtlasGlyph[numEntries]);
     atlasTex = a.atlasTex;
 
-    if (!pEntries) {
+    if (!pEntries)
+    {
         reset_cpu_data();
         return *this;
     }
 
-    for (unsigned i = 0; i < a.numEntries; ++i) {
+    for (unsigned i = 0; i < a.numEntries; ++i)
+    {
         pEntries[i] = a.pEntries[i];
     }
 
@@ -100,7 +113,8 @@ Atlas& Atlas::operator =(const Atlas& a) noexcept {
 /*-------------------------------------
  * Font Atlas move operator
 -------------------------------------*/
-Atlas& Atlas::operator =(Atlas&& a) noexcept {
+Atlas& Atlas::operator=(Atlas&& a) noexcept
+{
     pixelRatio = a.pixelRatio;
     a.pixelRatio = 1.f;
 
@@ -116,14 +130,16 @@ Atlas& Atlas::operator =(Atlas&& a) noexcept {
 /*-------------------------------------
  * Calculate the dimensions each glyph's X & Y size
 -------------------------------------*/
-int Atlas::calc_glyph_dimensions(const FontResource& fr) noexcept {
+int Atlas::calc_glyph_dimensions(const FontResource& fr) noexcept
+{
     return (int)std::sqrt((float)fr.get_num_glyphs());
 }
 
 /*-------------------------------------
  * Create the texture object which will contain the atlas
 -------------------------------------*/
-bool Atlas::create_texture(const FontResource& fr) noexcept {
+bool Atlas::create_texture(const FontResource& fr) noexcept
+{
     TextureAssembly assembly;
 
     // Calculate the size of the atlas.
@@ -146,29 +162,33 @@ bool Atlas::create_texture(const FontResource& fr) noexcept {
 /*-------------------------------------
  * Reset all cpu-side data to avoid reallocations on the GPU.
 -------------------------------------*/
-void Atlas::reset_cpu_data() noexcept {
+void Atlas::reset_cpu_data() noexcept
+{
     pixelRatio = 1.f;
     numEntries = 0;
     pEntries.reset();
-    atlasTex = Texture {};
+    atlasTex = Texture{};
 }
 
 /*-------------------------------------
  * Store a fontFile's texture data on OpenGL server memory
 -------------------------------------*/
-bool Atlas::init(const FontResource& fr) noexcept {
+bool Atlas::init(const FontResource& fr) noexcept
+{
     reset_cpu_data();
 
     LS_LOG_MSG("Attempting to load a font atlas.");
 
     // prepare the array of atlas entries
     pEntries.reset(new(std::nothrow) AtlasGlyph[fr.get_num_glyphs()]);
-    if (pEntries == nullptr) {
+    if (pEntries == nullptr)
+    {
         LS_LOG_ERR("\tUnable to generate an array of font atlas entries.\n");
         return false;
     }
 
-    if (!create_texture(fr)) {
+    if (!create_texture(fr))
+    {
         LS_LOG_GL_ERR();
         LS_LOG_ERR("\tAn error occurred while allocating space for a font atlas.\n");
         pEntries.reset();
@@ -182,19 +202,21 @@ bool Atlas::init(const FontResource& fr) noexcept {
     pixelRatio = 1.f / (float)fr.get_font_size(); // DPI scaling
     numEntries = fr.get_num_glyphs();
 
-    const math::vec2i&& maxGlyphSize    = fr.get_max_glyph_size();
-    const FontGlyph * const pGlyphs     = fr.get_glyphs();
-    const int dimensions                = calc_glyph_dimensions(fr);
-    const float fDimensionInv           = 1.f / (float)dimensions;
-    const math::vec2i&& atlasSize       = math::vec2i {atlasTex.get_size()[0], atlasTex.get_size()[1]};
-    const math::vec2&& texResolution    = (math::vec2)atlasSize;
-    const GLint standardAlignment       = draw::get_gl_int(GL_UNPACK_ALIGNMENT);
+    const math::vec2i&& maxGlyphSize = fr.get_max_glyph_size();
+    const FontGlyph* const pGlyphs = fr.get_glyphs();
+    const int dimensions = calc_glyph_dimensions(fr);
+    const float fDimensionInv = 1.f / (float)dimensions;
+    const math::vec2i&& atlasSize = math::vec2i{atlasTex.get_size()[0], atlasTex.get_size()[1]};
+    const math::vec2&& texResolution = (math::vec2)atlasSize;
+    const GLint standardAlignment = draw::get_gl_int(GL_UNPACK_ALIGNMENT);
 
     // uploading 1-byte per pixel
     glPixelStorei(GL_UNPACK_ALIGNMENT, draw::get_num_color_bytes(atlasTex.get_attribs().get_color_type()));
 
-    for (int x = 0, glyphIndex = 0; x < dimensions; ++x) {
-        for (int y = 0; y < dimensions; ++y) {
+    for (int x = 0, glyphIndex = 0; x < dimensions; ++x)
+    {
+        for (int y = 0; y < dimensions; ++y)
+        {
             const FontGlyph& pGlyph = pGlyphs[glyphIndex];
             AtlasGlyph& pEntry = pEntries[glyphIndex];
 
@@ -202,17 +224,17 @@ bool Atlas::init(const FontResource& fr) noexcept {
             atlasTex.modify(tex_2d_type_t::TEX_SUBTYPE_2D, math::vec2i{x, y} * maxGlyphSize, pGlyph.size, pGlyph.pData);
 
             // top-left & bottom right glyph corner
-            pEntry.uv[0] = math::vec2 {(float)maxGlyphSize[0] * x, (float)maxGlyphSize[1] * y};
-            pEntry.uv[1] = pEntry.uv[0] + (math::vec2) pGlyph.size;
+            pEntry.uv[0] = math::vec2{(float)maxGlyphSize[0] * x, (float)maxGlyphSize[1] * y};
+            pEntry.uv[1] = pEntry.uv[0] + (math::vec2)pGlyph.size;
 
             // normalize UV coordinates to within (0, 1)
             pEntry.uv[0] /= texResolution;
             pEntry.uv[1] /= texResolution;
 
             // Add normalized position/sizing data for each glyph.
-            pEntry.advance = fDimensionInv * (math::vec2) pGlyph.advance;
-            pEntry.bearing = fDimensionInv * (math::vec2) pGlyph.bearing;
-            pEntry.size = fDimensionInv * (math::vec2) pGlyph.size;
+            pEntry.advance = fDimensionInv * (math::vec2)pGlyph.advance;
+            pEntry.bearing = fDimensionInv * (math::vec2)pGlyph.bearing;
+            pEntry.size = fDimensionInv * (math::vec2)pGlyph.size;
 
             // next glyph
             ++glyphIndex;
@@ -234,7 +256,7 @@ bool Atlas::init(const FontResource& fr) noexcept {
         "\n\t\tWidth Per Glyph:    ", maxGlyphSize[0],
         "\n\t\tHeight Per Glyph:   ", maxGlyphSize[1],
         '\n'
-        );
+    );
 
     return true;
 }
@@ -242,10 +264,10 @@ bool Atlas::init(const FontResource& fr) noexcept {
 /*-------------------------------------
  * Frees all memory used by *this.
 -------------------------------------*/
-void Atlas::terminate() noexcept {
+void Atlas::terminate() noexcept
+{
     atlasTex.terminate();
     reset_cpu_data();
 }
-
 } // end draw namespace
 } // end ls namespace

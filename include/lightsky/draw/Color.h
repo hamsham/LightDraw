@@ -12,8 +12,10 @@
 
 
 
-namespace ls {
-namespace draw {
+namespace ls
+{
+namespace draw
+{
 
 
 
@@ -36,7 +38,8 @@ typedef uint32_t pixel_id_t;
  * These enumerations are used to specify the basic data type each pixel of a
  * texture or framebuffer.
  */
-enum color_type_t : GLenum {
+enum color_type_t : GLenum
+{
     COLOR_TYPE_BYTE = GL_BYTE,
     COLOR_TYPE_UBYTE = GL_UNSIGNED_BYTE,
 
@@ -69,7 +72,8 @@ enum color_type_t : GLenum {
  * OpenGL refers to these as the "format" parameter when using operations such
  * as "glTexImage()."
  */
-enum pixel_layout_t : GLint {
+enum pixel_layout_t : GLint
+{
     COLOR_LAYOUT_DEPTH = GL_DEPTH_COMPONENT,
     COLOR_LAYOUT_DEPTH_STENCIL = GL_DEPTH_STENCIL,
     COLOR_LAYOUT_STENCIL = GL_STENCIL_INDEX8,
@@ -93,7 +97,7 @@ enum pixel_layout_t : GLint {
     COLOR_LAYOUT_DEFAULT_RGB = GL_RGB,
     COLOR_LAYOUT_DEFAULT_RGBA = GL_RGBA,
 #endif
-    
+
     COLOR_LAYOUT_INVALID = GL_INVALID_ENUM,
 };
 
@@ -105,7 +109,8 @@ enum pixel_layout_t : GLint {
  * OpenGL refers to these types as the "internalFormat" parameter in functions
  * such as "glRenderbufferStorage()" and "glTexImage()"
  */
-enum pixel_format_t : GLenum {
+enum pixel_format_t : GLenum
+{
     COLOR_FMT_DEPTH_STENCIL_24_8 = GL_DEPTH24_STENCIL8,
     COLOR_FMT_DEPTH_STENCIL_32_8 = GL_DEPTH32F_STENCIL8,
 
@@ -177,12 +182,12 @@ enum pixel_format_t : GLenum {
 
     COLOR_FMT_DEFAULT_RGB = GL_RGB,
     COLOR_FMT_DEFAULT_RGBA = GL_RGBA,
-    
+
     #ifdef LS_DRAW_BACKEND_GL
-        COLOR_FMT_COMPRESSED_RGB = GL_COMPRESSED_RGB,
-        COLOR_FMT_COMPRESSED_RGBA = GL_COMPRESSED_RGBA,
+    COLOR_FMT_COMPRESSED_RGB = GL_COMPRESSED_RGB,
+    COLOR_FMT_COMPRESSED_RGBA = GL_COMPRESSED_RGBA,
     #endif
-    
+
     COLOR_FMT_INVALID = GL_INVALID_ENUM,
 };
 
@@ -246,10 +251,14 @@ unsigned get_num_color_bytes(const color_type_t colorType) noexcept;
 /*-----------------------------------------------------------------------------
     Useful Typedefs
 -----------------------------------------------------------------------------*/
-namespace color {
+namespace color
+{
 typedef math::vec4_t<unsigned char> colorub_t;
+
 typedef math::vec4_t<unsigned short> colorus_t;
+
 typedef math::vec4_t<unsigned int> colorui_t;
+
 typedef math::vec4_t<float> colorf_t;
 
 typedef colorf_t color;
@@ -263,17 +272,23 @@ static const color blank = color{0.f, 0.f, 0.f, 0.f};
 
 // Primary Colors
 static const color red = color{1.f, 0.f, 0.f, 1.f};
+
 static const color green = color{0.f, 1.f, 0.f, 1.f};
+
 static const color blue = color{0.f, 0.f, 1.f, 1.f};
 
 //Secondary Colors
 static const color magenta = color{1.f, 0.f, 1.f, 1.f};
+
 static const color yellow = color{1.f, 1.f, 0.f, 1.f};
+
 static const color cyan = color{0.f, 1.f, 1.f, 1.f};
 
 // Monochrome
 static const color black = color{0.f, 0.f, 0.f, 1.f};
+
 static const color white = color{1.f, 1.f, 1.f, 1.f};
+
 static const color gray = color{0.5f, 0.5f, 0.5f, 1.f};
 
 
@@ -294,13 +309,14 @@ static const color gray = color{0.5f, 0.5f, 0.5f, 1.f};
  * @return A color object which uses floating-point precision for its base type.
  */
 template <typename int_t, typename float_t = float>
-math::vec4_t<float_t> color_int_to_float(const math::vec4_t<int_t>& c) {
-    const float_t range = float_t{1.0} / ((float_t) std::numeric_limits<int_t>::max());
-    return math::vec4_t<float_t> {
-        range * (float_t) c[0],
-        range * (float_t) c[1],
-        range * (float_t) c[2],
-        range * (float_t) c[3]
+math::vec4_t <float_t> color_int_to_float(const math::vec4_t <int_t>& c)
+{
+    const float_t range = float_t{1.0} / ((float_t)std::numeric_limits<int_t>::max());
+    return math::vec4_t<float_t>{
+        range * (float_t)c[0],
+        range * (float_t)c[1],
+        range * (float_t)c[2],
+        range * (float_t)c[3]
     };
 }
 
@@ -320,12 +336,13 @@ math::vec4_t<float_t> color_int_to_float(const math::vec4_t<int_t>& c) {
  * @return A color object which uses integral precision for its base type.
  */
 template <typename int_t, typename float_t = float, int_t range = std::numeric_limits<int_t>::max()>
-constexpr math::vec4_t<int_t> color_float_to_int(const math::vec4_t<float_t>& c) {
-    return math::vec4_t<int_t>{
-        ls::math::ranged_floor<float_t, int_t, range>((c[0] * range) + float_t {0.5}),
-        ls::math::ranged_floor<float_t, int_t, range>((c[1] * range) + float_t {0.5}),
-        ls::math::ranged_floor<float_t, int_t, range>((c[2] * range) + float_t {0.5}),
-        ls::math::ranged_floor<float_t, int_t, range>((c[3] * range) + float_t {0.5})
+constexpr math::vec4_t <int_t> color_float_to_int(const math::vec4_t <float_t>& c)
+{
+    return math::vec4_t < int_t > {
+        ls::math::ranged_floor<float_t, int_t, range>((c[0] * range) + float_t{0.5}),
+        ls::math::ranged_floor<float_t, int_t, range>((c[1] * range) + float_t{0.5}),
+        ls::math::ranged_floor<float_t, int_t, range>((c[2] * range) + float_t{0.5}),
+        ls::math::ranged_floor<float_t, int_t, range>((c[3] * range) + float_t{0.5})
     };
 }
 
@@ -334,11 +351,12 @@ constexpr math::vec4_t<int_t> color_float_to_int(const math::vec4_t<float_t>& c)
 /*-------------------------------------
  * Color Conversion to ID
 -------------------------------------*/
-constexpr pixel_id_t color_to_id(const colorub_t& col) noexcept {
+constexpr pixel_id_t color_to_id(const colorub_t& col) noexcept
+{
     return 0
-    | (col[0] << 0)
-    | (col[1] << 8)
-    | (col[2] << 16);
+           | (col[0] << 0)
+           | (col[1] << 8)
+           | (col[2] << 16);
 }
 
 
@@ -346,17 +364,15 @@ constexpr pixel_id_t color_to_id(const colorub_t& col) noexcept {
 /*-------------------------------------
  * ID Conversion to Color
 -------------------------------------*/
-inline colorf_t id_to_color(const pixel_id_t id, const float normFactor = 1.f/255.f) noexcept {
-    return colorf_t {
+inline colorf_t id_to_color(const pixel_id_t id, const float normFactor = 1.f / 255.f) noexcept
+{
+    return colorf_t{
         (float)((id & 0x000000FF) >> 0) * normFactor,
         (float)((id & 0x0000FF00) >> 8) * normFactor,
         (float)((id & 0x00FF0000) >> 16) * normFactor,
         1.f
     };
 }
-
-
-
 } // end color namespace
 } // end draw namespace
 } // end ls namespace

@@ -47,7 +47,9 @@ if(MSVC)
             PARENT_SCOPE
         )
 
-        set(ASSIMP_LIBRARIES "ASSIMP_LIBRARY_RELEASE" "ASSIMP_LIBRARY_DEBUG" PARENT_SCOPE)
+        if (ASSIMP_LIBRARY_RELEASE)
+            set(ASSIMP_LIBRARIES "${ASSIMP_LIBRARY_RELEASE}" "${ASSIMP_LIBRARY_DEBUG}" PARENT_SCOPE)
+        endif()
 
         function(ASSIMP_COPY_BINARIES TargetDirectory)
             add_custom_target(AssimpCopyBinaries
