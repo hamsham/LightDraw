@@ -83,6 +83,10 @@ inline unsigned print_gl_error(const char* const, int, const char*) noexcept {
 */
 
 #ifdef LS_OS_OSX
+    #ifndef GL_GLEXT_PROTOTYPES
+        #define GL_GLEXT_PROTOTYPES
+    #endif
+
     #define GL_DO_NOT_WARN_IF_MULTI_GL_VERSION_HEADERS_INCLUDED
     #include <OpenGL/gl.h>
     #include <OpenGL/gl3.h>
@@ -90,10 +94,18 @@ inline unsigned print_gl_error(const char* const, int, const char*) noexcept {
     #include <OpenGL/gl3ext.h>
 
 #elif defined (LS_OS_IOS) || defined (LS_OS_IOS_SIM)
+    #ifndef GL_GLEXT_PROTOTYPES
+        #define GL_GLEXT_PROTOTYPES
+    #endif
+
     #include <OpenGLES/ES3/gl.h>
     #include <OpenGLES/ES3/glext.h>
 
 #elif defined (LS_OS_LINUX)
+    #ifndef GL_GLEXT_PROTOTYPES
+        #define GL_GLEXT_PROTOTYPES
+    #endif
+
     #ifndef LS_DRAW_FORCE_BACKEND_GL
         #include <GLES3/gl3.h>
         #include <GLES3/gl3ext.h>
@@ -126,6 +138,8 @@ inline unsigned print_gl_error(const char* const, int, const char*) noexcept {
 /*-------------------------------------
  * OpenGL Function Declarations (extern)
 -------------------------------------*/
+#if defined (LS_OS_WINDOWS)
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -877,6 +891,8 @@ extern PFNGLPIXELSTOREXPROC glPixelStorex;
 #ifdef __cplusplus
 }
 #endif
+
+#endif /* LS_OS_WINDOWS */
 
 
 

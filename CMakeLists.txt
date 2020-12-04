@@ -35,8 +35,10 @@ endif()
 # Finders
 # -------------------------------------
 # Only using OpenGL for its libraries, not headers
-set(OpenGL_GL_PREFERENCE GLVND)
-find_package(OpenGL REQUIRED)
+if (NOT WIN32)
+    set(OpenGL_GL_PREFERENCE GLVND)
+    find_package(OpenGL REQUIRED)
+endif()
 
 find_package(Threads REQUIRED)
 
@@ -200,10 +202,11 @@ set(LS_DRAW_SOURCES
 add_library(${OUTPUT_NAME} STATIC ${LS_DRAW_HEADERS} ${LS_DRAW_SOURCES})
 
 target_include_directories(${OUTPUT_NAME} PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>)
-target_include_directories(${OUTPUT_NAME} SYSTEM BEFORE
-    PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/external/include>
-    PRIVATE ${FREETYPE_INCLUDE_DIRS}
-)
+target_include_directories(${OUTPUT_NAME} SYSTEM BEFORE PRIVATE ${FREETYPE_INCLUDE_DIRS})
+
+if (NOT WIN32)
+    target_include_directories(${OUTPUT_NAME} SYSTEM BEFORE PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/external/include>)
+endif()
 
 # Linking Setup
 target_link_libraries(
@@ -222,32 +225,40 @@ if (LS_REQUIRE_BOOST_REGEX)
     target_compile_definitions(${OUTPUT_NAME} PUBLIC -DLS_REQUIRE_BOOST_REGEX)
 endif()
 
-if (OpenGL::EGL AND OPENGL_opengl_LIBRARY)
-    message("-- Found EGL library: ${OPENGL_egl_LIBRARY}")
-    target_link_libraries(
-        ${OUTPUT_NAME}
-            PUBLIC OpenGL::EGL
-    )
-elseif(OpenGL::GLX)
-    message("-- Found GLX library: ${OPENGL_glx_LIBRARY}")
-    target_link_libraries(
-        ${OUTPUT_NAME}
-            PUBLIC OpenGL::GLX
-    )
-endif()
+if (NOT WIN32)
+    if (OpenGL::OpenGL)
+        message("-- Using GLVND OpenGL driver: ${OPENGL_opengl_LIBRARY}")
 
-if (OpenGL::EGL AND OpenGL::OpenGL)
-    message("-- Found GLVND GL driver library: ${OPENGL_opengl_LIBRARY}")
-    target_link_libraries(
-        ${OUTPUT_NAME}
-            PUBLIC OpenGL::OpenGL
-    )
-else()
-    message("-- Found Legacy GL driver library: ${OPENGL_gl_LIBRARY}")
-    target_link_libraries(
-        ${OUTPUT_NAME}
+        if (OpenGL::EGL)
+            message("-- Using GLVND EGL library: ${OPENGL_egl_LIBRARY}")
+            target_link_libraries(
+                ${OUTPUT_NAME}
+                    PUBLIC OpenGL::OpenGL
+                    PUBLIC OpenGL::EGL
+            )
+
+        elseif(OpenGL::GLX)
+            message("-- Using GLVND GLX library: ${OPENGL_glx_LIBRARY}")
+            target_link_libraries(
+                ${OUTPUT_NAME}
+                PUBLIC OpenGL::GLX
+            )
+
+        else()
+            message("-- Using Legacy GL driver library: ${OPENGL_gl_LIBRARY}")
+            target_link_libraries(
+                ${OUTPUT_NAME}
+                PUBLIC OpenGL::GL
+            )
+        endif()
+
+    else()
+        message("-- Using Legacy GL driver library: ${OPENGL_gl_LIBRARY}")
+        target_link_libraries(
+            ${OUTPUT_NAME}
             PUBLIC OpenGL::GL
-    )
+        )
+    endif()
 endif()
 
 

@@ -14,23 +14,13 @@
 /*-------------------------------------
  * Windows-specific functions
 -------------------------------------*/
+#if defined(LS_OS_WINDOWS)
+
 namespace
 {
 
-#if defined(LS_OS_LINUX)
-constexpr char LSGL_LIB_NAME[] = "libGL.so";
-    #define HLGLPROCADDRESS glxGetProcAddress
-#elif defined(LS_OS_OSX)
-constexpr char LSGL_LIB_NAME[] = "libGL.dylib";
-    #define HLGLPROCADDRESS LSGLLIB.symbol
-#elif defined(LS_OS_WINDOWS)
-
-constexpr char LSGL_LIB_NAME[] = "opengl32.dll";
-
+    constexpr char LSGL_LIB_NAME[] = "opengl32.dll";
     #define HLGLPROCADDRESS wglGetProcAddress
-#else
-    #error "Unknown OS. Please update the OpenGL library names."
-#endif
 
 static ls::utils::Futex LSGLLOCK;
 
@@ -51,7 +41,10 @@ uintptr_t get_gl_function(const char* const name)
 
     return p;
 }
+
 } // end anonymous namespace
+
+#endif  /* LS_OS_WINDOWS */
 
 namespace ls
 {
@@ -104,6 +97,15 @@ unsigned draw::print_gl_error(const char* const func, const int line, const char
 /*-------------------------------------
  * OpenGL Function Declarations (static)
 -------------------------------------*/
+#ifndef LS_OS_WINDOWS
+
+int ls::draw::init_eds_draw()
+{
+    return 1;
+}
+
+#else
+
 PFNGLDRAWRANGEELEMENTSPROC glDrawRangeElements;
 
 PFNGLTEXIMAGE3DPROC glTexImage3D;
@@ -5337,4 +5339,7 @@ int draw::init_eds_draw()
 
     return ret;
 }
+
 } // end ls namespace
+
+#endif /* LS_OS_WINDOWS */
