@@ -201,12 +201,12 @@ set(LS_DRAW_SOURCES
 # Keeping LightDraw as a static library until Vulkan support is added.
 add_library(${OUTPUT_NAME} STATIC ${LS_DRAW_HEADERS} ${LS_DRAW_SOURCES})
 
-target_include_directories(${OUTPUT_NAME} PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>)
-target_include_directories(${OUTPUT_NAME} SYSTEM BEFORE PRIVATE ${FREETYPE_INCLUDE_DIRS})
-
-if (NOT WIN32)
+if (WIN32)
     target_include_directories(${OUTPUT_NAME} SYSTEM BEFORE PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/external/include>)
 endif()
+
+target_include_directories(${OUTPUT_NAME} PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>)
+target_include_directories(${OUTPUT_NAME} SYSTEM BEFORE PRIVATE ${FREETYPE_INCLUDE_DIRS})
 
 # Linking Setup
 target_link_libraries(
